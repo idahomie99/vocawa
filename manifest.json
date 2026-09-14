@@ -1,0 +1,16 @@
+{
+  "name": "Vocawa 한자",
+  "short_name": "Vocawa",
+  "description": "과학적 장기 기억 한자 학습 앱",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#f0f4f8",
+  "theme_color": "#f0f4f8",
+  "icons": [
+    {
+      "src": "https://cdn-icons-png.flaticon.com/512/5968/5968282.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
