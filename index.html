@@ -1,35 +1,165 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<title>Vocawa - 치이카와처럼 귀여운 한자 학습</title>
+
+<!-- PWA 매니페스트 연결 -->
+<link rel="manifest" href="manifest.json">
+<!-- iOS(아이폰) 전용 PWA 설정 -->
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Vocawa">
+<link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/5968/5968282.png">
+<meta name="theme-color" content="#f0f4f8">
+
+<style>
+  body { display: flex; justify-content: center; align-items: center; height: 100vh; background-color: #f0f4f8; margin: 0; font-family: -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", sans-serif; user-select: none; -webkit-tap-highlight-color: transparent; overflow: hidden; }
+  .screen { position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; opacity: 0; visibility: hidden; transition: opacity 0.4s ease, transform 0.4s ease; transform: translateY(20px); padding-top: 60px; box-sizing: border-box; }
+  .screen.active { opacity: 1; visibility: visible; transform: translateY(0); }
+  
+  /* 홈 화면 */
+  .header-title { font-size: 28px; font-weight: 800; color: #1e293b; margin-bottom: 24px; width: 320px; text-align: left; }
+  .header-title span { color: #5c7cfa; }
+  .streak-card { width: 320px; background-color: white; border-radius: 20px; padding: 20px; box-sizing: border-box; display: flex; align-items: center; box-shadow: 0 10px 20px rgba(49, 79, 124, 0.05); margin-bottom: 30px; }
+  .streak-icon { font-size: 32px; margin-right: 16px; }
+  .streak-text h3 { margin: 0 0 4px 0; font-size: 16px; color: #1e293b; }
+  .streak-text p { margin: 0; font-size: 14px; color: #64748b; }
+  .course-list { width: 320px; display: flex; flex-direction: column; gap: 16px; }
+  .course-card { background-color: white; border-radius: 20px; padding: 20px; box-sizing: border-box; box-shadow: 0 10px 20px rgba(49, 79, 124, 0.05); cursor: pointer; transition: transform 0.2s, box-shadow 0.2s; }
+  .course-card:active { transform: scale(0.96); box-shadow: 0 5px 10px rgba(49, 79, 124, 0.05); }
+  .course-title { font-size: 18px; font-weight: bold; color: #1e293b; margin-bottom: 8px; }
+  .course-desc { font-size: 14px; color: #64748b; }
+
+  /* 학습 화면 */
+  .top-nav { width: 320px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+  .back-btn { background: none; border: none; color: #64748b; font-size: 16px; font-weight: 600; cursor: pointer; padding: 8px 0; }
+  .progress-container { width: 320px; height: 8px; background-color: #e1e8f0; border-radius: 10px; overflow: hidden; }
+  .progress-bar { height: 100%; width: 0%; background-color: #5c7cfa; border-radius: 10px; transition: width 0.5s ease-out; }
+  .card-container { width: 320px; height: 380px; perspective: 1000px; cursor: pointer; margin-top: 20px; margin-bottom: 20px; }
+  .card { width: 100%; height: 100%; position: relative; transition: transform 0.6s cubic-bezier(0.25, 0.8, 0.25, 1); transform-style: preserve-3d; }
+  .card.flipped { transform: rotateY(180deg); }
+  .card-face { position: absolute; width: 100%; height: 100%; backface-visibility: hidden; border-radius: 28px; background-color: white; box-shadow: 0 12px 36px rgba(49, 79, 124, 0.08); display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 24px; box-sizing: border-box; text-align: center; }
+  .card-front { font-size: 120px; font-weight: bold; color: #1e293b; }
+  .card-back { transform: rotateY(180deg); }
+  .mini-hanja { font-size: 28px; color: #94a3b8; margin: 0 0 4px 0; }
+  .meaning { font-size: 32px; font-weight: bold; color: #5c7cfa; margin: 0 0 16px 0; }
+  .radical { font-size: 16px; color: #64748b; margin: 0 0 16px 0; background-color: #f1f5f9; padding: 6px 14px; border-radius: 20px; font-weight: 500; }
+  .story { font-size: 16px; color: #475569; line-height: 1.6; word-break: keep-all; }
+  
+  .eval-buttons { display: flex; gap: 12px; opacity: 0; transform: translateY(10px); transition: all 0.4s ease; pointer-events: none; width: 320px; }
+  .eval-buttons.show { opacity: 1; transform: translateY(0); pointer-events: auto; }
+  .eval-buttons button { flex: 1; padding: 16px 0; font-size: 16px; font-weight: 700; border: none; border-radius: 16px; cursor: pointer; transition: transform 0.1s; }
+  .eval-buttons button:active { transform: scale(0.95); }
+  .btn-bad { background-color: #ffe3e3; color: #e03131; }
+  .btn-soso { background-color: #ffebb3; color: #e67700; }
+  .btn-perfect { background-color: #d3f9d8; color: #2b8a3e; }
+
+  /* 빈 화면 상태 */
+  .empty-state { display: none; flex-direction: column; align-items: center; justify-content: center; height: 380px; width: 320px; text-align: center; margin-top: 20px; }
+  .empty-state.show { display: flex; }
+  .empty-icon { font-size: 60px; margin-bottom: 16px; }
+  .empty-title { font-size: 20px; font-weight: bold; color: #1e293b; margin-bottom: 8px; }
+  .empty-desc { font-size: 15px; color: #64748b; }
+
+  /* 팝업 모달 */
+  .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15, 23, 42, 0.4); backdrop-filter: blur(6px); display: flex; justify-content: center; align-items: center; opacity: 0; visibility: hidden; transition: all 0.3s ease; z-index: 999; }
+  .modal-overlay.show { opacity: 1; visibility: visible; }
+  .modal-content { background: white; width: 280px; border-radius: 24px; padding: 32px 24px 24px 24px; text-align: center; transform: scale(0.8); transition: transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1); box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15); }
+  .modal-overlay.show .modal-content { transform: scale(1); }
+  .modal-icon { font-size: 48px; margin-bottom: 16px; }
+  .modal-title { font-size: 22px; font-weight: bold; color: #1e293b; margin: 0 0 8px 0; }
+  .modal-desc { font-size: 15px; color: #64748b; margin: 0 0 24px 0; line-height: 1.4; }
+  .btn-primary { width: 100%; padding: 16px; background-color: #5c7cfa; color: white; font-size: 17px; font-weight: bold; border: none; border-radius: 16px; cursor: pointer; }
+  .btn-primary:active { background-color: #4c6ef5; }
+</style>
+</head>
+<body>
+
+<!-- 홈 화면 -->
+<div id="homeScreen" class="screen active">
+  <div class="header-title"><span>Vocawa</span> 시작하기</div>
+  <div class="streak-card">
+    <div class="streak-icon">🔥</div>
+    <div class="streak-text">
+      <h3>학습 준비 완료!</h3>
+      <p>오늘 복습해야 할 한자를 확인하세요.</p>
+    </div>
+  </div>
+  <div class="course-list">
+    <div class="course-card" onclick="startLearning()">
+      <div class="course-title">🩺 2급 한자 (심화/전문)</div>
+      <div class="course-desc" id="courseStatus">데이터 불러오는 중...</div>
+    </div>
+  </div>
+</div>
+
+<!-- 학습 화면 -->
+<div id="learningScreen" class="screen">
+  <div class="top-nav">
+    <button class="back-btn" onclick="goHome()">← 뒤로가기</button>
+  </div>
+  
+  <div class="progress-container">
+    <div class="progress-bar" id="progressBar"></div>
+  </div>
+
+  <div class="empty-state" id="emptyState">
+    <div class="empty-icon">☕</div>
+    <div class="empty-title">오늘은 여기까지!</div>
+    <div class="empty-desc">복습할 한자가 없습니다.<br>뇌가 휴식할 시간이에요.</div>
+  </div>
+
+  <div class="card-container" id="cardContainer" onclick="flipCard()">
+    <div class="card" id="flashcard">
+      <div class="card-face card-front" id="cardHanja"></div>
+      <div class="card-face card-back">
+        <div class="mini-hanja" id="cardMiniHanja"></div>
+        <div class="meaning" id="cardMeaning"></div>
+        <div class="radical" id="cardRadical"></div>
+        <div class="story" id="cardStory"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="eval-buttons" id="evalButtons">
+    <button class="btn-bad" onclick="processEvaluation('모름')">모름</button>
+    <button class="btn-soso" onclick="processEvaluation('헷갈림')">헷갈림</button>
+    <button class="btn-perfect" onclick="processEvaluation('완벽함')">완벽함</button>
+  </div>
+</div>
+
+<!-- 완료 모달 -->
+<div class="modal-overlay" id="completionModal">
+  <div class="modal-content">
+    <div class="modal-icon">🧠</div>
+    <h2 class="modal-title">학습 완료!</h2>
+    <p class="modal-desc">오늘의 목표량을 모두 채웠어요.<br>홈 화면으로 돌아갑니다.</p>
+    <button class="btn-primary" onclick="resetAndGoHome()">홈으로 가기</button>
+  </div>
+</div>
+
 <script>
   let myHanjaData = [];
   let todayCards = [];
   let currentIndex = 0;
   let completedCount = 0;
 
-  // 💡 1. 외부 JSON 파일 불러오기 및 데이터 병합 (핵심 업데이트)
   function loadData() {
-    // 깃허브(또는 같은 폴더)에 있는 data.json을 비동기로 불러옴
     fetch('./data.json')
       .then(response => response.json())
       .then(fetchedData => {
-        // 유저의 기존 학습 기록(로컬 스토리지)을 가져옴
         const savedData = localStorage.getItem('vocawaData');
         let localData = savedData ? JSON.parse(savedData) : [];
         
-        // 💡 엑셀(JSON)에 새 한자가 추가되었는지 확인하고 병합
         fetchedData.forEach(card => {
-          // 기존 학습 기록에 없는 새로운 ID의 한자라면?
           if (!localData.find(c => c.id === card.id)) {
-            // 초기 복습 날짜(0)를 부여해서 내 단어장에 추가
-            localData.push({
-              ...card,
-              interval: 0,
-              nextReview: 0
-            });
+            localData.push({ ...card, interval: 0, nextReview: 0 });
           }
         });
         
         myHanjaData = localData;
-        
-        // 병합된 최신 데이터를 다시 저장
         localStorage.setItem('vocawaData', JSON.stringify(myHanjaData));
         updateHomeStatus();
       })
@@ -39,18 +169,15 @@
       });
   }
 
-  // 💡 2. 홈 화면 세팅 로직
   function updateHomeStatus() {
     const now = new Date().getTime();
     todayCards = myHanjaData.filter(card => card.nextReview <= now);
-    
     const statusText = todayCards.length > 0 
       ? `오늘 복습할 한자: ${todayCards.length}개` 
       : `오늘의 학습을 모두 마쳤습니다! ✨`;
     document.getElementById('courseStatus').innerText = statusText;
   }
 
-  // 💡 3. 학습 화면 시작
   function startLearning() {
     document.getElementById('homeScreen').classList.remove('active');
     document.getElementById('learningScreen').classList.add('active');
@@ -93,7 +220,6 @@
     }
   }
 
-  // 💡 4. 장기 기억(SRS) 평가 로직
   function processEvaluation(result) {
     let currentCard = todayCards[currentIndex];
     let originalCard = myHanjaData.find(c => c.id === currentCard.id);
@@ -151,19 +277,13 @@
     document.getElementById('progressBar').style.width = progressPercent + '%';
   }
 
-  // 앱 실행 시 외부 파일 데이터 로드
   loadData();
 
-  // 💡 서비스 워커 등록 (PWA)
   if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
-      navigator.serviceWorker.register('./sw.js')
-        .then(registration => {
-          console.log('ServiceWorker 등록 성공');
-        })
-        .catch(error => {
-          console.log('ServiceWorker 등록 실패', error);
-        });
+      navigator.serviceWorker.register('./sw.js').then(() => {
+        console.log('SW 등록 성공');
+      }).catch(err => console.log('SW 등록 실패', err));
     });
   }
 </script>
