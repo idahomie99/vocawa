@@ -36,7 +36,13 @@
   .streak-text h3 { margin: 0 0 6px 0; font-size: 16px; font-weight: 600; color: #0f172a; }
   .streak-text p { margin: 0; font-size: 13px; color: #64748b; }
   
+  /* 🎯 과정 선택 영역 CSS 추가 */
   .course-list { width: 320px; display: flex; flex-direction: column; gap: 12px; }
+  .course-header { display: flex; justify-content: space-between; align-items: center; width: 100%; padding: 0 4px; box-sizing: border-box; }
+  .course-header h3 { margin: 0; font-size: 15px; font-weight: 700; color: #0f172a; }
+  .text-btn { background: none; border: none; color: #3b82f6; font-size: 14px; font-weight: 600; cursor: pointer; padding: 0; transition: 0.2s; }
+  .text-btn:active { opacity: 0.6; }
+  
   .course-card { background-color: white; border-radius: 16px; padding: 20px; box-sizing: border-box; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03); border: 1px solid #f1f5f9; cursor: pointer; transition: transform 0.2s, box-shadow 0.2s; }
   .course-card:active { transform: scale(0.98); box-shadow: 0 2px 10px rgba(0, 0, 0, 0.02); }
   .course-title { display: flex; align-items: center; gap: 8px; font-size: 17px; font-weight: 600; color: #0f172a; margin-bottom: 8px; letter-spacing: -0.3px; }
@@ -118,6 +124,17 @@
   .modal-overlay.show { opacity: 1; visibility: visible; }
   .modal-content { background: white; width: 280px; border-radius: 20px; padding: 32px 24px; text-align: center; transform: scale(0.9); transition: transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1); box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1); }
   .modal-overlay.show .modal-content { transform: scale(1); }
+  
+  /* 🎯 언어/과정 선택 모달 전용 클래스 */
+  .course-modal-content { width: 320px; text-align: left; padding: 24px; box-sizing: border-box; }
+  .selection-title { font-size: 13px; font-weight: 600; color: #64748b; margin-bottom: 10px; text-align: left; }
+  .grid-list { display: flex; flex-direction: column; gap: 8px; }
+  .grid-item { display: flex; justify-content: space-between; align-items: center; padding: 14px 16px; border-radius: 12px; border: 1px solid #e2e8f0; font-size: 15px; font-weight: 600; cursor: pointer; transition: 0.2s; color: #0f172a; background: white; }
+  .grid-item:not(.disabled):active { transform: scale(0.98); background: #f8fafc; }
+  .grid-item.disabled { opacity: 0.5; cursor: default; background: #f8fafc; color: #64748b; }
+  .grid-item.active { border-color: #3b82f6; color: #3b82f6; background: #eff6ff; }
+  .badge-soon { font-size: 11px; padding: 4px 8px; border-radius: 6px; background: #e2e8f0; color: #64748b; font-weight: 600; }
+
   .modal-icon { color: #3b82f6; font-size: 48px; margin-bottom: 16px; }
   .modal-title { font-size: 20px; font-weight: 700; color: #0f172a; margin: 0 0 8px 0; }
   .modal-desc { font-size: 14px; color: #64748b; margin: 0 0 24px 0; line-height: 1.5; }
@@ -172,11 +189,16 @@
     </div>
   </div>
   
+  <!-- 🎯 과정 변경 UI 적용 -->
   <div class="course-list">
+    <div class="course-header">
+      <h3>현재 학습 과정</h3>
+      <button class="text-btn" onclick="openCourseModal()">과정 변경</button>
+    </div>
     <div class="course-card" onclick="startLearning()">
       <div class="course-title">
-        <span class="material-symbols-rounded">stethoscope</span>
-        2급 한자 (심화/전문)
+        <span class="material-symbols-rounded">library_books</span>
+        한자 2급 (심화/전문)
       </div>
       <div class="course-desc" id="courseStatus">데이터 불러오는 중...</div>
     </div>
@@ -258,6 +280,33 @@
     <button class="btn-bad" onclick="processEvaluation('모름')">모름</button>
     <button class="btn-soso" onclick="processEvaluation('헷갈림')">헷갈림</button>
     <button class="btn-perfect" onclick="processEvaluation('완벽함')">완벽함</button>
+  </div>
+</div>
+
+<!-- 🎯 과정 선택 모달 -->
+<div class="modal-overlay" id="courseModal">
+  <div class="modal-content course-modal-content">
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 24px;">
+      <h2 class="modal-title" style="margin:0;">학습 과정 설정</h2>
+      <button class="settings-btn" onclick="closeCourseModal()">
+        <span class="material-symbols-rounded" style="font-size:22px;">close</span>
+      </button>
+    </div>
+    
+    <div class="selection-title">언어 선택</div>
+    <div class="grid-list" style="margin-bottom: 24px;">
+      <div class="grid-item disabled">영어 <span class="badge-soon">업데이트 예정</span></div>
+      <div class="grid-item disabled">중국어 <span class="badge-soon">업데이트 예정</span></div>
+      <div class="grid-item disabled">일본어 <span class="badge-soon">업데이트 예정</span></div>
+      <div class="grid-item active">한자 <span class="material-symbols-rounded" style="font-size:18px;">check_circle</span></div>
+    </div>
+
+    <div class="selection-title">수준 선택 (한자)</div>
+    <div class="grid-list">
+      <div class="grid-item disabled">1급 <span class="badge-soon">준비 중</span></div>
+      <div class="grid-item active" onclick="confirmCourse()">2급 (심화/전문) <span class="material-symbols-rounded" style="font-size:18px;">check_circle</span></div>
+      <div class="grid-item disabled">3급 <span class="badge-soon">준비 중</span></div>
+    </div>
   </div>
 </div>
 
@@ -400,6 +449,14 @@
   function closeScreen(screenId) {
     document.getElementById(screenId).classList.remove('active');
     document.getElementById('homeScreen').classList.add('active');
+  }
+
+  // 🎯 과정 선택 모달 로직
+  function openCourseModal() { document.getElementById('courseModal').classList.add('show'); }
+  function closeCourseModal() { document.getElementById('courseModal').classList.remove('show'); }
+  function confirmCourse() {
+    // 향후 다른 데이터셋(영어, 중국어 등) 연결 시 로직이 추가될 부분입니다.
+    closeCourseModal();
   }
 
   function toggleTTS() {
@@ -616,6 +673,9 @@
   window.openVocab = openVocab; window.closeScreen = closeScreen; window.startQuiz = startQuiz; window.goHome = goHome;
   window.flipCard = flipCard; window.processEvaluation = processEvaluation; window.resetAndGoHome = resetAndGoHome; window.closeQuizResult = closeQuizResult;
   window.toggleTTS = toggleTTS;
+  
+  // 🎯 새로 추가된 과정 변경 모달용 함수 연결
+  window.openCourseModal = openCourseModal; window.closeCourseModal = closeCourseModal; window.confirmCourse = confirmCourse;
 
   if ('serviceWorker' in navigator) { window.addEventListener('load', () => { navigator.serviceWorker.register('./sw.js').catch(err => console.log('SW 등록 실패', err)); }); }
 </script>
