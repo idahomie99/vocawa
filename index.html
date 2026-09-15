@@ -54,27 +54,25 @@
   .exp-bar { height: 100%; width: 0%; background-color: #51cf66; border-radius: 6px; transition: width 0.5s ease-out; box-shadow: inset 0 -2px 4px rgba(0,0,0,0.1);}
   .exp-text { font-size: 11px; font-weight: 700; color: #adb5bd; text-align: right; }
 
-  /* 🎯 마이룸(상태창) 디오라마 스타일 */
+  /* 🎯 마이룸(상태창) - 상단 1줄 가로 배치형 */
   .user-room-card { 
     display: flex; 
     flex-direction: column;
     margin-bottom: 24px; 
     background-color: white; 
-    border-radius: 28px; /* 모서리 모두 둥글게 통일 */
+    border-radius: 28px; 
     box-shadow: 0 12px 36px rgba(180, 160, 140, 0.12);
-    overflow: hidden; 
-    padding: 6px; /* 테두리(액자) 느낌을 주는 내부 여백 */
+    padding: 6px; /* 좋은 평가를 주신 흰색 테두리 효과 유지 */
     box-sizing: border-box;
   }
   
-  /* 방 영역 */
   .room-view {
     width: 100%;
-    height: 180px; /* 방 높이 (비율에 맞게 조정) */
+    height: 240px; /* 배경 이미지를 크고 시원하게 */
     position: relative;
     overflow: hidden;
+    border-radius: 22px; /* 방 이미지 안쪽 모서리 둥글게 */
     background-color: #f1f3f5;
-    border-radius: 22px; /* 방 이미지 안쪽도 둥글게 */
   }
   
   .room-bg-img { 
@@ -88,28 +86,48 @@
   
   .room-character { 
     position: absolute; 
-    bottom: 20px; /* 바닥에 안정적으로 서 있도록 위치 조정 */
+    bottom: 25px; 
     left: 50%; 
     transform: translateX(-50%); 
     z-index: 2; 
     width: 90px; 
     height: auto; 
     object-fit: contain;
-    filter: drop-shadow(0 8px 12px rgba(0,0,0,0.3)); /* 그림자 효과로 입체감 부여 */
+    filter: drop-shadow(0 8px 12px rgba(0,0,0,0.3)); 
   }
 
-  /* 정보 패널 영역 */
-  .room-info-panel {
-    padding: 16px 12px 8px 12px;
+  /* 🎯 상단 반투명 가로 정보바 */
+  .room-info-top-bar {
+    position: absolute;
+    top: 10px; 
+    left: 10px;
+    right: 10px; /* 좌우 여백을 주어 둥근 모서리에 예쁘게 안착 */
+    z-index: 3;
     display: flex;
-    flex-direction: column;
-    gap: 12px;
-  }
-
-  .room-info-header {
-    display: flex;
-    justify-content: space-between;
     align-items: center;
+    justify-content: space-between; /* 요소를 3등분하여 고르게 분배 */
+    background: rgba(255, 255, 255, 0.85); /* 반투명 박스 (가독성 확보) */
+    backdrop-filter: blur(6px); /* 뒤쪽 배경을 살짝 흐리게 하여 고급스러움 추가 */
+    padding: 8px 12px;
+    border-radius: 16px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  }
+
+  /* 가로 바 내부 요소 크기 미세조정 (모바일에서 한 줄로 겹치지 않도록) */
+  .room-info-top-bar .stat-level { font-size: 14px; gap: 4px; }
+  .room-info-top-bar .stat-level .badge { padding: 3px 6px; font-size: 11px; }
+  .room-info-top-bar .stat-money { font-size: 13px; gap: 2px; }
+  
+  /* 한 줄 배치에 맞게 경험치 바 레이아웃 덮어쓰기 */
+  .top-bar-exp {
+    width: 75px; /* 남는 공간에 맞게 너비 고정 */
+    margin-top: 0; 
+    gap: 4px; 
+  }
+  .top-bar-exp .exp-text {
+    font-size: 10px;
+    text-align: center; /* 우측 정렬에서 가운데 정렬로 변경 */
+    color: #495057;
   }
 
   /* 🎯 오늘의 할 일 (세련된 사이즈로 다이어트) */
@@ -264,32 +282,37 @@
     </div>
   </div>
   
-  <!-- 🎯 리빌드된 마이룸 (상태창 - 디오라마 뷰) -->
+  <!-- 🎯 리빌드된 마이룸 (상태창 - 상단 반투명 가로 바) -->
   <div class="responsive-width user-room-card">
-    <!-- 상단: 방 이미지와 캐릭터 -->
     <div class="room-view">
+      <!-- 배경 이미지 -->
       <img id="userRoomBg" class="room-bg-img" src="./image/cave.png" alt="room background">
-      <img id="userAvatarImg" class="room-character" src="./image/chiikawa.png" alt="character" onerror="this.src='./image/app_logo.png'">
-    </div>
-    
-    <!-- 하단: 유저 정보 패널 -->
-    <div class="room-info-panel">
-      <div class="room-info-header">
+      
+      <!-- 상단 가로 정보창 (반투명 박스) -->
+      <div class="room-info-top-bar">
+        <!-- 1. 직업뱃지와 이름 -->
         <div class="stat-level">
           <span class="badge" id="userLevelBadge">백수</span>
           <span id="userLevelName">치이카와</span>
         </div>
+        
+        <!-- 2. 소지금 -->
         <div class="stat-money">
-          <span class="material-symbols-rounded" style="font-size: 18px;">monetization_on</span>
+          <span class="material-symbols-rounded" style="font-size: 16px;">monetization_on</span>
           <span id="userMoneyText">0</span>원
         </div>
-      </div>
-      <div class="exp-wrapper">
-        <div class="exp-container">
-          <div class="exp-bar" id="userExpBar"></div>
+
+        <!-- 3. 경험치 바 (가로 길이에 맞게 축소) -->
+        <div class="exp-wrapper top-bar-exp">
+          <div class="exp-container" style="height: 8px;">
+            <div class="exp-bar" id="userExpBar"></div>
+          </div>
+          <div class="exp-text" id="userExpText">EXP 0 / 100</div>
         </div>
-        <div class="exp-text" id="userExpText">EXP 0 / 100</div>
       </div>
+
+      <!-- 중앙 캐릭터 -->
+      <img id="userAvatarImg" class="room-character" src="./image/chiikawa.png" alt="character" onerror="this.src='./image/app_logo.png'">
     </div>
   </div>
   
