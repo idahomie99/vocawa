@@ -21,54 +21,59 @@
   .screen { position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; opacity: 0; visibility: hidden; transition: opacity 0.4s ease, transform 0.4s ease; box-sizing: border-box; }
   .screen.active { opacity: 1; visibility: visible; transform: translateY(0); }
   
-  /* 로그인 화면 전용 중앙 정렬 */
+  /* 🎯 화면별 상하 여백 정밀 조정 */
   #authScreen { justify-content: center; padding-top: 0; }
-  /* 나머지 화면 상단 여백 */
-  #homeScreen, #shopScreen, #vocabScreen, #quizScreen, #learningScreen { padding-top: 50px; justify-content: flex-start; }
+  #homeScreen, #shopScreen, #vocabScreen, #quizScreen, #learningScreen { padding-top: 40px; justify-content: flex-start; }
   
   .responsive-width { width: 90%; max-width: 440px; }
 
-  .auth-container { display: flex; flex-direction: column; gap: 12px; margin-top: 20px; }
+  .auth-container { display: flex; flex-direction: column; gap: 12px; margin-top: 20px; width: 100%; }
   .google-btn { display: flex; align-items: center; justify-content: center; gap: 12px; background-color: white; color: #1e293b; font-size: 17px; font-weight: 700; padding: 18px; border-radius: 14px; border: 1px solid #e2e8f0; cursor: pointer; transition: all 0.2s; box-shadow: 0 4px 12px rgba(0,0,0,0.03); }
   .google-btn:active { transform: scale(0.98); background-color: #f1f5f9; }
   
-  .header-container { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 16px; margin-top: 8px; }
+  /* 🎯 홈 화면 상단 버튼 위치 조절 */
+  .header-container { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; margin-top: -8px; }
   .settings-btn { background: none; border: none; color: #64748b; cursor: pointer; padding: 6px; border-radius: 50%; display: flex; transition: background 0.2s, color 0.2s; }
   .settings-btn:active { background: #f1f5f9; color: #0f172a; }
 
   /* 🎯 치이카와 유저 상태창 UI */
-  .user-stats-card { background-color: white; border-radius: 20px; padding: 24px 20px; box-sizing: border-box; display: flex; flex-direction: column; gap: 14px; box-shadow: 0 4px 24px rgba(0, 0, 0, 0.04); border: 1px solid #e2e8f0; margin-bottom: 16px; position: relative; overflow: hidden; }
+  .user-stats-card { background-color: white; border-radius: 24px; padding: 24px 20px; box-sizing: border-box; display: flex; flex-direction: column; gap: 16px; box-shadow: 0 4px 24px rgba(0, 0, 0, 0.04); border: 1px solid #e2e8f0; margin-bottom: 16px; position: relative; }
   
   /* 🎯 상점 아이콘 (상태창 우측 상단 뱃지 형태) */
-  .shop-icon-btn { position: absolute; top: 20px; right: 20px; background: #fffbeb; color: #f59e0b; border: 1px solid #fde68a; width: 44px; height: 44px; border-radius: 22px; display: flex; align-items: center; justify-content: center; cursor: pointer; box-shadow: 0 4px 12px rgba(245, 158, 11, 0.15); transition: transform 0.2s; }
+  .shop-icon-btn { position: absolute; top: 20px; right: 20px; background: #fffbeb; color: #f59e0b; border: 1px solid #fde68a; width: 44px; height: 44px; border-radius: 14px; display: flex; align-items: center; justify-content: center; cursor: pointer; box-shadow: 0 4px 12px rgba(245, 158, 11, 0.15); transition: transform 0.2s; z-index: 10; }
   .shop-icon-btn:active { transform: scale(0.92); }
 
-  .stat-header { display: flex; justify-content: flex-start; align-items: center; gap: 20px; }
+  .stat-header { display: flex; justify-content: flex-start; align-items: center; gap: 16px; }
   .stat-info-wrap { display: flex; flex-direction: column; gap: 8px; justify-content: center; }
-  .user-avatar-img { width: 96px; height: 96px; background: #f1f5f9; border-radius: 20px; border: 2px dashed #cbd5e1; display: flex; align-items: center; justify-content: center; color: #94a3b8; font-size: 14px; font-weight: 600; flex-shrink: 0; }
+  
+  /* 🎯 프로필 이미지 사이즈 및 테두리 수정 */
+  .user-avatar-img { width: 96px; height: 96px; background-color: white; border-radius: 20px; border: 1px solid #e2e8f0; display: flex; align-items: center; justify-content: center; flex-shrink: 0; object-fit: cover; box-shadow: 0 4px 12px rgba(0,0,0,0.03); }
+
   .stat-level { font-size: 18px; font-weight: 800; color: #0f172a; display: flex; align-items: center; gap: 8px; }
   .stat-level .badge { background: #3b82f6; color: white; padding: 4px 8px; border-radius: 8px; font-size: 12px; font-weight: 700; }
   .stat-money { font-size: 16px; font-weight: 700; color: #f59e0b; display: flex; align-items: center; gap: 4px; }
   .stat-equip-info { font-size: 14px; color: #64748b; display: flex; align-items: center; gap: 4px; font-weight: 500; }
   
-  /* 🎯 경험치 바 시인성 강화 */
-  .exp-container { width: 100%; height: 12px; background-color: #e2e8f0; border-radius: 6px; overflow: hidden; position: relative; margin-top: 4px;}
+  /* 🎯 경험치 바 잘림 해결 (여백 및 구조 개편) */
+  .exp-wrapper { display: flex; flex-direction: column; gap: 8px; width: 100%; margin-top: 4px; }
+  .exp-container { width: 100%; height: 12px; background-color: #f1f5f9; border-radius: 6px; overflow: hidden; position: relative; border: 1px solid #e2e8f0; }
   .exp-bar { height: 100%; width: 0%; background-color: #10b981; border-radius: 6px; transition: width 0.5s ease-out; }
-  .exp-text { font-size: 12px; font-weight: 600; color: #64748b; text-align: right; margin-top: -2px; }
+  .exp-text { font-size: 12px; font-weight: 700; color: #64748b; text-align: right; }
 
   /* 🎯 연속 접속일 배너 */
   .streak-banner { display: flex; align-items: center; justify-content: center; gap: 6px; background-color: white; border: 1px solid #fed7aa; color: #ea580c; border-radius: 16px; padding: 14px; margin-bottom: 20px; font-weight: 700; font-size: 15px; box-shadow: 0 4px 20px rgba(234, 88, 12, 0.05); }
 
-  .course-list { display: flex; flex-direction: column; gap: 12px; margin-bottom: 12px; }
+  .course-list { display: flex; flex-direction: column; gap: 12px; margin-bottom: 12px; width: 100%; }
   .course-header { display: flex; justify-content: space-between; align-items: center; width: 100%; padding: 0 4px; box-sizing: border-box; margin-bottom: 2px; }
   .course-header h3 { margin: 0; font-size: 16px; font-weight: 700; color: #0f172a; }
   
-  .course-card { background-color: white; border-radius: 20px; padding: 20px; box-sizing: border-box; box-shadow: 0 4px 24px rgba(0, 0, 0, 0.04); border: 1px solid #e2e8f0; cursor: pointer; transition: transform 0.2s; }
+  .course-card { background-color: white; border-radius: 20px; padding: 22px; box-sizing: border-box; box-shadow: 0 4px 24px rgba(0, 0, 0, 0.04); border: 1px solid #e2e8f0; cursor: pointer; transition: transform 0.2s; }
   .course-card:active { transform: scale(0.98); }
-  .course-title { display: flex; align-items: center; gap: 8px; font-size: 18px; font-weight: 800; color: #0f172a; margin-bottom: 8px; letter-spacing: -0.5px;}
-  .course-desc { display: flex; align-items: center; gap: 4px; font-size: 14px; color: #64748b; font-weight: 500; }
+  .course-title { display: flex; align-items: center; gap: 10px; font-size: 18px; font-weight: 800; color: #0f172a; margin-bottom: 8px; letter-spacing: -0.5px;}
+  .course-desc { display: flex; align-items: center; gap: 4px; font-size: 14px; color: #64748b; font-weight: 600; }
 
-  .btn-row { display: flex; gap: 12px; margin-top: 4px; }
+  /* 🎯 단어장 버튼 */
+  .btn-row { display: flex; gap: 12px; margin-top: 4px; width: 100%; }
   .action-btn { flex: 1; display: flex; flex-direction: row; align-items: center; justify-content: center; gap: 10px; background-color: white; color: #0f172a; font-size: 16px; font-weight: 700; padding: 20px; border-radius: 20px; border: 1px solid #e2e8f0; cursor: pointer; box-shadow: 0 4px 24px rgba(0, 0, 0, 0.04); transition: transform 0.2s; }
   .action-btn:active { transform: scale(0.96); background-color: #f8fafc; }
 
@@ -81,7 +86,8 @@
   .shop-list::-webkit-scrollbar { display: none; }
   
   .shop-item { background: white; padding: 16px; border-radius: 16px; border: 1px solid #e2e8f0; display: flex; gap: 14px; align-items: center; box-shadow: 0 2px 10px rgba(0,0,0,0.02); }
-  .shop-item-img { width: 64px; height: 64px; background: #f8fafc; border-radius: 12px; border: 2px dashed #cbd5e1; display: flex; align-items: center; justify-content: center; color: #94a3b8; font-size: 12px; font-weight: 600; flex-shrink: 0; }
+  .shop-item-img { width: 64px; height: 64px; background-color: white; border-radius: 16px; border: 1px solid #e2e8f0; display: flex; align-items: center; justify-content: center; flex-shrink: 0; object-fit: cover; }
+  
   .shop-item-content { display: flex; flex: 1; justify-content: space-between; align-items: center; gap: 8px; }
   .shop-item-info { flex: 1; }
   .shop-item-info h4 { margin: 0 0 6px 0; font-size: 16px; font-weight: 700; color: #0f172a; line-height: 1.2; }
@@ -91,7 +97,7 @@
   .btn-equip { background: #f1f5f9; color: #475569; border: 1px solid #e2e8f0; }
   .btn-equipped { background: #10b981; color: white; }
 
-  /* 단어장 UI */
+  /* 단어장, 퀴즈, 모달 등 공통 요소 */
   .vocab-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
   .vocab-list { flex: 1; overflow-y: auto; padding-bottom: 40px; display: flex; flex-direction: column; gap: 12px; }
   .vocab-list::-webkit-scrollbar { display: none; }
@@ -103,7 +109,6 @@
   .level-badge { font-size: 12px; padding: 4px 10px; border-radius: 6px; font-weight: 600; background: #f1f5f9; color: #64748b; }
   .level-high { background: #eff6ff; color: #3b82f6; }
 
-  /* 공통 */
   .top-nav { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; }
   .back-btn { display: flex; align-items: center; gap: 4px; background: none; border: none; color: #64748b; font-size: 16px; font-weight: 600; cursor: pointer; padding: 8px 0; }
   .sound-btn { display: flex; align-items: center; justify-content: center; background: transparent; border: 1px solid #e2e8f0; color: #64748b; width: 40px; height: 40px; border-radius: 50%; cursor: pointer; transition: 0.2s; }
@@ -173,9 +178,9 @@
 
 <!-- 🔐 로그인 화면 -->
 <div id="authScreen" class="screen active">
-  <div class="responsive-width header-title" style="text-align: center; margin-bottom: 40px; justify-content: center; display: flex; flex-direction: column; align-items: center;">
-    <!-- 🎯 로고 크기 대폭 확대 (260px) & 불필요한 텍스트 제거 -->
-    <img src="./image/logo.png" alt="Vocawa Logo" style="width: 260px; height: auto; display: block;">
+  <div class="responsive-width header-title" style="text-align: center; margin-bottom: 60px; justify-content: center; display: flex; flex-direction: column; align-items: center;">
+    <!-- 🎯 로고 크기 대폭 확대 & 글씨/테두리 제거 -->
+    <img src="./image/logo.png" alt="Vocawa Logo" style="width: 100%; max-width: 320px; height: auto; display: block;">
   </div>
   <div class="responsive-width auth-container">
     <button class="google-btn" id="googleLoginBtn" onclick="handleGoogleLogin()">
@@ -189,12 +194,12 @@
 <!-- 홈 화면 -->
 <div id="homeScreen" class="screen">
   <!-- 🎯 상단 여백 조절 및 버튼 위치 위로 살짝 이동 -->
-  <div class="responsive-width header-container" style="align-items: flex-start;">
+  <div class="responsive-width header-container">
     <div class="header-title">
-      <!-- 🎯 홈 화면 로고 크기 확대 -->
-      <img src="./image/logo.png" style="height: 64px; width: auto;" alt="Vocawa Logo">
+      <!-- 🎯 홈 화면 로고 크기 대폭 확대 -->
+      <img src="./image/logo.png" style="height: 80px; width: auto;" alt="Vocawa Logo">
     </div>
-    <div style="display: flex; gap: 12px; margin-top: 4px;">
+    <div style="display: flex; gap: 12px;">
       <button class="settings-btn" onclick="openSettings()" title="설정">
         <span class="material-symbols-rounded" style="font-size: 26px;">tune</span>
       </button>
@@ -211,7 +216,8 @@
     </button>
 
     <div class="stat-header">
-      <div class="user-avatar-img" id="userAvatarImg">이미지<br>(96x96)</div>
+      <!-- 🎯 캐릭터 프로필 이미지 (치이카와 파일 연동) -->
+      <img id="userAvatarImg" class="user-avatar-img" src="./image/chiikawa.png" alt="profile" onerror="this.src='./image/app_logo.png'">
       <div class="stat-info-wrap">
         <div class="stat-level">
           <span class="badge" id="userLevelBadge">백수</span>
@@ -228,10 +234,13 @@
       </div>
     </div>
     
-    <div class="exp-container">
-      <div class="exp-bar" id="userExpBar"></div>
+    <!-- 🎯 경험치 바 잘림 해결 -->
+    <div class="exp-wrapper">
+      <div class="exp-container">
+        <div class="exp-bar" id="userExpBar"></div>
+      </div>
+      <div class="exp-text" id="userExpText">EXP 0 / 100</div>
     </div>
-    <div class="exp-text" id="userExpText">EXP 0 / 100</div>
   </div>
   
   <!-- 🎯 연속 접속일 배너 -->
@@ -245,24 +254,28 @@
     <div class="course-header">
       <h3>오늘의 할 일</h3>
     </div>
+    <!-- 🎯 토벌 (머터리얼 심볼 적용) -->
     <div class="course-card" onclick="startLearning()">
       <div class="course-title">
-        <span style="font-size: 22px;">🔱</span> 한자 2급 토벌
+        <span class="material-symbols-rounded" style="color: #3b82f6; font-size: 26px;">swords</span>
+        한자 2급 토벌
       </div>
       <div class="course-desc" id="courseStatus">데이터 불러오는 중...</div>
     </div>
+    <!-- 🎯 제초 (머터리얼 심볼 적용) -->
     <div class="course-card" onclick="startQuiz()">
       <div class="course-title">
-        <span style="font-size: 22px;">🌿</span> 실전 모의고사 제초
+        <span class="material-symbols-rounded" style="color: #f59e0b; font-size: 26px;">grass</span>
+        실전 모의고사 제초
       </div>
       <div class="course-desc" id="quizStatusText">일일 1회 보상 대기 중</div>
     </div>
   </div>
 
-  <!-- 🎯 하단 버튼 (단어장 하나로 깔끔하게) -->
+  <!-- 🎯 하단 버튼 (단어장 하나로 깔끔하게 가로 꽉 차게) -->
   <div class="responsive-width btn-row" style="margin-top: 4px;">
-    <button class="action-btn" onclick="openVocab()">
-      <span class="material-symbols-rounded" style="color: #0f172a;">menu_book</span>
+    <button class="action-btn" onclick="openVocab()" style="width: 100%; flex-direction: row; justify-content: center; padding: 20px;">
+      <span class="material-symbols-rounded" style="color: #0f172a; font-size: 26px;">menu_book</span>
       단어장 열기
     </button>
   </div>
@@ -448,6 +461,7 @@
     { name: "제초자격증 4급", maxExp: 1000 }, { name: "제초자격증 3급", maxExp: 1500 }, { name: "제초자격증 2급", maxExp: 2100 }, { name: "제초자격증 1급", maxExp: 3000 }
   ];
 
+  // 🎯 캐릭터 목록 대거 추가
   const SHOP_DB = {
     char: [
       { id: 'c_chiikawa', name: '치이카와', price: 0, desc: '다정하고 눈물이 많은 기본 캐릭터' },
@@ -595,6 +609,12 @@
     syncToCloud();
   }
 
+  // 🎯 프로필 및 상점 이미지 자동 불러오기 함수
+  function getImageUrl(id) {
+    const fileName = id.replace('c_', '').replace('e_', '');
+    return `./image/${fileName}.png`;
+  }
+
   function updateUserStatsUI() {
     const lvl = LEVELS[userStats.levelIdx];
     document.getElementById('userLevelBadge').innerText = lvl.name;
@@ -606,6 +626,11 @@
     const expPercent = (userStats.exp / lvl.maxExp) * 100;
     document.getElementById('userExpBar').style.width = `${expPercent}%`;
     document.getElementById('userExpText').innerText = `EXP ${userStats.exp} / ${lvl.maxExp}`;
+    
+    // 🎯 메인 프로필 아바타 렌더링
+    if (charObj) {
+       document.getElementById('userAvatarImg').src = getImageUrl(userStats.character);
+    }
   }
 
   let currentShopTab = 'char';
@@ -639,7 +664,7 @@
       }
       return `
         <div class="shop-item">
-          <div class="shop-item-img">이미지<br>(64x64)</div>
+          <img class="shop-item-img" src="${getImageUrl(item.id)}" alt="item" onerror="this.src='./image/app_logo.png'">
           <div class="shop-item-content">
             <div class="shop-item-info">
               <h4>${item.name}</h4>
@@ -877,7 +902,7 @@
     
     if (!userStats.dailyQuizDone) {
       userStats.dailyQuizDone = true; userStats.money += 50; addExp(20);
-      msg += `<br><br><span style="font-size:18px; color:#10b981; font-weight:800;">EXP +20  |  💰 +50원</span>`;
+      msg += `<br><br><span style="font-size:16px; color:#10b981; font-weight:700;">EXP +20  |  💰 +50원</span>`;
     }
     document.getElementById('quizResultMsg').innerHTML = msg; document.getElementById('quizResultModal').classList.add('show');
   }
