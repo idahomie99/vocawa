@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-<title>Vocawa - 심화 한자 학습</title>
+<title>Vocawa - 치이카와 한자 학습</title>
 <link rel="manifest" href="manifest.json">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
@@ -11,13 +11,12 @@
 <link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/5968/5968282.png">
 <meta name="theme-color" content="#f8fafc">
 
-<!-- 구글 머터리얼 심볼 -->
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,400,1,0" />
-<!-- 프리텐다드 폰트 -->
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v3.2.1/dist/web/static/pretendard.css" />
 
 <style>
-  body { display: flex; justify-content: center; align-items: center; height: 100vh; background-color: #f8fafc; margin: 0; font-family: Pretendard, -apple-system, BlinkMacSystemFont, system-ui, Roboto, "Helvetica Neue", "Segoe UI", "Apple SD Gothic Neo", "Noto Sans KR", "Malgun Gothic", sans-serif; user-select: none; -webkit-tap-highlight-color: transparent; overflow: hidden; overscroll-behavior-y: contain; color: #1e293b; }
+  /* 기본 설정 CSS (생략 없이 유지) */
+  body { display: flex; justify-content: center; align-items: center; height: 100vh; background-color: #f8fafc; margin: 0; font-family: Pretendard, -apple-system, sans-serif; user-select: none; -webkit-tap-highlight-color: transparent; overflow: hidden; overscroll-behavior-y: contain; color: #1e293b; }
   .screen { position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; opacity: 0; visibility: hidden; transition: opacity 0.4s ease, transform 0.4s ease; transform: translateY(20px); padding-top: 60px; box-sizing: border-box; }
   .screen.active { opacity: 1; visibility: visible; transform: translateY(0); }
   
@@ -25,27 +24,30 @@
   .google-btn { display: flex; align-items: center; justify-content: center; gap: 12px; background-color: white; color: #1e293b; font-size: 16px; font-weight: 600; padding: 16px; border-radius: 12px; border: 1px solid #e2e8f0; cursor: pointer; transition: all 0.2s; box-shadow: 0 2px 8px rgba(0,0,0,0.02); }
   .google-btn:active { transform: scale(0.98); background-color: #f1f5f9; }
   
-  .header-container { width: 320px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; }
+  .header-container { width: 320px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
   .header-title { font-size: 24px; font-weight: 700; color: #0f172a; margin: 0; letter-spacing: -0.5px; }
   .header-title span { color: #3b82f6; }
   .settings-btn { background: none; border: none; color: #64748b; cursor: pointer; padding: 6px; border-radius: 50%; display: flex; transition: background 0.2s, color 0.2s; }
   .settings-btn:active { background: #f1f5f9; color: #0f172a; }
 
-  .streak-card { width: 320px; background-color: white; border-radius: 16px; padding: 20px; box-sizing: border-box; display: flex; align-items: center; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03); margin-bottom: 30px; border: 1px solid #f1f5f9; }
-  .streak-icon { display: flex; align-items: center; justify-content: center; margin-right: 16px; color: #3b82f6; font-size: 32px; }
-  .streak-text h3 { margin: 0 0 6px 0; font-size: 16px; font-weight: 600; color: #0f172a; }
-  .streak-text p { margin: 0; font-size: 13px; color: #64748b; }
-  
-  /* 🎯 과정 선택 영역 CSS 추가 */
+  /* 🎯 치이카와 유저 스탯 상태창 UI 추가 */
+  .user-stats-card { width: 320px; background-color: white; border-radius: 16px; padding: 16px; box-sizing: border-box; display: flex; flex-direction: column; gap: 12px; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03); border: 1px solid #e2e8f0; margin-bottom: 20px; }
+  .stat-header { display: flex; justify-content: space-between; align-items: center; }
+  .stat-level { font-size: 16px; font-weight: 800; color: #0f172a; display: flex; align-items: center; gap: 6px; }
+  .stat-level .badge { background: #3b82f6; color: white; padding: 4px 8px; border-radius: 8px; font-size: 12px; font-weight: 700; }
+  .stat-money { font-size: 16px; font-weight: 700; color: #f59e0b; display: flex; align-items: center; gap: 4px; }
+  .exp-container { width: 100%; height: 8px; background-color: #f1f5f9; border-radius: 4px; overflow: hidden; position: relative; }
+  .exp-bar { height: 100%; width: 0%; background-color: #10b981; border-radius: 4px; transition: width 0.5s ease-out; }
+  .exp-text { font-size: 11px; font-weight: 600; color: #64748b; text-align: right; margin-top: -4px; }
+
   .course-list { width: 320px; display: flex; flex-direction: column; gap: 12px; }
   .course-header { display: flex; justify-content: space-between; align-items: center; width: 100%; padding: 0 4px; box-sizing: border-box; }
   .course-header h3 { margin: 0; font-size: 15px; font-weight: 700; color: #0f172a; }
   .text-btn { background: none; border: none; color: #3b82f6; font-size: 14px; font-weight: 600; cursor: pointer; padding: 0; transition: 0.2s; }
-  .text-btn:active { opacity: 0.6; }
   
   .course-card { background-color: white; border-radius: 16px; padding: 20px; box-sizing: border-box; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03); border: 1px solid #f1f5f9; cursor: pointer; transition: transform 0.2s, box-shadow 0.2s; }
-  .course-card:active { transform: scale(0.98); box-shadow: 0 2px 10px rgba(0, 0, 0, 0.02); }
-  .course-title { display: flex; align-items: center; gap: 8px; font-size: 17px; font-weight: 600; color: #0f172a; margin-bottom: 8px; letter-spacing: -0.3px; }
+  .course-card:active { transform: scale(0.98); }
+  .course-title { display: flex; align-items: center; gap: 8px; font-size: 17px; font-weight: 600; color: #0f172a; margin-bottom: 8px; }
   .course-title .material-symbols-rounded { color: #3b82f6; font-size: 20px; }
   .course-desc { display: flex; align-items: center; gap: 4px; font-size: 13px; color: #64748b; }
 
@@ -56,6 +58,7 @@
   .btn-vocab { color: #0f172a; }
   .btn-quiz { color: #0f172a; }
 
+  /* 단어장 & 모의고사 & 학습 CSS 유지 */
   .vocab-header { width: 320px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
   .vocab-title { font-size: 18px; font-weight: 700; color: #0f172a; margin: 0; }
   .vocab-stats { font-size: 13px; color: #64748b; font-weight: 500; }
@@ -65,14 +68,13 @@
   .vocab-hanja { font-size: 28px; font-weight: 500; color: #0f172a; width: 44px; text-align: center; }
   .vocab-details { flex: 1; }
   .vocab-meaning { font-size: 15px; font-weight: 600; color: #3b82f6; margin-bottom: 4px; }
-  .vocab-story { font-size: 13px; color: #64748b; line-height: 1.5; word-break: keep-all; font-weight: 400; }
+  .vocab-story { font-size: 13px; color: #64748b; line-height: 1.5; word-break: keep-all; }
   .level-badge { font-size: 11px; padding: 4px 8px; border-radius: 6px; font-weight: 600; background: #f1f5f9; color: #64748b; }
   .level-high { background: #eff6ff; color: #3b82f6; }
   .level-mid { background: #f8fafc; color: #475569; border: 1px solid #e2e8f0; }
 
   .top-nav { width: 320px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; }
   .back-btn { display: flex; align-items: center; gap: 4px; background: none; border: none; color: #64748b; font-size: 15px; font-weight: 500; cursor: pointer; padding: 8px 0; }
-  
   .sound-btn { display: flex; align-items: center; justify-content: center; background: transparent; border: 1px solid #e2e8f0; color: #64748b; width: 36px; height: 36px; border-radius: 50%; cursor: pointer; transition: 0.2s; }
   .sound-btn.active { background: #f1f5f9; color: #0f172a; border-color: #cbd5e1; }
 
@@ -92,14 +94,14 @@
   .radical { font-size: 14px; color: #475569; margin: 0 0 20px 0; background-color: #f8fafc; padding: 6px 12px; border-radius: 8px; font-weight: 500; border: 1px solid #e2e8f0; }
   .story { font-size: 15px; color: #475569; line-height: 1.6; word-break: keep-all; font-weight: 400; }
   
-  .swipe-hint { position: absolute; top: 24px; font-size: 20px; font-weight: 700; opacity: 0; transition: opacity 0.2s; pointer-events: none; padding: 8px 16px; border-radius: 8px; z-index: 10; letter-spacing: -0.5px; }
+  .swipe-hint { position: absolute; top: 24px; font-size: 20px; font-weight: 700; opacity: 0; transition: opacity 0.2s; pointer-events: none; padding: 8px 16px; border-radius: 8px; z-index: 10; }
   .hint-bad { color: #ef4444; border: 2px solid #ef4444; right: 24px; transform: rotate(10deg); }
   .hint-perfect { color: #10b981; border: 2px solid #10b981; left: 24px; transform: rotate(-10deg); }
   .hint-soso { color: #f59e0b; border: 2px solid #f59e0b; top: auto; bottom: 24px; left: 50%; transform: translateX(-50%); }
 
   .eval-buttons { display: flex; gap: 10px; opacity: 0; transform: translateY(10px); transition: all 0.4s ease; pointer-events: none; width: 320px; }
   .eval-buttons.show { opacity: 1; transform: translateY(0); pointer-events: auto; }
-  .eval-buttons button { flex: 1; padding: 16px 0; font-size: 15px; font-weight: 600; border: none; border-radius: 12px; cursor: pointer; transition: transform 0.1s; letter-spacing: -0.3px; }
+  .eval-buttons button { flex: 1; padding: 16px 0; font-size: 15px; font-weight: 600; border: none; border-radius: 12px; cursor: pointer; transition: transform 0.1s; }
   .eval-buttons button:active { transform: scale(0.96); }
   .btn-bad { background-color: #fef2f2; color: #ef4444; }
   .btn-soso { background-color: #fffbeb; color: #f59e0b; }
@@ -112,7 +114,6 @@
   .quiz-opt-btn:active { transform: scale(0.98); background-color: #f8fafc; }
   .quiz-opt-btn.correct { background-color: #eff6ff; border-color: #3b82f6; color: #3b82f6; }
   .quiz-opt-btn.wrong { background-color: #fef2f2; border-color: #ef4444; color: #ef4444; opacity: 0.8; }
-  .quiz-header-text { font-size: 15px; font-weight: 600; color: #64748b; }
 
   .empty-state { display: none; flex-direction: column; align-items: center; justify-content: center; height: 380px; width: 320px; text-align: center; margin-top: 20px; }
   .empty-state.show { display: flex; }
@@ -124,32 +125,27 @@
   .modal-overlay.show { opacity: 1; visibility: visible; }
   .modal-content { background: white; width: 280px; border-radius: 20px; padding: 32px 24px; text-align: center; transform: scale(0.9); transition: transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1); box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1); }
   .modal-overlay.show .modal-content { transform: scale(1); }
-  
-  /* 🎯 언어/과정 선택 모달 전용 클래스 */
-  .course-modal-content { width: 320px; text-align: left; padding: 24px; box-sizing: border-box; }
-  .selection-title { font-size: 13px; font-weight: 600; color: #64748b; margin-bottom: 10px; text-align: left; }
-  .grid-list { display: flex; flex-direction: column; gap: 8px; }
-  .grid-item { display: flex; justify-content: space-between; align-items: center; padding: 14px 16px; border-radius: 12px; border: 1px solid #e2e8f0; font-size: 15px; font-weight: 600; cursor: pointer; transition: 0.2s; color: #0f172a; background: white; }
-  .grid-item:not(.disabled):active { transform: scale(0.98); background: #f8fafc; }
-  .grid-item.disabled { opacity: 0.5; cursor: default; background: #f8fafc; color: #64748b; }
-  .grid-item.active { border-color: #3b82f6; color: #3b82f6; background: #eff6ff; }
-  .badge-soon { font-size: 11px; padding: 4px 8px; border-radius: 6px; background: #e2e8f0; color: #64748b; font-weight: 600; }
-
   .modal-icon { color: #3b82f6; font-size: 48px; margin-bottom: 16px; }
   .modal-title { font-size: 20px; font-weight: 700; color: #0f172a; margin: 0 0 8px 0; }
   .modal-desc { font-size: 14px; color: #64748b; margin: 0 0 24px 0; line-height: 1.5; }
-  .quiz-score-text { font-size: 32px; font-weight: 700; color: #3b82f6; margin: 16px 0; }
   
   .input-group { display: flex; justify-content: center; align-items: center; gap: 8px; margin-bottom: 24px; }
-  .input-group input { width: 80px; padding: 12px; font-size: 18px; font-weight: 600; text-align: center; border: 1px solid #cbd5e1; border-radius: 8px; outline: none; color: #0f172a; transition: border-color 0.2s; }
+  .input-group input { width: 80px; padding: 12px; font-size: 18px; font-weight: 600; text-align: center; border: 1px solid #cbd5e1; border-radius: 8px; outline: none; }
   .input-group input:focus { border-color: #3b82f6; }
-  .input-group span { font-size: 15px; color: #64748b; font-weight: 500; }
-  
   .modal-buttons { display: flex; gap: 10px; width: 100%; }
   .btn-primary { flex: 1; padding: 14px; background-color: #3b82f6; color: white; font-size: 15px; font-weight: 600; border: none; border-radius: 10px; cursor: pointer; }
   .btn-primary:active { background-color: #2563eb; }
   .btn-secondary { flex: 1; padding: 14px; background-color: #f1f5f9; color: #475569; font-size: 15px; font-weight: 600; border: none; border-radius: 10px; cursor: pointer; }
   .btn-secondary:active { background-color: #e2e8f0; }
+
+  /* 과정 모달용 */
+  .course-modal-content { width: 320px; text-align: left; padding: 24px; box-sizing: border-box; }
+  .selection-title { font-size: 13px; font-weight: 600; color: #64748b; margin-bottom: 10px; text-align: left; }
+  .grid-list { display: flex; flex-direction: column; gap: 8px; }
+  .grid-item { display: flex; justify-content: space-between; align-items: center; padding: 14px 16px; border-radius: 12px; border: 1px solid #e2e8f0; font-size: 15px; font-weight: 600; cursor: pointer; transition: 0.2s; color: #0f172a; background: white; }
+  .grid-item.active { border-color: #3b82f6; color: #3b82f6; background: #eff6ff; }
+  .grid-item.disabled { opacity: 0.5; cursor: default; background: #f8fafc; color: #64748b; }
+  .badge-soon { font-size: 11px; padding: 4px 8px; border-radius: 6px; background: #e2e8f0; color: #64748b; font-weight: 600; }
 </style>
 </head>
 <body>
@@ -181,15 +177,24 @@
     </div>
   </div>
   
-  <div class="streak-card">
-    <div class="streak-icon material-symbols-rounded">cloud_sync</div>
-    <div class="streak-text">
-      <h3>데이터 연동 활성화</h3>
-      <p id="syncStatusText">학습 기록이 안전하게 보호됩니다.</p>
+  <!-- 🎯 치이카와 테마: 유저 상태창 -->
+  <div class="user-stats-card">
+    <div class="stat-header">
+      <div class="stat-level">
+        <span class="badge" id="userLevelBadge">백수</span>
+        <span id="userLevelName">먼지</span>
+      </div>
+      <div class="stat-money">
+        <span class="material-symbols-rounded" style="font-size: 18px;">monetization_on</span>
+        <span id="userMoneyText">0</span>원
+      </div>
     </div>
+    <div class="exp-container">
+      <div class="exp-bar" id="userExpBar"></div>
+    </div>
+    <div class="exp-text" id="userExpText">EXP 0 / 100</div>
   </div>
   
-  <!-- 🎯 과정 변경 UI 적용 -->
   <div class="course-list">
     <div class="course-header">
       <h3>현재 학습 과정</h3>
@@ -247,6 +252,7 @@
     <button class="back-btn" onclick="goHome()">
       <span class="material-symbols-rounded" style="font-size: 18px;">arrow_back_ios_new</span> 뒤로가기
     </button>
+    <!-- SFX 토글 버튼 -->
     <button class="sound-btn active" id="ttsToggleBtn" onclick="toggleTTS()">
       <span class="material-symbols-rounded" style="font-size: 18px;" id="ttsIcon">volume_up</span>
     </button>
@@ -283,7 +289,7 @@
   </div>
 </div>
 
-<!-- 🎯 과정 선택 모달 -->
+<!-- 모달 모음 -->
 <div class="modal-overlay" id="courseModal">
   <div class="modal-content course-modal-content">
     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 24px;">
@@ -312,9 +318,9 @@
 
 <div class="modal-overlay" id="completionModal">
   <div class="modal-content">
-    <div class="modal-icon material-symbols-rounded">check_circle</div>
-    <h2 class="modal-title">학습 완료</h2>
-    <p class="modal-desc">오늘의 목표량을 모두 채웠습니다.<br>홈 화면으로 돌아갑니다.</p>
+    <div class="modal-icon material-symbols-rounded" style="color: #10b981;">check_circle</div>
+    <h2 class="modal-title">학습 보상 획득!</h2>
+    <p class="modal-desc" id="completionMsg">오늘의 목표량을 모두 채웠습니다.<br>경험치와 보상금을 받았습니다.</p>
     <button class="btn-primary" onclick="resetAndGoHome()">확인</button>
   </div>
 </div>
@@ -373,6 +379,50 @@
   let dailyNewLimit = 30;
   let isTTSOn = true;
 
+  // 🎵 효과음 세팅 (웹 표준 무료 사운드)
+  const sfxCorrect = new Audio('https://assets.mixkit.co/active_storage/sfx/2000/2000-preview.mp3');
+  const sfxWrong = new Audio('https://assets.mixkit.co/active_storage/sfx/2003/2003-preview.mp3');
+  const sfxSwipe = new Audio('https://assets.mixkit.co/active_storage/sfx/2042/2042-preview.mp3');
+  sfxCorrect.volume = 0.5; sfxWrong.volume = 0.5; sfxSwipe.volume = 0.3;
+
+  function playSound(type) {
+    if (!isTTSOn) return;
+    if (type === 'correct') { sfxCorrect.currentTime = 0; sfxCorrect.play().catch(()=>{}); }
+    if (type === 'wrong') { sfxWrong.currentTime = 0; sfxWrong.play().catch(()=>{}); }
+    if (type === 'swipe') { sfxSwipe.currentTime = 0; sfxSwipe.play().catch(()=>{}); }
+  }
+
+  // 🎯 치이카와 테마 레벨 시스템
+  const LEVELS = [
+    { name: "백수", maxExp: 100 },
+    { name: "알바", maxExp: 300 },
+    { name: "제초자격증 5급", maxExp: 600 },
+    { name: "제초자격증 4급", maxExp: 1000 },
+    { name: "제초자격증 3급", maxExp: 1500 },
+    { name: "제초자격증 2급", maxExp: 2100 },
+    { name: "제초자격증 1급", maxExp: 3000 }
+  ];
+
+  let userStats = {
+    levelIdx: 0,
+    exp: 0,
+    money: 0,
+    lastLoginDate: "",
+    dailyStudyDone: false,
+    dailyQuizDone: false
+  };
+
+  // 날짜 구하기 YYYY-MM-DD
+  function getTodayString() {
+    const tzOffset = new Date().getTimezoneOffset() * 60000; 
+    return new Date(Date.now() - tzOffset).toISOString().split('T')[0];
+  }
+
+  function getDaysDifference(date1, date2) {
+    const d1 = new Date(date1); const d2 = new Date(date2);
+    return Math.floor((d2 - d1) / (1000 * 60 * 60 * 24));
+  }
+
   getRedirectResult(auth).catch((error) => { console.error("로그인 에러:", error); });
 
   onAuthStateChanged(auth, (user) => {
@@ -395,9 +445,12 @@
     if (!USER_UID) return; 
     const learnedData = myHanjaData.filter(c => c.interval > 0).map(c => ({ id: c.id, interval: c.interval, nextReview: c.nextReview }));
     try {
-      await setDoc(doc(db, "vocawa_progress", USER_UID), { dailyNewLimit: dailyNewLimit, progress: learnedData });
-      document.getElementById('syncStatusText').innerText = "최근 저장 완료: 방금 전";
-    } catch(e) { document.getElementById('syncStatusText').innerText = "저장 실패 (네트워크 확인)"; }
+      await setDoc(doc(db, "vocawa_progress", USER_UID), { 
+        dailyNewLimit: dailyNewLimit, 
+        progress: learnedData,
+        stats: userStats // 유저 스탯 동기화
+      });
+    } catch(e) { console.error("저장 실패", e); }
   }
 
   async function loadData() {
@@ -412,14 +465,81 @@
         const data = docSnap.data();
         cloudProgress = data.progress || [];
         if (data.dailyNewLimit) dailyNewLimit = data.dailyNewLimit;
+        if (data.stats) userStats = data.stats;
       }
+      
       myHanjaData = fetchedData.map(card => {
         const savedCard = cloudProgress.find(c => c.id === card.id);
         if (savedCard) return { ...card, interval: savedCard.interval, nextReview: savedCard.nextReview };
         return { ...card, interval: 0, nextReview: 0 };
       });
+
+      checkDailyLogin(); // 🎯 출석체크 및 페널티 계산
       updateHomeStatus();
-    } catch (error) { document.getElementById('courseStatus').innerText = "데이터 연결 실패"; }
+      updateUserStatsUI();
+    } catch (error) { console.error("데이터 로드 에러:", error); }
+  }
+
+  // 🎯 출석체크 및 결석 페널티 로직
+  function checkDailyLogin() {
+    const today = getTodayString();
+    
+    if (userStats.lastLoginDate !== today) {
+      if (userStats.lastLoginDate !== "") {
+        const missedDays = getDaysDifference(userStats.lastLoginDate, today) - 1;
+        // 하루 이상 결석 시 페널티 (해당 레벨 총 경험치의 10% 감소)
+        if (missedDays > 0) {
+          const currentMaxExp = LEVELS[userStats.levelIdx].maxExp;
+          const penalty = Math.floor(currentMaxExp * 0.1) * missedDays;
+          userStats.exp -= penalty;
+          
+          // 강등 로직
+          while (userStats.exp < 0 && userStats.levelIdx > 0) {
+            userStats.levelIdx--;
+            userStats.exp += LEVELS[userStats.levelIdx].maxExp; // 이전 레벨통으로 이동
+          }
+          if (userStats.exp < 0) userStats.exp = 0; // 백수 레벨 밑으로는 안 떨어짐
+          alert(`${missedDays}일 결석하여 경험치가 ${penalty} 깎였습니다... 😢`);
+        }
+      }
+      
+      // 출석 보상 50원 지급
+      userStats.money += 50;
+      userStats.dailyStudyDone = false;
+      userStats.dailyQuizDone = false;
+      userStats.lastLoginDate = today;
+      syncToCloud();
+    }
+  }
+
+  // 🎯 경험치 및 레벨업 계산
+  function addExp(amount) {
+    userStats.exp += amount;
+    
+    let currentLevel = LEVELS[userStats.levelIdx];
+    while (userStats.exp >= currentLevel.maxExp && userStats.levelIdx < LEVELS.length - 1) {
+      userStats.exp -= currentLevel.maxExp;
+      userStats.levelIdx++;
+      currentLevel = LEVELS[userStats.levelIdx];
+      alert(`🎉 레벨업! [${currentLevel.name}] 달성!`);
+    }
+    // 만렙 처리
+    if (userStats.levelIdx === LEVELS.length - 1 && userStats.exp >= currentLevel.maxExp) {
+      userStats.exp = currentLevel.maxExp;
+    }
+    updateUserStatsUI();
+    syncToCloud();
+  }
+
+  function updateUserStatsUI() {
+    const lvl = LEVELS[userStats.levelIdx];
+    document.getElementById('userLevelBadge').innerText = "LV." + (userStats.levelIdx + 1);
+    document.getElementById('userLevelName').innerText = lvl.name;
+    document.getElementById('userMoneyText').innerText = userStats.money;
+    
+    const expPercent = (userStats.exp / lvl.maxExp) * 100;
+    document.getElementById('userExpBar').style.width = `${expPercent}%`;
+    document.getElementById('userExpText').innerText = `EXP ${userStats.exp} / ${lvl.maxExp}`;
   }
 
   function getTodayStudyCards() {
@@ -451,13 +571,9 @@
     document.getElementById('homeScreen').classList.add('active');
   }
 
-  // 🎯 과정 선택 모달 로직
   function openCourseModal() { document.getElementById('courseModal').classList.add('show'); }
   function closeCourseModal() { document.getElementById('courseModal').classList.remove('show'); }
-  function confirmCourse() {
-    // 향후 다른 데이터셋(영어, 중국어 등) 연결 시 로직이 추가될 부분입니다.
-    closeCourseModal();
-  }
+  function confirmCourse() { closeCourseModal(); }
 
   function toggleTTS() {
     isTTSOn = !isTTSOn;
@@ -526,9 +642,16 @@
     const ONE_DAY = 24 * 60 * 60 * 1000; 
     const now = new Date().getTime();
 
-    if (result === '모름') { todayCards.splice(currentIndex + 2, 0, currentCard); } 
-    else if (result === '헷갈림') { todayCards.push(currentCard); } 
+    if (result === '모름') { 
+      playSound('swipe');
+      todayCards.splice(currentIndex + 2, 0, currentCard); 
+    } 
+    else if (result === '헷갈림') { 
+      playSound('swipe');
+      todayCards.push(currentCard); 
+    } 
     else if (result === '완벽함') {
+      playSound('correct');
       originalCard.interval = originalCard.interval === 0 ? 1 : originalCard.interval * 2;
       originalCard.nextReview = now + (originalCard.interval * ONE_DAY);
       completedCount++; 
@@ -542,7 +665,18 @@
     document.getElementById('evalButtons').classList.remove('show');
     
     if (currentIndex >= todayCards.length) { 
-      setTimeout(() => { document.getElementById('completionModal').classList.add('show'); }, 300); 
+      setTimeout(() => { 
+        // 🎯 오늘의 학습 완료 보상 로직
+        if (!userStats.dailyStudyDone && sessionTotal > 0) {
+          userStats.dailyStudyDone = true;
+          userStats.money += 100;
+          addExp(sessionTotal); // 단어 개수만큼 경험치 획득
+          document.getElementById('completionMsg').innerHTML = `학습 완료!<br>경험치 +${sessionTotal}, 재화 +100원`;
+        } else {
+          document.getElementById('completionMsg').innerHTML = `오늘의 목표량을 모두 채웠습니다.<br>홈 화면으로 돌아갑니다.`;
+        }
+        document.getElementById('completionModal').classList.add('show'); 
+      }, 300); 
     } 
     else { 
       setTimeout(() => { renderCard(currentIndex); }, 150); 
@@ -589,14 +723,10 @@
     cardElement.classList.remove('dragging');
     
     const threshold = 100;
-    
-    if (currentX > threshold) {
-      processEvaluation('완벽함');
-    } else if (currentX < -threshold) {
-      processEvaluation('모름');
-    } else if (currentY < -threshold && Math.abs(currentX) < 80) {
-      processEvaluation('헷갈림');
-    } else {
+    if (currentX > threshold) { processEvaluation('완벽함'); } 
+    else if (currentX < -threshold) { processEvaluation('모름'); } 
+    else if (currentY < -threshold && Math.abs(currentX) < 80) { processEvaluation('헷갈림'); } 
+    else {
       cardElement.style.transform = 'rotateY(180deg)';
       document.getElementById('hintBad').style.opacity = '0';
       document.getElementById('hintPerfect').style.opacity = '0';
@@ -657,14 +787,33 @@
   function checkQuizAnswer(btn, isCorrect, correctMeaning) {
     if (isAnswering) return; isAnswering = true;
     const allBtns = document.querySelectorAll('.quiz-opt-btn');
-    if (isCorrect) { btn.classList.add('correct'); quizScore++; } else { btn.classList.add('wrong'); allBtns.forEach(b => { if (b.innerText === correctMeaning) b.classList.add('correct'); }); }
+    if (isCorrect) { 
+      playSound('correct');
+      btn.classList.add('correct'); quizScore++; 
+    } else { 
+      playSound('wrong');
+      btn.classList.add('wrong'); 
+      allBtns.forEach(b => { if (b.innerText === correctMeaning) b.classList.add('correct'); }); 
+    }
     setTimeout(() => { currentQuizIdx++; renderQuizQuestion(); }, 1200);
   }
   function finishQuiz() {
     document.getElementById('finalQuizScore').innerText = `${quizScore} / ${quizQuestions.length}`;
     let msg = ''; const ratio = quizScore / quizQuestions.length;
-    if (ratio === 1) msg = "완벽합니다. 오답이 없습니다."; else if (ratio >= 0.7) msg = "훌륭합니다. 학습 내용을 잘 기억하고 있습니다."; else msg = "복습이 필요합니다. 단어장을 확인해 보세요.";
-    document.getElementById('quizResultMsg').innerText = msg; document.getElementById('quizResultModal').classList.add('show');
+    if (ratio === 1) msg = "완벽합니다. 오답이 없습니다."; 
+    else if (ratio >= 0.7) msg = "훌륭합니다. 학습 내용을 잘 기억하고 있습니다."; 
+    else msg = "복습이 필요합니다. 단어장을 확인해 보세요.";
+    
+    // 🎯 일일 모의고사 보상 로직
+    if (!userStats.dailyQuizDone) {
+      userStats.dailyQuizDone = true;
+      userStats.money += 50;
+      addExp(20);
+      msg += "<br><br><strong>보상 획득: EXP +20, 재화 +50원</strong>";
+    }
+
+    document.getElementById('quizResultMsg').innerHTML = msg; 
+    document.getElementById('quizResultModal').classList.add('show');
   }
   function closeQuizResult() { document.getElementById('quizResultModal').classList.remove('show'); closeScreen('quizScreen'); }
 
@@ -672,10 +821,7 @@
   window.startLearning = startLearning; window.openSettings = openSettings; window.closeSettings = closeSettings; window.saveSettings = saveSettings;
   window.openVocab = openVocab; window.closeScreen = closeScreen; window.startQuiz = startQuiz; window.goHome = goHome;
   window.flipCard = flipCard; window.processEvaluation = processEvaluation; window.resetAndGoHome = resetAndGoHome; window.closeQuizResult = closeQuizResult;
-  window.toggleTTS = toggleTTS;
-  
-  // 🎯 새로 추가된 과정 변경 모달용 함수 연결
-  window.openCourseModal = openCourseModal; window.closeCourseModal = closeCourseModal; window.confirmCourse = confirmCourse;
+  window.toggleTTS = toggleTTS; window.openCourseModal = openCourseModal; window.closeCourseModal = closeCourseModal; window.confirmCourse = confirmCourse;
 
   if ('serviceWorker' in navigator) { window.addEventListener('load', () => { navigator.serviceWorker.register('./sw.js').catch(err => console.log('SW 등록 실패', err)); }); }
 </script>
