@@ -96,6 +96,17 @@
     filter: drop-shadow(0 8px 12px rgba(0,0,0,0.3)); 
   }
 
+  /* 🎯 아이템(가구/펫) 위치 스타일 */
+  .room-item { 
+    position: absolute; 
+    z-index: 2; 
+    filter: drop-shadow(0 6px 8px rgba(0,0,0,0.25)); 
+  }
+  
+  .room-beetle { bottom: 20px; left: 65%; width: 35px; height: auto; object-fit: contain; } 
+  .room-guitar { bottom: 35px; left: 15%; width: 45px; height: auto; object-fit: contain; transform: rotate(-10deg); } 
+  .room-tv { bottom: 30px; right: 15%; width: 60px; height: auto; object-fit: contain; } 
+
   /* 🎯 상단 반투명 가로 정보바 */
   .room-info-top-bar {
     position: absolute;
@@ -313,6 +324,11 @@
 
       <!-- 중앙 캐릭터 -->
       <img id="userAvatarImg" class="room-character" src="./image/chiikawa.png" alt="character" onerror="this.src='./image/app_logo.png'">
+      
+      <!-- 장착 아이템 (가구 & 펫) 레이어 -->
+      <img id="itemBeetle" class="room-item room-beetle" src="./image/beetle.png" alt="beetle" style="display: none;">
+      <img id="itemGuitar" class="room-item room-guitar" src="./image/guitar.png" alt="guitar" style="display: none;">
+      <img id="itemTv" class="room-item room-tv" src="./image/tv.png" alt="tv" style="display: none;">
     </div>
   </div>
   
@@ -349,6 +365,7 @@
   <div class="responsive-width shop-tabs">
     <div class="shop-tab active" id="tabChar" onclick="changeShopTab('char')">캐릭터</div>
     <div class="shop-tab" id="tabEquip" onclick="changeShopTab('equip')">장비/의상</div>
+    <div class="shop-tab" id="tabHouse" onclick="changeShopTab('house')">집/배경</div>
   </div>
   <div class="responsive-width shop-list" id="shopListContainer"></div>
 </div>
@@ -533,17 +550,19 @@
 
   const SHOP_DB = {
     char: [
-      { id: 'c_chiikawa', name: '치이카와', price: 0, desc: '다정하고 눈물이 많은 기본 캐릭터' },
-      { id: 'c_hachiware', name: '하치와레', price: 1000, desc: '긍정적이고 말할 줄 아는 고양이' },
-      { id: 'c_usagi', name: '우사기', price: 1500, desc: '우라라라! 자유분방한 천재 토끼' },
-      { id: 'c_momonga', name: '모몽가', price: 2000, desc: '귀여움 받는 것을 제일 좋아하는 관종' }
+      { id: 'c_chiikawa', name: '치이카와', price: 2000, desc: '다정하고 눈물이 많은 기본 캐릭터' },
+      { id: 'c_hachiware', name: '하치와레', price: 2000, desc: '긍정적이고 말할 줄 아는 고양이' },
+      { id: 'c_usagi', name: '우사기', price: 2000, desc: '우라라라! 자유분방한 천재 토끼' },
+      { id: 'c_momonga', name: '모몽가', price: 2000, desc: '귀여움 받는 것을 제일 좋아하는 관종' },
+      { id: 'c_pajama_ parties', name: '파자마 파티즈', price: 2000, desc: '파자마를 입고 노래하고 춤추는 친구들' },
+      { id: 'c_rakko', name: '랏코', price: 2000, desc: '달콤한 것을 좋아하는 동경의 대상, 토벌 랭커!' }
     ],
     equip: [
       { id: 'e_none', name: '맨몸', price: 0, desc: '기본 상태입니다.' },
-      { id: 'e_sasumata', name: '파란색 사스마타', price: 500, desc: '초보 토벌자를 위한 기본 무기' },
-      { id: 'e_pajama', name: '분홍 파자마', price: 800, desc: '포근하고 귀여운 수면 잠옷' },
-      { id: 'e_stick', name: '토벌 랭커의 봉', price: 1200, desc: '고수들만 들 수 있는 전설의 무기' },
-      { id: 'e_beetle', name: '풍뎅이', price: 1500, desc: '작고 소중한 친구. 함께 싸워줍니다.' }
+      { id: 'e_pajama', name: '파자마', price: 2000, desc: '포근하고 귀여운 수면 잠옷 (캐릭터 의상 변경)' },
+      { id: 'e_guitar', name: '기타', price: 1000, desc: '방 한켠에 세워둘 수 있는 어쿠스틱 기타' },
+      { id: 'e_tv', name: '티비', price: 1000, desc: '치이카와 세계의 귀여운 뚱뚱이 브라운관 티비' },
+      { id: 'e_beetle', name: '풍뎅이', price: 5000, desc: '항상 캐릭터 곁을 따라다니는 작고 소중한 친구' }
     ],
     house: [
       { id: 'h_cave', name: '아늑한 동굴', price: 0, desc: '바람을 피할 수 있는 시원한 기본 동굴' },
@@ -717,9 +736,27 @@
     document.getElementById('userExpBar').style.width = `${expPercent}%`;
     document.getElementById('userExpText').innerText = `EXP ${userStats.exp} / ${lvl.maxExp}`;
     
-    // 캐릭터 및 배경 이미지 적용 (이름에서 c_, h_ 제거 후 이미지 매칭)
+    // 캐릭터 및 파자마/가구 장착 처리
     if (charObj) { 
-      document.getElementById('userAvatarImg').src = `./image/${userStats.character.replace('c_', '')}.png`; 
+      let charImgName = userStats.character.replace('c_', '');
+      
+      // 모든 아이템 레이어 우선 숨기기
+      document.getElementById('itemBeetle').style.display = 'none';
+      document.getElementById('itemGuitar').style.display = 'none';
+      document.getElementById('itemTv').style.display = 'none';
+
+      // 장착한 아이템에 따라 이미지 교체 또는 레이어 표시
+      if (userStats.equipment === 'e_pajama') {
+        charImgName += '_paj'; // 파자마 장착 시 _paj 파일 불러오기
+      } else if (userStats.equipment === 'e_beetle') {
+        document.getElementById('itemBeetle').style.display = 'block'; // 풍뎅이 띄우기
+      } else if (userStats.equipment === 'e_guitar') {
+        document.getElementById('itemGuitar').style.display = 'block'; // 기타 띄우기
+      } else if (userStats.equipment === 'e_tv') {
+        document.getElementById('itemTv').style.display = 'block'; // 티비 띄우기
+      }
+      
+      document.getElementById('userAvatarImg').src = `./image/${charImgName}.png`; 
     }
     
     // 집(배경) 로드 로직
@@ -730,9 +767,16 @@
   let currentShopTab = 'char';
   function changeShopTab(tab) {
     currentShopTab = tab;
+    // 모든 탭의 색상(active) 초기화
     document.getElementById('tabChar').classList.remove('active');
     document.getElementById('tabEquip').classList.remove('active');
-    document.getElementById(tab === 'char' ? 'tabChar' : 'tabEquip').classList.add('active');
+    document.getElementById('tabHouse').classList.remove('active');
+    
+    // 선택된 탭만 색상 켜기
+    if (tab === 'char') document.getElementById('tabChar').classList.add('active');
+    else if (tab === 'equip') document.getElementById('tabEquip').classList.add('active');
+    else if (tab === 'house') document.getElementById('tabHouse').classList.add('active');
+    
     renderShopList();
   }
   
@@ -741,7 +785,8 @@
     const container = document.getElementById('shopListContainer');
     container.innerHTML = listData.map(item => {
       const isOwned = userStats.ownedItems.includes(item.id);
-      const isEquipped = userStats.character === item.id || userStats.equipment === item.id;
+      // '집' 카테고리의 장착 여부 검사 추가
+      const isEquipped = userStats.character === item.id || userStats.equipment === item.id || userStats.house === item.id;
       let btnHtml = '';
       if (isEquipped) {
         btnHtml = `<button class="shop-buy-btn btn-equipped"><span class="material-symbols-rounded" style="font-size:16px;">check</span> 장착 중</button>`;
@@ -768,12 +813,16 @@
     const itemObj = SHOP_DB[type].find(i => i.id === itemId);
     if (!itemObj) return;
     if (userStats.ownedItems.includes(itemId)) {
-      if (type === 'char') userStats.character = itemId; else userStats.equipment = itemId;
+      if (type === 'char') userStats.character = itemId; 
+      else if (type === 'equip') userStats.equipment = itemId;
+      else if (type === 'house') userStats.house = itemId; // 집 장착 로직
     } else {
       if (userStats.money >= itemObj.price) {
         userStats.money -= itemObj.price;
         userStats.ownedItems.push(itemId);
-        if (type === 'char') userStats.character = itemId; else userStats.equipment = itemId;
+        if (type === 'char') userStats.character = itemId; 
+        else if (type === 'equip') userStats.equipment = itemId;
+        else if (type === 'house') userStats.house = itemId; // 집 구매+장착 로직
       } else { alert("재화가 부족합니다."); return; }
     }
     syncToCloud(); updateUserStatsUI();
