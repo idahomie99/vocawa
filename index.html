@@ -33,13 +33,13 @@
   .settings-btn { background: none; border: none; color: #64748b; cursor: pointer; padding: 6px; border-radius: 50%; display: flex; transition: background 0.2s, color 0.2s; }
   .settings-btn:active { background: #f1f5f9; color: #0f172a; }
 
-  /* 🎯 치이카와 유저 상태창 UI (이미지 영역 확보) */
+  /* 🎯 치이카와 유저 상태창 UI */
   .user-stats-card { background-color: white; border-radius: 20px; padding: 20px; box-sizing: border-box; display: flex; flex-direction: column; gap: 12px; box-shadow: 0 4px 24px rgba(0, 0, 0, 0.04); border: 1px solid #e2e8f0; margin-bottom: 20px; position: relative; overflow: hidden; }
-  .stat-header { display: flex; justify-content: space-between; align-items: center; }
-  .stat-info-wrap { display: flex; flex-direction: column; gap: 8px; }
+  .stat-header { display: flex; justify-content: flex-start; align-items: center; gap: 20px; }
+  .stat-info-wrap { display: flex; flex-direction: column; gap: 8px; justify-content: center; }
   
-  /* 캐릭터 프로필 이미지 플레이스홀더 */
-  .user-avatar-img { width: 72px; height: 72px; background: #f1f5f9; border-radius: 16px; border: 2px dashed #cbd5e1; display: flex; align-items: center; justify-content: center; color: #94a3b8; font-size: 13px; font-weight: 600; flex-shrink: 0; margin-left: 12px; }
+  /* 캐릭터 프로필 이미지 플레이스홀더 (좌측 배치, 사이즈 확대) */
+  .user-avatar-img { width: 96px; height: 96px; background: #f1f5f9; border-radius: 20px; border: 2px dashed #cbd5e1; display: flex; align-items: center; justify-content: center; color: #94a3b8; font-size: 14px; font-weight: 600; flex-shrink: 0; }
 
   .stat-level { font-size: 18px; font-weight: 800; color: #0f172a; display: flex; align-items: center; gap: 8px; }
   .stat-level .badge { background: #3b82f6; color: white; padding: 4px 8px; border-radius: 8px; font-size: 12px; font-weight: 700; }
@@ -194,6 +194,9 @@
   <!-- 🎯 치이카와 테마 상태창 -->
   <div class="responsive-width user-stats-card">
     <div class="stat-header">
+      <!-- 🎯 프로필 이미지 공간 (좌측으로 이동 및 크기 확대) -->
+      <div class="user-avatar-img" id="userAvatarImg">이미지<br>(96x96)</div>
+      
       <div class="stat-info-wrap">
         <div class="stat-level">
           <span class="badge" id="userLevelBadge">백수</span>
@@ -208,8 +211,6 @@
           <span id="userEquipName">맨몸</span> 장착 중
         </div>
       </div>
-      <!-- 🎯 프로필 이미지 공간 -->
-      <div class="user-avatar-img" id="userAvatarImg">이미지</div>
     </div>
     
     <div class="exp-container">
@@ -608,7 +609,7 @@
       }
       return `
         <div class="shop-item">
-          <div class="shop-item-img">이미지</div>
+          <div class="shop-item-img">이미지<br>(64x64)</div>
           <div class="shop-item-content">
             <div class="shop-item-info">
               <h4>${item.name}</h4>
