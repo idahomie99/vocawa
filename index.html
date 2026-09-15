@@ -347,18 +347,18 @@
   </div>
 </div>
 
-<!-- 🔥 스크립트 메인 로직 (오류 방지를 위해 전역 변수 할당을 최상단 배치) -->
 <script type="module">
-  // 1️⃣ 가장 먼저 모든 전역 함수(클릭 이벤트)를 윈도우 객체에 바인딩합니다.
+  // 1️⃣ 함수 바인딩
   window.handleGoogleLogin = handleGoogleLogin; window.handleLogout = handleLogout;
   window.startLearning = startLearning; window.openSettings = openSettings; window.closeSettings = closeSettings; window.saveSettings = saveSettings;
   window.openVocab = openVocab; window.closeScreen = closeScreen; window.startQuiz = startQuiz; window.goHome = goHome;
   window.flipCard = flipCard; window.processEvaluation = processEvaluation; window.resetAndGoHome = resetAndGoHome; window.closeQuizResult = closeQuizResult;
-  window.toggleTTS = toggleTTS; window.openShop = openShop; window.changeShopTab = changeShopTab; window.buyOrEquipItem = buyOrEquipItem;
+  window.toggleTTS = toggleTTS; window.openShop = openShop; window.changeShopTab = changeShopTab; window.buyOrEquipItem = buyOrEquipItem; window.openCourseModal = openCourseModal; window.closeCourseModal = closeCourseModal; window.confirmCourse = confirmCourse;
 
   import { initializeApp } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-app.js";
   import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-firestore.js";
-  import { getAuth, GoogleAuthProvider, signInWithRedirect, getRedirectResult, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-auth.js";
+  // 💡 Redirect 대신 signInWithPopup을 가져옵니다.
+  import { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-auth.js";
 
   const firebaseConfig = {
     apiKey: "AIzaSyAbNztAhkuZmhG64M1MxG42Rer4aIg1Z5M",
@@ -386,7 +386,6 @@
   let dailyNewLimit = 30;
   let isTTSOn = true;
 
-  // 🎵 효과음 세팅
   const sfxCorrect = new Audio('https://assets.mixkit.co/active_storage/sfx/2000/2000-preview.mp3');
   const sfxWrong = new Audio('https://assets.mixkit.co/active_storage/sfx/2003/2003-preview.mp3');
   const sfxSwipe = new Audio('https://assets.mixkit.co/active_storage/sfx/2042/2042-preview.mp3');
@@ -399,7 +398,6 @@
     if (type === 'swipe') { sfxSwipe.currentTime = 0; sfxSwipe.play().catch(()=>{}); }
   }
 
-  // 🎯 치이카와 테마 레벨 및 상점 DB
   const LEVELS = [
     { name: "백수", maxExp: 100 }, { name: "알바", maxExp: 300 }, { name: "제초자격증 5급", maxExp: 600 },
     { name: "제초자격증 4급", maxExp: 1000 }, { name: "제초자격증 3급", maxExp: 1500 }, { name: "제초자격증 2급", maxExp: 2100 }, { name: "제초자격증 1급", maxExp: 3000 }
@@ -433,9 +431,6 @@
     return Math.floor((new Date(date2) - new Date(date1)) / (1000 * 60 * 60 * 24));
   }
 
-  // 🔐 구글 로그인 오류 방지 블록
-  try { getRedirectResult(auth).catch(()=>{}); } catch(e){}
-
   onAuthStateChanged(auth, (user) => {
     if (user) {
       USER_UID = user.uid;
@@ -449,16 +444,21 @@
     }
   });
 
+  // 💡 Popup 방식으로 로그인 함수 변경
   async function handleGoogleLogin() { 
     try {
       const btn = document.getElementById('googleLoginBtn');
-      btn.innerHTML = `<span class="material-symbols-rounded">hourglass_empty</span> 연결 중...`;
-      await signInWithRedirect(auth, provider); 
+      btn.innerHTML = `<span class="material-symbols-rounded">hourglass_empty</span> 팝업창에서 로그인 중...`;
+      
+      await signInWithPopup(auth, provider); 
+      // 로그인이 성공하면 onAuthStateChanged가 알아서 화면을 넘겨줍니다.
+
     } catch (e) {
-      document.getElementById('authErrorMsg').innerText = "연결할 수 없습니다. 잠시 후 시도해주세요.";
+      document.getElementById('authErrorMsg').innerText = "팝업이 차단되었거나 로그인이 취소되었습니다.";
       document.getElementById('googleLoginBtn').innerHTML = `<img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google" style="width: 20px; height: 20px;"> Google 계정으로 로그인`;
     }
   }
+
   async function handleLogout() { await signOut(auth); }
 
   async function syncToCloud() {
@@ -513,7 +513,7 @@
           alert(`${missedDays}일 결석 페널티\n경험치가 ${penalty} 감소했습니다.`);
         }
       }
-      userStats.money += 50; // 출석 50원
+      userStats.money += 50;
       userStats.dailyStudyDone = false;
       userStats.dailyQuizDone = false;
       userStats.lastLoginDate = today;
@@ -540,20 +540,16 @@
   function updateUserStatsUI() {
     const lvl = LEVELS[userStats.levelIdx];
     document.getElementById('userLevelBadge').innerText = lvl.name;
-    
-    // 캐릭터 & 장비명 매핑
     const charObj = SHOP_DB.char.find(c => c.id === userStats.character);
     const eqObj = SHOP_DB.equip.find(e => e.id === userStats.equipment);
     document.getElementById('userLevelName').innerText = charObj ? charObj.name : '치이카와';
     document.getElementById('userEquipName').innerText = eqObj ? eqObj.name : '맨몸';
-    
     document.getElementById('userMoneyText').innerText = userStats.money;
     const expPercent = (userStats.exp / lvl.maxExp) * 100;
     document.getElementById('userExpBar').style.width = `${expPercent}%`;
     document.getElementById('userExpText').innerText = `EXP ${userStats.exp} / ${lvl.maxExp}`;
   }
 
-  // 🎯 치장 상점 로직
   let currentShopTab = 'char';
   function openShop() {
     document.getElementById('homeScreen').classList.remove('active');
@@ -571,11 +567,9 @@
   function renderShopList() {
     const listData = SHOP_DB[currentShopTab];
     const container = document.getElementById('shopListContainer');
-    
     container.innerHTML = listData.map(item => {
       const isOwned = userStats.ownedItems.includes(item.id);
       const isEquipped = userStats.character === item.id || userStats.equipment === item.id;
-      
       let btnHtml = '';
       if (isEquipped) {
         btnHtml = `<button class="shop-buy-btn btn-equipped"><span class="material-symbols-rounded" style="font-size:16px;">check</span> 장착 중</button>`;
@@ -584,47 +578,26 @@
       } else {
         btnHtml = `<button class="shop-buy-btn btn-buy" onclick="buyOrEquipItem('${item.id}', '${currentShopTab}')">${item.price}원 구매</button>`;
       }
-
-      return `
-        <div class="shop-item">
-          <div class="shop-item-info">
-            <h4>${item.name}</h4>
-            <p>${item.desc}</p>
-          </div>
-          ${btnHtml}
-        </div>
-      `;
+      return `<div class="shop-item"><div class="shop-item-info"><h4>${item.name}</h4><p>${item.desc}</p></div>${btnHtml}</div>`;
     }).join('');
   }
 
   function buyOrEquipItem(itemId, type) {
     const itemObj = SHOP_DB[type].find(i => i.id === itemId);
     if (!itemObj) return;
-
     if (userStats.ownedItems.includes(itemId)) {
-      // 장착하기
-      if (type === 'char') userStats.character = itemId;
-      else userStats.equipment = itemId;
+      if (type === 'char') userStats.character = itemId; else userStats.equipment = itemId;
     } else {
-      // 구매하기
       if (userStats.money >= itemObj.price) {
         userStats.money -= itemObj.price;
         userStats.ownedItems.push(itemId);
-        if (type === 'char') userStats.character = itemId;
-        else userStats.equipment = itemId;
-      } else {
-        alert("재화가 부족합니다.");
-        return;
-      }
+        if (type === 'char') userStats.character = itemId; else userStats.equipment = itemId;
+      } else { alert("재화가 부족합니다."); return; }
     }
-    
-    syncToCloud();
-    updateUserStatsUI();
-    document.getElementById('shopMoneyText').innerText = userStats.money;
-    renderShopList(); // 렌더링 갱신
+    syncToCloud(); updateUserStatsUI();
+    document.getElementById('shopMoneyText').innerText = userStats.money; renderShopList();
   }
 
-  // 기존 학습 관련 로직
   function getTodayStudyCards() {
     const now = new Date().getTime();
     const reviewCards = myHanjaData.filter(card => card.interval > 0 && card.nextReview <= now);
@@ -632,6 +605,7 @@
     const dailyNewCards = newCards.slice(0, dailyNewLimit);
     return [...reviewCards, ...dailyNewCards];
   }
+
   function updateHomeStatus() {
     const pendingCards = getTodayStudyCards();
     const newCount = myHanjaData.filter(c => c.interval === 0).length > 0 ? Math.min(myHanjaData.filter(c => c.interval === 0).length, dailyNewLimit) : 0;
@@ -649,6 +623,10 @@
     document.getElementById(screenId).classList.remove('active');
     document.getElementById('homeScreen').classList.add('active');
   }
+
+  function openCourseModal() { document.getElementById('courseModal').classList.add('show'); }
+  function closeCourseModal() { document.getElementById('courseModal').classList.remove('show'); }
+  function confirmCourse() { closeCourseModal(); }
 
   function toggleTTS() {
     isTTSOn = !isTTSOn;
@@ -678,25 +656,21 @@
       document.getElementById('cardContainer').style.display = 'none';
       document.getElementById('emptyState').classList.add('show');
     }
-    resetCardStyle();
-    document.getElementById('evalButtons').classList.remove('show');
+    resetCardStyle(); document.getElementById('evalButtons').classList.remove('show');
   }
 
   function renderCard(index) {
     if (index >= todayCards.length) return;
     const data = todayCards[index];
-    document.getElementById('cardHanja').innerText = data.hanja;
-    document.getElementById('cardMiniHanja').innerText = data.hanja; 
-    document.getElementById('cardMeaning').innerText = data.meaning;
-    document.getElementById('cardRadical').innerText = data.radical;
+    document.getElementById('cardHanja').innerText = data.hanja; document.getElementById('cardMiniHanja').innerText = data.hanja; 
+    document.getElementById('cardMeaning').innerText = data.meaning; document.getElementById('cardRadical').innerText = data.radical;
     document.getElementById('cardStory').innerText = data.story;
   }
 
   function flipCard() {
     const card = document.getElementById('flashcard');
     if (!card.classList.contains('flipped')) { 
-      card.classList.add('flipped'); 
-      document.getElementById('evalButtons').classList.add('show'); 
+      card.classList.add('flipped'); document.getElementById('evalButtons').classList.add('show'); 
       playSpeech(todayCards[currentIndex].meaning); 
     }
   }
@@ -704,8 +678,7 @@
   function processEvaluation(result) {
     let currentCard = todayCards[currentIndex];
     let originalCard = myHanjaData.find(c => c.id === currentCard.id);
-    const ONE_DAY = 24 * 60 * 60 * 1000; 
-    const now = new Date().getTime();
+    const ONE_DAY = 24 * 60 * 60 * 1000; const now = new Date().getTime();
 
     if (result === '모름') { playSound('swipe'); todayCards.splice(currentIndex + 2, 0, currentCard); } 
     else if (result === '헷갈림') { playSound('swipe'); todayCards.push(currentCard); } 
@@ -716,16 +689,12 @@
       completedCount++; 
     }
     
-    syncToCloud(); updateProgress(); currentIndex++;
-    resetCardStyle();
-    document.getElementById('evalButtons').classList.remove('show');
+    syncToCloud(); updateProgress(); currentIndex++; resetCardStyle(); document.getElementById('evalButtons').classList.remove('show');
     
     if (currentIndex >= todayCards.length) { 
       setTimeout(() => { 
         if (!userStats.dailyStudyDone && sessionTotal > 0) {
-          userStats.dailyStudyDone = true;
-          userStats.money += 100;
-          addExp(sessionTotal);
+          userStats.dailyStudyDone = true; userStats.money += 100; addExp(sessionTotal);
           document.getElementById('completionMsg').innerHTML = `목표량을 모두 채웠습니다.<br><strong>EXP +${sessionTotal} / 재화 +100원</strong>`;
         } else {
           document.getElementById('completionMsg').innerHTML = `오늘의 목표량을 모두 채웠습니다.<br>홈 화면으로 돌아갑니다.`;
@@ -739,14 +708,11 @@
   function resetCardStyle() {
     const card = document.getElementById('flashcard');
     card.classList.remove('flipped', 'dragging'); card.style.transform = ''; 
-    document.getElementById('hintBad').style.opacity = '0';
-    document.getElementById('hintPerfect').style.opacity = '0';
-    document.getElementById('hintSoso').style.opacity = '0';
+    document.getElementById('hintBad').style.opacity = '0'; document.getElementById('hintPerfect').style.opacity = '0'; document.getElementById('hintSoso').style.opacity = '0';
   }
 
   const cardElement = document.getElementById('flashcard');
   let startX = 0, startY = 0, currentX = 0, currentY = 0, isDragging = false;
-
   cardElement.addEventListener('touchstart', (e) => {
     if (!cardElement.classList.contains('flipped')) return;
     startX = e.touches[0].clientX; startY = e.touches[0].clientY;
@@ -770,9 +736,7 @@
     else if (currentY < -threshold && Math.abs(currentX) < 80) { processEvaluation('헷갈림'); } 
     else {
       cardElement.style.transform = 'rotateY(180deg)';
-      document.getElementById('hintBad').style.opacity = '0';
-      document.getElementById('hintPerfect').style.opacity = '0';
-      document.getElementById('hintSoso').style.opacity = '0';
+      document.getElementById('hintBad').style.opacity = '0'; document.getElementById('hintPerfect').style.opacity = '0'; document.getElementById('hintSoso').style.opacity = '0';
     }
     currentX = 0; currentY = 0;
   });
@@ -842,9 +806,7 @@
     else msg = "복습이 필요합니다. 단어장을 확인하세요.";
     
     if (!userStats.dailyQuizDone) {
-      userStats.dailyQuizDone = true;
-      userStats.money += 50;
-      addExp(20);
+      userStats.dailyQuizDone = true; userStats.money += 50; addExp(20);
       msg += "<br><br><strong>일일 1회 보상: EXP +20 / 재화 +50원</strong>";
     }
     document.getElementById('quizResultMsg').innerHTML = msg; document.getElementById('quizResultModal').classList.add('show');
