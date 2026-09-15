@@ -18,99 +18,92 @@
 
 <style>
   body { display: flex; justify-content: center; align-items: center; height: 100vh; background-color: #f8fafc; margin: 0; font-family: Pretendard, -apple-system, sans-serif; user-select: none; -webkit-tap-highlight-color: transparent; overflow: hidden; overscroll-behavior-y: contain; color: #1e293b; }
-  .screen { position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; opacity: 0; visibility: hidden; transition: opacity 0.4s ease, transform 0.4s ease; box-sizing: border-box; }
+  .screen { position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; opacity: 0; visibility: hidden; transition: opacity 0.3s ease, transform 0.3s ease; box-sizing: border-box; }
   .screen.active { opacity: 1; visibility: visible; transform: translateY(0); }
   
-  /* 🎯 화면별 상하 여백 정밀 조정 */
+  /* 🎯 화면별 상하 여백 정밀 조정 (하단 탭바 높이만큼 여백 추가) */
   #authScreen { justify-content: center; padding-top: 0; }
-  #homeScreen, #shopScreen, #vocabScreen, #quizScreen, #learningScreen { padding-top: 40px; justify-content: flex-start; }
+  #homeScreen, #shopScreen, #vocabScreen { padding-top: 30px; justify-content: flex-start; padding-bottom: 90px; }
+  #quizScreen, #learningScreen { padding-top: 40px; justify-content: flex-start; }
   
   .responsive-width { width: 90%; max-width: 440px; }
 
+  /* 🔐 로그인 화면 */
   .auth-container { display: flex; flex-direction: column; gap: 12px; margin-top: 20px; width: 100%; }
-  .google-btn { display: flex; align-items: center; justify-content: center; gap: 12px; background-color: white; color: #1e293b; font-size: 17px; font-weight: 700; padding: 18px; border-radius: 14px; border: 1px solid #e2e8f0; cursor: pointer; transition: all 0.2s; box-shadow: 0 4px 12px rgba(0,0,0,0.03); }
+  .google-btn { display: flex; align-items: center; justify-content: center; gap: 12px; background-color: white; color: #1e293b; font-size: 17px; font-weight: 700; padding: 18px; border-radius: 16px; border: 1px solid #e2e8f0; cursor: pointer; transition: all 0.2s; box-shadow: 0 4px 16px rgba(0,0,0,0.04); }
   .google-btn:active { transform: scale(0.98); background-color: #f1f5f9; }
   
-  /* 🎯 홈 화면 상단 버튼 위치 조절 */
-  .header-container { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; margin-top: -8px; }
+  /* 🎯 홈 화면 상단 헤더 (스트릭 뱃지 추가 및 좌측 여백 교정) */
+  .header-container { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; margin-top: -4px; width: 100%; }
+  .streak-badge { background: #fff7ed; color: #ea580c; border: 1px solid #fed7aa; padding: 6px 12px; border-radius: 12px; display: flex; align-items: center; gap: 4px; font-weight: 800; font-size: 14px; margin-right: 4px; box-shadow: 0 2px 8px rgba(234, 88, 12, 0.1); }
   .settings-btn { background: none; border: none; color: #64748b; cursor: pointer; padding: 6px; border-radius: 50%; display: flex; transition: background 0.2s, color 0.2s; }
   .settings-btn:active { background: #f1f5f9; color: #0f172a; }
 
   /* 🎯 치이카와 유저 상태창 UI */
-  .user-stats-card { background-color: white; border-radius: 24px; padding: 24px 20px; box-sizing: border-box; display: flex; flex-direction: column; gap: 16px; box-shadow: 0 4px 24px rgba(0, 0, 0, 0.04); border: 1px solid #e2e8f0; margin-bottom: 16px; position: relative; }
-  
-  /* 🎯 상점 아이콘 (상태창 우측 상단 뱃지 형태) */
-  .shop-icon-btn { position: absolute; top: 20px; right: 20px; background: #fffbeb; color: #f59e0b; border: 1px solid #fde68a; width: 44px; height: 44px; border-radius: 14px; display: flex; align-items: center; justify-content: center; cursor: pointer; box-shadow: 0 4px 12px rgba(245, 158, 11, 0.15); transition: transform 0.2s; z-index: 10; }
-  .shop-icon-btn:active { transform: scale(0.92); }
-
+  .user-stats-card { background-color: white; border-radius: 24px; padding: 24px 20px; box-sizing: border-box; display: flex; flex-direction: column; gap: 16px; box-shadow: 0 4px 24px rgba(0, 0, 0, 0.03); border: 1px solid #e2e8f0; margin-bottom: 24px; position: relative; }
   .stat-header { display: flex; justify-content: flex-start; align-items: center; gap: 16px; }
   .stat-info-wrap { display: flex; flex-direction: column; gap: 8px; justify-content: center; }
-  
-  /* 🎯 프로필 이미지 사이즈 및 테두리 수정 */
   .user-avatar-img { width: 96px; height: 96px; background-color: white; border-radius: 20px; border: 1px solid #e2e8f0; display: flex; align-items: center; justify-content: center; flex-shrink: 0; object-fit: cover; box-shadow: 0 4px 12px rgba(0,0,0,0.03); }
-
   .stat-level { font-size: 18px; font-weight: 800; color: #0f172a; display: flex; align-items: center; gap: 8px; }
   .stat-level .badge { background: #3b82f6; color: white; padding: 4px 8px; border-radius: 8px; font-size: 12px; font-weight: 700; }
   .stat-money { font-size: 16px; font-weight: 700; color: #f59e0b; display: flex; align-items: center; gap: 4px; }
-  .stat-equip-info { font-size: 14px; color: #64748b; display: flex; align-items: center; gap: 4px; font-weight: 500; }
+  .stat-equip-info { font-size: 14px; color: #64748b; display: flex; align-items: center; gap: 4px; font-weight: 600; }
   
-  /* 🎯 경험치 바 잘림 해결 (여백 및 구조 개편) */
   .exp-wrapper { display: flex; flex-direction: column; gap: 8px; width: 100%; margin-top: 4px; }
   .exp-container { width: 100%; height: 12px; background-color: #f1f5f9; border-radius: 6px; overflow: hidden; position: relative; border: 1px solid #e2e8f0; }
   .exp-bar { height: 100%; width: 0%; background-color: #10b981; border-radius: 6px; transition: width 0.5s ease-out; }
   .exp-text { font-size: 12px; font-weight: 700; color: #64748b; text-align: right; }
 
-  /* 🎯 연속 접속일 배너 */
-  .streak-banner { display: flex; align-items: center; justify-content: center; gap: 6px; background-color: white; border: 1px solid #fed7aa; color: #ea580c; border-radius: 16px; padding: 14px; margin-bottom: 20px; font-weight: 700; font-size: 15px; box-shadow: 0 4px 20px rgba(234, 88, 12, 0.05); }
-
-  .course-list { display: flex; flex-direction: column; gap: 12px; margin-bottom: 12px; width: 100%; }
-  .course-header { display: flex; justify-content: space-between; align-items: center; width: 100%; padding: 0 4px; box-sizing: border-box; margin-bottom: 2px; }
-  .course-header h3 { margin: 0; font-size: 16px; font-weight: 700; color: #0f172a; }
+  /* 🎯 오늘의 할 일 (토벌/제초 카드) */
+  .course-list { display: flex; flex-direction: column; gap: 14px; margin-bottom: 12px; width: 100%; }
+  .course-header { display: flex; justify-content: space-between; align-items: center; width: 100%; padding: 0 4px; box-sizing: border-box; margin-bottom: 4px; }
+  .course-header h3 { margin: 0; font-size: 17px; font-weight: 800; color: #0f172a; }
   
-  .course-card { background-color: white; border-radius: 20px; padding: 22px; box-sizing: border-box; box-shadow: 0 4px 24px rgba(0, 0, 0, 0.04); border: 1px solid #e2e8f0; cursor: pointer; transition: transform 0.2s; }
+  .course-card { background-color: white; border-radius: 24px; padding: 22px; box-sizing: border-box; box-shadow: 0 4px 24px rgba(0, 0, 0, 0.04); border: 1px solid #e2e8f0; cursor: pointer; transition: transform 0.2s; display: flex; flex-direction: column; justify-content: center; }
   .course-card:active { transform: scale(0.98); }
   .course-title { display: flex; align-items: center; gap: 10px; font-size: 18px; font-weight: 800; color: #0f172a; margin-bottom: 8px; letter-spacing: -0.5px;}
-  .course-desc { display: flex; align-items: center; gap: 4px; font-size: 14px; color: #64748b; font-weight: 600; }
+  .course-desc { display: flex; align-items: center; gap: 4px; font-size: 14px; color: #64748b; font-weight: 600; margin-left: 2px;}
 
-  /* 🎯 단어장 버튼 */
-  .btn-row { display: flex; gap: 12px; margin-top: 4px; width: 100%; }
-  .action-btn { flex: 1; display: flex; flex-direction: row; align-items: center; justify-content: center; gap: 10px; background-color: white; color: #0f172a; font-size: 16px; font-weight: 700; padding: 20px; border-radius: 20px; border: 1px solid #e2e8f0; cursor: pointer; box-shadow: 0 4px 24px rgba(0, 0, 0, 0.04); transition: transform 0.2s; }
-  .action-btn:active { transform: scale(0.96); background-color: #f8fafc; }
+  /* 🎯 하단 탭 바 (GNB) */
+  .bottom-nav-bar { position: fixed; bottom: 0; left: 0; width: 100%; height: 74px; background-color: white; border-top: 1px solid #e2e8f0; display: flex; justify-content: space-around; align-items: center; z-index: 100; padding-bottom: env(safe-area-inset-bottom); box-shadow: 0 -4px 20px rgba(0,0,0,0.03); }
+  .nav-item { display: flex; flex-direction: column; align-items: center; gap: 4px; color: #94a3b8; font-size: 11px; font-weight: 700; cursor: pointer; transition: 0.2s; width: 33%; }
+  .nav-item .material-symbols-rounded { font-size: 26px; }
+  .nav-item.active { color: #0f172a; }
+  .nav-item.active .material-symbols-rounded { color: #3b82f6; font-variation-settings: 'FILL' 1; }
 
-  /* 상점 UI */
-  .shop-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
-  .shop-tabs { display: flex; background: #f1f5f9; border-radius: 12px; padding: 6px; box-sizing: border-box; margin-bottom: 20px; }
-  .shop-tab { flex: 1; text-align: center; padding: 12px 0; font-size: 15px; font-weight: 700; color: #64748b; cursor: pointer; border-radius: 8px; transition: 0.2s; }
-  .shop-tab.active { background: white; color: #0f172a; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
+  /* 🎯 상점 UI */
+  .shop-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+  .shop-tabs { display: flex; background: #f1f5f9; border-radius: 14px; padding: 6px; box-sizing: border-box; margin-bottom: 20px; }
+  .shop-tab { flex: 1; text-align: center; padding: 12px 0; font-size: 15px; font-weight: 800; color: #64748b; cursor: pointer; border-radius: 10px; transition: 0.2s; }
+  .shop-tab.active { background: white; color: #0f172a; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
   .shop-list { flex: 1; overflow-y: auto; padding-bottom: 40px; display: flex; flex-direction: column; gap: 14px; width: 100%;}
   .shop-list::-webkit-scrollbar { display: none; }
-  
-  .shop-item { background: white; padding: 16px; border-radius: 16px; border: 1px solid #e2e8f0; display: flex; gap: 14px; align-items: center; box-shadow: 0 2px 10px rgba(0,0,0,0.02); }
-  .shop-item-img { width: 64px; height: 64px; background-color: white; border-radius: 16px; border: 1px solid #e2e8f0; display: flex; align-items: center; justify-content: center; flex-shrink: 0; object-fit: cover; }
-  
+  .shop-item { background: white; padding: 16px; border-radius: 20px; border: 1px solid #e2e8f0; display: flex; gap: 14px; align-items: center; box-shadow: 0 4px 16px rgba(0,0,0,0.03); }
+  .shop-item-img { width: 72px; height: 72px; background: #f8fafc; border-radius: 16px; border: 1px solid #e2e8f0; display: flex; align-items: center; justify-content: center; color: #94a3b8; font-size: 12px; font-weight: 600; flex-shrink: 0; object-fit: cover; }
   .shop-item-content { display: flex; flex: 1; justify-content: space-between; align-items: center; gap: 8px; }
   .shop-item-info { flex: 1; }
-  .shop-item-info h4 { margin: 0 0 6px 0; font-size: 16px; font-weight: 700; color: #0f172a; line-height: 1.2; }
-  .shop-item-info p { margin: 0; font-size: 13px; color: #64748b; line-height: 1.4; word-break: keep-all; }
-  .shop-buy-btn { padding: 10px 16px; font-size: 14px; font-weight: 700; border-radius: 10px; border: none; cursor: pointer; transition: 0.2s; display: flex; align-items: center; justify-content: center; gap: 4px; flex-shrink: 0; }
+  .shop-item-info h4 { margin: 0 0 6px 0; font-size: 16px; font-weight: 800; color: #0f172a; line-height: 1.2; letter-spacing: -0.3px; }
+  .shop-item-info p { margin: 0; font-size: 13px; color: #64748b; line-height: 1.4; word-break: keep-all; font-weight: 500; }
+  .shop-buy-btn { padding: 12px 16px; font-size: 14px; font-weight: 800; border-radius: 12px; border: none; cursor: pointer; transition: 0.2s; display: flex; align-items: center; justify-content: center; gap: 4px; flex-shrink: 0; }
   .btn-buy { background: #eff6ff; color: #3b82f6; }
   .btn-equip { background: #f1f5f9; color: #475569; border: 1px solid #e2e8f0; }
   .btn-equipped { background: #10b981; color: white; }
 
-  /* 단어장, 퀴즈, 모달 등 공통 요소 */
-  .vocab-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+  /* 단어장 UI */
+  .vocab-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; }
   .vocab-list { flex: 1; overflow-y: auto; padding-bottom: 40px; display: flex; flex-direction: column; gap: 12px; }
   .vocab-list::-webkit-scrollbar { display: none; }
-  .vocab-item { background: white; padding: 20px; border-radius: 16px; border: 1px solid #f1f5f9; display: flex; gap: 16px; align-items: center; box-shadow: 0 2px 12px rgba(0,0,0,0.02); }
+  .vocab-item { background: white; padding: 20px; border-radius: 20px; border: 1px solid #f1f5f9; display: flex; gap: 16px; align-items: center; box-shadow: 0 4px 16px rgba(0,0,0,0.03); }
   .vocab-hanja { font-size: 32px; font-weight: 600; color: #0f172a; width: 48px; text-align: center; }
   .vocab-details { flex: 1; }
-  .vocab-meaning { font-size: 16px; font-weight: 700; color: #3b82f6; margin-bottom: 6px; }
-  .vocab-story { font-size: 14px; color: #64748b; line-height: 1.5; word-break: keep-all; }
-  .level-badge { font-size: 12px; padding: 4px 10px; border-radius: 6px; font-weight: 600; background: #f1f5f9; color: #64748b; }
+  .vocab-meaning { font-size: 16px; font-weight: 800; color: #3b82f6; margin-bottom: 6px; letter-spacing: -0.3px; }
+  .vocab-story { font-size: 14px; color: #64748b; line-height: 1.5; word-break: keep-all; font-weight: 500;}
+  .level-badge { font-size: 12px; padding: 4px 10px; border-radius: 6px; font-weight: 700; background: #f1f5f9; color: #64748b; }
   .level-high { background: #eff6ff; color: #3b82f6; }
 
+  /* 공통 (퀴즈, 플래시카드) */
   .top-nav { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; }
-  .back-btn { display: flex; align-items: center; gap: 4px; background: none; border: none; color: #64748b; font-size: 16px; font-weight: 600; cursor: pointer; padding: 8px 0; }
+  .back-btn { display: flex; align-items: center; gap: 4px; background: none; border: none; color: #64748b; font-size: 16px; font-weight: 700; cursor: pointer; padding: 8px 0; }
   .sound-btn { display: flex; align-items: center; justify-content: center; background: transparent; border: 1px solid #e2e8f0; color: #64748b; width: 40px; height: 40px; border-radius: 50%; cursor: pointer; transition: 0.2s; }
   .sound-btn.active { background: #f1f5f9; color: #0f172a; border-color: #cbd5e1; }
 
@@ -125,18 +118,18 @@
   .card-front { font-size: 120px; font-weight: 600; color: #0f172a; }
   .card-back { transform: rotateY(180deg); }
   .mini-hanja { font-size: 26px; font-weight: 600; color: #94a3b8; margin: 0 0 12px 0; }
-  .meaning { font-size: 30px; font-weight: 700; color: #3b82f6; margin: 0 0 20px 0; letter-spacing: -0.5px; }
+  .meaning { font-size: 30px; font-weight: 800; color: #3b82f6; margin: 0 0 20px 0; letter-spacing: -0.5px; }
   .radical { font-size: 15px; color: #475569; margin: 0 0 20px 0; background-color: #f8fafc; padding: 8px 14px; border-radius: 10px; font-weight: 600; border: 1px solid #e2e8f0; }
   .story { font-size: 16px; color: #475569; line-height: 1.6; word-break: keep-all; }
   
-  .swipe-hint { position: absolute; top: 24px; font-size: 22px; font-weight: 700; opacity: 0; transition: opacity 0.2s; pointer-events: none; padding: 10px 20px; border-radius: 10px; z-index: 10; background: white;}
+  .swipe-hint { position: absolute; top: 24px; font-size: 22px; font-weight: 800; opacity: 0; transition: opacity 0.2s; pointer-events: none; padding: 10px 20px; border-radius: 10px; z-index: 10; background: white;}
   .hint-bad { color: #ef4444; border: 3px solid #ef4444; right: 24px; transform: rotate(10deg); }
   .hint-perfect { color: #10b981; border: 3px solid #10b981; left: 24px; transform: rotate(-10deg); }
   .hint-soso { color: #f59e0b; border: 3px solid #f59e0b; top: auto; bottom: 30px; left: 50%; transform: translateX(-50%); }
 
   .eval-buttons { display: flex; gap: 12px; opacity: 0; transform: translateY(10px); transition: all 0.4s ease; pointer-events: none; }
   .eval-buttons.show { opacity: 1; transform: translateY(0); pointer-events: auto; }
-  .eval-buttons button { flex: 1; padding: 18px 0; font-size: 16px; font-weight: 700; border: none; border-radius: 16px; cursor: pointer; transition: transform 0.1s; }
+  .eval-buttons button { flex: 1; padding: 18px 0; font-size: 16px; font-weight: 800; border: none; border-radius: 16px; cursor: pointer; transition: transform 0.1s; }
   .eval-buttons button:active { transform: scale(0.96); }
   .btn-bad { background-color: #fef2f2; color: #ef4444; border: 1px solid #fee2e2; }
   .btn-soso { background-color: #fffbeb; color: #f59e0b; border: 1px solid #fef3c7; }
@@ -145,15 +138,15 @@
   .quiz-q-container { background: white; border-radius: 24px; padding: 60px 0; text-align: center; border: 1px solid #e2e8f0; box-shadow: 0 12px 40px rgba(0, 0, 0, 0.05); margin-bottom: 24px; }
   .quiz-hanja { font-size: 90px; font-weight: 600; color: #0f172a; line-height: 1; }
   .quiz-options { display: flex; flex-direction: column; gap: 12px; }
-  .quiz-opt-btn { padding: 20px; border-radius: 16px; border: 1px solid #cbd5e1; background: white; font-size: 17px; font-weight: 600; color: #334155; cursor: pointer; transition: all 0.2s; word-break: keep-all; }
-  .quiz-opt-btn.correct { background-color: #eff6ff; border-color: #3b82f6; color: #3b82f6; font-weight: 700; }
+  .quiz-opt-btn { padding: 20px; border-radius: 16px; border: 1px solid #cbd5e1; background: white; font-size: 17px; font-weight: 700; color: #334155; cursor: pointer; transition: all 0.2s; word-break: keep-all; }
+  .quiz-opt-btn.correct { background-color: #eff6ff; border-color: #3b82f6; color: #3b82f6; font-weight: 800; }
   .quiz-opt-btn.wrong { background-color: #fef2f2; border-color: #ef4444; color: #ef4444; opacity: 0.8; }
 
   .empty-state { display: none; flex-direction: column; align-items: center; justify-content: center; height: 50vh; text-align: center; }
   .empty-state.show { display: flex; }
   .empty-icon { color: #cbd5e1; font-size: 56px; margin-bottom: 16px; }
-  .empty-title { font-size: 20px; font-weight: 700; color: #0f172a; margin-bottom: 8px; }
-  .empty-desc { font-size: 15px; color: #64748b; line-height: 1.5; }
+  .empty-title { font-size: 20px; font-weight: 800; color: #0f172a; margin-bottom: 8px; }
+  .empty-desc { font-size: 15px; color: #64748b; line-height: 1.5; font-weight: 500;}
 
   .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15, 23, 42, 0.5); backdrop-filter: blur(4px); display: flex; justify-content: center; align-items: center; opacity: 0; visibility: hidden; transition: all 0.3s ease; z-index: 999; }
   .modal-overlay.show { opacity: 1; visibility: visible; }
@@ -162,16 +155,16 @@
   
   .reward-img-placeholder { width: 140px; height: 140px; background: #f8fafc; border-radius: 24px; border: 2px dashed #cbd5e1; display: flex; align-items: center; justify-content: center; color: #94a3b8; font-size: 14px; font-weight: 600; margin: 0 auto 20px auto; overflow: hidden; }
   
-  .modal-title { font-size: 24px; font-weight: 800; color: #0f172a; margin: 0 0 10px 0; }
-  .modal-desc { font-size: 15px; color: #64748b; margin: 0 0 28px 0; line-height: 1.5; }
+  .modal-title { font-size: 26px; font-weight: 800; color: #0f172a; margin: 0 0 10px 0; }
+  .modal-desc { font-size: 15px; color: #64748b; margin: 0 0 28px 0; line-height: 1.5; font-weight: 500;}
   .quiz-score-text { font-size: 36px; font-weight: 800; color: #3b82f6; margin: 16px 0; }
   
   .input-group { display: flex; justify-content: center; align-items: center; gap: 10px; margin-bottom: 28px; }
-  .input-group input { width: 90px; padding: 14px; font-size: 20px; font-weight: 700; text-align: center; border: 2px solid #cbd5e1; border-radius: 12px; outline: none; transition: 0.2s; color: #0f172a;}
+  .input-group input { width: 90px; padding: 14px; font-size: 20px; font-weight: 800; text-align: center; border: 2px solid #cbd5e1; border-radius: 12px; outline: none; transition: 0.2s; color: #0f172a;}
   .input-group input:focus { border-color: #3b82f6; }
   .modal-buttons { display: flex; gap: 12px; width: 100%; }
-  .btn-primary { flex: 1; padding: 16px; background-color: #3b82f6; color: white; font-size: 16px; font-weight: 700; border: none; border-radius: 14px; cursor: pointer; transition: 0.2s; }
-  .btn-secondary { flex: 1; padding: 16px; background-color: #f1f5f9; color: #475569; font-size: 16px; font-weight: 700; border: none; border-radius: 14px; cursor: pointer; transition: 0.2s; }
+  .btn-primary { flex: 1; padding: 16px; background-color: #3b82f6; color: white; font-size: 16px; font-weight: 800; border: none; border-radius: 14px; cursor: pointer; transition: 0.2s; }
+  .btn-secondary { flex: 1; padding: 16px; background-color: #f1f5f9; color: #475569; font-size: 16px; font-weight: 800; border: none; border-radius: 14px; cursor: pointer; transition: 0.2s; }
 </style>
 </head>
 <body>
@@ -179,7 +172,7 @@
 <!-- 🔐 로그인 화면 -->
 <div id="authScreen" class="screen active">
   <div class="responsive-width header-title" style="text-align: center; margin-bottom: 60px; justify-content: center; display: flex; flex-direction: column; align-items: center;">
-    <!-- 🎯 로고 크기 대폭 확대 & 글씨/테두리 제거 -->
+    <!-- 🎯 로고 크기 대폭 확대 & 군더더기 제거 -->
     <img src="./image/logo.png" alt="Vocawa Logo" style="width: 100%; max-width: 320px; height: auto; display: block;">
   </div>
   <div class="responsive-width auth-container">
@@ -191,15 +184,19 @@
   </div>
 </div>
 
-<!-- 홈 화면 -->
+<!-- 🏠 홈 화면 -->
 <div id="homeScreen" class="screen">
-  <!-- 🎯 상단 여백 조절 및 버튼 위치 위로 살짝 이동 -->
+  <!-- 🎯 상단 헤더 (로고 크기 확대 및 좌측 여백 일치화, 스트릭 뱃지 추가) -->
   <div class="responsive-width header-container">
-    <div class="header-title">
-      <!-- 🎯 홈 화면 로고 크기 대폭 확대 -->
-      <img src="./image/logo.png" style="height: 80px; width: auto;" alt="Vocawa Logo">
-    </div>
-    <div style="display: flex; gap: 12px;">
+    <!-- V자 시작 라인을 콘텐츠 좌측 끝과 맞추기 위해 transform 사용 -->
+    <img src="./image/logo.png" style="height: 56px; width: auto; transform: translateX(-6px);" alt="Vocawa Logo">
+    
+    <div style="display: flex; gap: 8px; align-items: center;">
+      <!-- 🎯 스트릭 배너를 작은 뱃지로 통폐합 -->
+      <div class="streak-badge">
+        <span class="material-symbols-rounded">local_fire_department</span>
+        <span id="streakDaysText">1</span>
+      </div>
       <button class="settings-btn" onclick="openSettings()" title="설정">
         <span class="material-symbols-rounded" style="font-size: 26px;">tune</span>
       </button>
@@ -210,13 +207,7 @@
   </div>
   
   <div class="responsive-width user-stats-card">
-    <!-- 🎯 상점 아이콘 우측 상단 배치 -->
-    <button class="shop-icon-btn" onclick="openShop()" title="치장 상점">
-      <span class="material-symbols-rounded" style="font-size: 22px;">storefront</span>
-    </button>
-
     <div class="stat-header">
-      <!-- 🎯 캐릭터 프로필 이미지 (치이카와 파일 연동) -->
       <img id="userAvatarImg" class="user-avatar-img" src="./image/chiikawa.png" alt="profile" onerror="this.src='./image/app_logo.png'">
       <div class="stat-info-wrap">
         <div class="stat-level">
@@ -234,7 +225,7 @@
       </div>
     </div>
     
-    <!-- 🎯 경험치 바 잘림 해결 -->
+    <!-- 🎯 경험치 바 잘림 해결 및 두께 수정 -->
     <div class="exp-wrapper">
       <div class="exp-container">
         <div class="exp-bar" id="userExpBar"></div>
@@ -243,13 +234,6 @@
     </div>
   </div>
   
-  <!-- 🎯 연속 접속일 배너 -->
-  <div class="responsive-width streak-banner">
-    <span class="material-symbols-rounded" style="color: #f97316; font-size: 22px;">local_fire_department</span>
-    <span id="streakDaysText">1일 연속 접속 중!</span>
-  </div>
-  
-  <!-- 🎯 오늘의 할 일 (학습 + 모의고사 버튼 동급 배치) -->
   <div class="responsive-width course-list">
     <div class="course-header">
       <h3>오늘의 할 일</h3>
@@ -257,67 +241,67 @@
     <!-- 🎯 토벌 (머터리얼 심볼 적용) -->
     <div class="course-card" onclick="startLearning()">
       <div class="course-title">
-        <span class="material-symbols-rounded" style="color: #3b82f6; font-size: 26px;">swords</span>
+        <span class="material-symbols-rounded" style="color: #3b82f6; font-size: 28px;">swords</span>
         한자 2급 토벌
       </div>
       <div class="course-desc" id="courseStatus">데이터 불러오는 중...</div>
     </div>
-    <!-- 🎯 제초 (머터리얼 심볼 적용) -->
+    <!-- 🎯 제초 (초록색 grass 심볼 적용) -->
     <div class="course-card" onclick="startQuiz()">
       <div class="course-title">
-        <span class="material-symbols-rounded" style="color: #f59e0b; font-size: 26px;">grass</span>
+        <span class="material-symbols-rounded" style="color: #10b981; font-size: 28px;">grass</span>
         실전 모의고사 제초
       </div>
       <div class="course-desc" id="quizStatusText">일일 1회 보상 대기 중</div>
     </div>
   </div>
-
-  <!-- 🎯 하단 버튼 (단어장 하나로 깔끔하게 가로 꽉 차게) -->
-  <div class="responsive-width btn-row" style="margin-top: 4px;">
-    <button class="action-btn" onclick="openVocab()" style="width: 100%; flex-direction: row; justify-content: center; padding: 20px;">
-      <span class="material-symbols-rounded" style="color: #0f172a; font-size: 26px;">menu_book</span>
-      단어장 열기
-    </button>
-  </div>
 </div>
 
-<!-- 🎯 치장 상점 화면 -->
+<!-- 🛒 치장 상점 화면 -->
 <div id="shopScreen" class="screen">
   <div class="responsive-width shop-header">
-    <button class="settings-btn" onclick="closeScreen('shopScreen')">
-      <span class="material-symbols-rounded" style="font-size: 26px;">close</span>
-    </button>
-    <h2 style="font-size: 20px; font-weight: 800; margin: 0;">치장 상점</h2>
-    <div class="stat-money" style="font-size: 15px;">
-      <span class="material-symbols-rounded" style="font-size: 18px;">monetization_on</span>
+    <h2 style="font-size: 24px; font-weight: 800; margin: 0;">치장 상점</h2>
+    <div class="stat-money" style="font-size: 16px;">
+      <span class="material-symbols-rounded" style="font-size: 20px;">monetization_on</span>
       <span id="shopMoneyText">0</span>원
     </div>
   </div>
-  
   <div class="responsive-width shop-tabs">
     <div class="shop-tab active" id="tabChar" onclick="changeShopTab('char')">캐릭터</div>
     <div class="shop-tab" id="tabEquip" onclick="changeShopTab('equip')">장비/의상</div>
   </div>
-  
   <div class="responsive-width shop-list" id="shopListContainer"></div>
 </div>
 
-<!-- 단어장 화면 -->
+<!-- 📖 단어장 화면 -->
 <div id="vocabScreen" class="screen">
   <div class="responsive-width vocab-header">
-    <button class="settings-btn" onclick="closeScreen('vocabScreen')">
-      <span class="material-symbols-rounded" style="font-size: 26px;">close</span>
-    </button>
-    <h2 style="font-size: 20px; font-weight: 800; margin: 0;">내 단어장</h2>
-    <div class="vocab-stats" id="vocabStatsCount">0 / 2355</div>
+    <h2 style="font-size: 24px; font-weight: 800; margin: 0;">내 단어장</h2>
+    <div class="vocab-stats" id="vocabStatsCount" style="font-size: 14px;">0 / 2355</div>
   </div>
   <div class="responsive-width vocab-list" id="vocabListContainer"></div>
 </div>
 
-<!-- 모의고사 화면 -->
+<!-- 🎯 하단 고정 탭 바 (GNB) -->
+<div class="bottom-nav-bar" id="mainBottomNav" style="display: none;">
+  <div class="nav-item active" id="navHome" onclick="switchMainTab('homeScreen')">
+    <span class="material-symbols-rounded">home</span>
+    <span>홈</span>
+  </div>
+  <div class="nav-item" id="navVocab" onclick="switchMainTab('vocabScreen')">
+    <span class="material-symbols-rounded">menu_book</span>
+    <span>단어장</span>
+  </div>
+  <div class="nav-item" id="navShop" onclick="switchMainTab('shopScreen')">
+    <span class="material-symbols-rounded">storefront</span>
+    <span>상점</span>
+  </div>
+</div>
+
+<!-- 모의고사 화면 (학습 중 탭바 숨김) -->
 <div id="quizScreen" class="screen">
   <div class="responsive-width top-nav">
-    <button class="back-btn" onclick="closeScreen('quizScreen')">
+    <button class="back-btn" onclick="goHome()">
       <span class="material-symbols-rounded" style="font-size: 20px;">close</span> 중단하기
     </button>
     <div class="quiz-header-text" id="quizProgressText">문제 1/10</div>
@@ -327,7 +311,7 @@
   <div class="responsive-width quiz-options" id="quizOptionsContainer"></div>
 </div>
 
-<!-- 학습 화면 -->
+<!-- 학습 화면 (학습 중 탭바 숨김) -->
 <div id="learningScreen" class="screen">
   <div class="responsive-width top-nav">
     <button class="back-btn" onclick="goHome()">
@@ -366,15 +350,15 @@
   </div>
 </div>
 
-<!-- 🎯 토벌 완료 모달창 -->
+<!-- 🎯 모달 창들 -->
 <div class="modal-overlay" id="completionModal">
   <div class="modal-content">
     <div class="reward-img-placeholder">
       토벌 성공<br>이미지 뷰
     </div>
-    <h2 class="modal-title" style="color: #0f172a; font-size: 28px;">토벌 완료!</h2>
-    <p class="modal-desc" id="completionMsg" style="margin-top: 12px; font-size: 15px;"></p>
-    <button class="btn-primary" onclick="resetAndGoHome()" style="margin-top: 8px;">보상 받기</button>
+    <h2 class="modal-title">토벌 완료!</h2>
+    <p class="modal-desc" id="completionMsg"></p>
+    <button class="btn-primary" onclick="resetAndGoHome()">보상 받기</button>
   </div>
 </div>
 
@@ -394,14 +378,13 @@
   </div>
 </div>
 
-<!-- 🎯 제초 완료 모달창 -->
 <div class="modal-overlay" id="quizResultModal">
   <div class="modal-content">
     <div class="reward-img-placeholder">
       제초 성공<br>이미지 뷰
     </div>
-    <h2 class="modal-title" style="color: #0f172a; font-size: 28px;">제초 완료!</h2>
-    <div class="quiz-score-text" id="finalQuizScore" style="font-size: 28px; margin: 8px 0;">8 / 10</div>
+    <h2 class="modal-title">제초 완료!</h2>
+    <div class="quiz-score-text" id="finalQuizScore">8 / 10</div>
     <p class="modal-desc" id="quizResultMsg"></p>
     <button class="btn-primary" onclick="closeQuizResult()">홈으로 이동</button>
   </div>
@@ -410,9 +393,11 @@
 <script type="module">
   window.handleGoogleLogin = handleGoogleLogin; window.handleLogout = handleLogout;
   window.startLearning = startLearning; window.openSettings = openSettings; window.closeSettings = closeSettings; window.saveSettings = saveSettings;
-  window.openVocab = openVocab; window.closeScreen = closeScreen; window.startQuiz = startQuiz; window.goHome = goHome;
-  window.flipCard = flipCard; window.processEvaluation = processEvaluation; window.resetAndGoHome = resetAndGoHome; window.closeQuizResult = closeQuizResult;
-  window.toggleTTS = toggleTTS; window.openShop = openShop; window.changeShopTab = changeShopTab; window.buyOrEquipItem = buyOrEquipItem;
+  window.goHome = goHome; window.flipCard = flipCard; window.processEvaluation = processEvaluation; window.resetAndGoHome = resetAndGoHome; window.closeQuizResult = closeQuizResult;
+  window.toggleTTS = toggleTTS; window.changeShopTab = changeShopTab; window.buyOrEquipItem = buyOrEquipItem; window.startQuiz = startQuiz;
+  
+  // 🎯 하단 탭 바 이동 함수 바인딩
+  window.switchMainTab = switchMainTab;
 
   import { initializeApp } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-app.js";
   import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-firestore.js";
@@ -461,7 +446,6 @@
     { name: "제초자격증 4급", maxExp: 1000 }, { name: "제초자격증 3급", maxExp: 1500 }, { name: "제초자격증 2급", maxExp: 2100 }, { name: "제초자격증 1급", maxExp: 3000 }
   ];
 
-  // 🎯 캐릭터 목록 대거 추가
   const SHOP_DB = {
     char: [
       { id: 'c_chiikawa', name: '치이카와', price: 0, desc: '다정하고 눈물이 많은 기본 캐릭터' },
@@ -496,14 +480,38 @@
     return Math.floor((new Date(date2) - new Date(date1)) / (1000 * 60 * 60 * 24));
   }
 
+  // 🎯 하단 탭 바 이동 로직
+  function switchMainTab(tabId) {
+    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+    document.getElementById(tabId).classList.add('active');
+
+    document.querySelectorAll('.nav-item').forEach(btn => btn.classList.remove('active'));
+    
+    if (tabId === 'homeScreen') {
+      document.getElementById('navHome').classList.add('active');
+      updateHomeStatus();
+    } else if (tabId === 'vocabScreen') {
+      document.getElementById('navVocab').classList.add('active');
+      renderVocabList();
+    } else if (tabId === 'shopScreen') {
+      document.getElementById('navShop').classList.add('active');
+      document.getElementById('shopMoneyText').innerText = userStats.money;
+      renderShopList();
+    }
+    document.getElementById('mainBottomNav').style.display = 'flex';
+  }
+
+  function goHome() { switchMainTab('homeScreen'); }
+
   onAuthStateChanged(auth, (user) => {
     if (user) {
       USER_UID = user.uid;
       document.getElementById('authScreen').classList.remove('active');
-      document.getElementById('homeScreen').classList.add('active');
+      switchMainTab('homeScreen'); // 탭 바 보이면서 홈으로 이동
       loadData(); 
     } else {
       USER_UID = null;
+      document.getElementById('mainBottomNav').style.display = 'none';
       document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
       document.getElementById('authScreen').classList.add('active');
     }
@@ -516,7 +524,7 @@
       await signInWithPopup(auth, provider); 
     } catch (e) {
       document.getElementById('authErrorMsg').innerText = "팝업이 차단되었거나 로그인이 취소되었습니다.";
-      document.getElementById('googleLoginBtn').innerHTML = `<img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google" style="width: 20px; height: 20px;"> Google 계정으로 로그인`;
+      document.getElementById('googleLoginBtn').innerHTML = `<img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google" style="width: 22px; height: 22px;"> Google 계정으로 로그인`;
     }
   }
 
@@ -559,7 +567,7 @@
       checkDailyLogin(); 
       updateHomeStatus();
       updateUserStatsUI();
-    } catch (error) { document.getElementById('courseStatus').innerText = "데이터 연결 실패"; }
+    } catch (error) { console.log(error); }
   }
 
   function checkDailyLogin() {
@@ -590,7 +598,8 @@
       userStats.lastLoginDate = today;
       syncToCloud();
     }
-    document.getElementById('streakDaysText').innerText = `${userStats.streakDays || 1}일 연속 접속 중!`;
+    // 뱃지에 스트릭 일수 표기
+    document.getElementById('streakDaysText').innerText = userStats.streakDays || 1;
   }
 
   function addExp(amount) {
@@ -609,7 +618,6 @@
     syncToCloud();
   }
 
-  // 🎯 프로필 및 상점 이미지 자동 불러오기 함수
   function getImageUrl(id) {
     const fileName = id.replace('c_', '').replace('e_', '');
     return `./image/${fileName}.png`;
@@ -627,19 +635,12 @@
     document.getElementById('userExpBar').style.width = `${expPercent}%`;
     document.getElementById('userExpText').innerText = `EXP ${userStats.exp} / ${lvl.maxExp}`;
     
-    // 🎯 메인 프로필 아바타 렌더링
-    if (charObj) {
-       document.getElementById('userAvatarImg').src = getImageUrl(userStats.character);
-    }
+    // 스트릭 및 이미지 갱신
+    document.getElementById('streakDaysText').innerText = userStats.streakDays || 1;
+    if (charObj) { document.getElementById('userAvatarImg').src = getImageUrl(userStats.character); }
   }
 
   let currentShopTab = 'char';
-  function openShop() {
-    document.getElementById('homeScreen').classList.remove('active');
-    document.getElementById('shopScreen').classList.add('active');
-    document.getElementById('shopMoneyText').innerText = userStats.money;
-    renderShopList();
-  }
   function changeShopTab(tab) {
     currentShopTab = tab;
     document.getElementById('tabChar').classList.remove('active');
@@ -664,7 +665,7 @@
       }
       return `
         <div class="shop-item">
-          <img class="shop-item-img" src="${getImageUrl(item.id)}" alt="item" onerror="this.src='./image/app_logo.png'">
+          <img class="shop-item-img" src="${getImageUrl(item.id)}" alt="item" onerror="this.style.display='none'">
           <div class="shop-item-content">
             <div class="shop-item-info">
               <h4>${item.name}</h4>
@@ -713,16 +714,6 @@
       : `일일 1회 보상 대기 중 (EXP 20 / 50원)`;
   }
 
-  function goHome() {
-    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-    document.getElementById('homeScreen').classList.add('active');
-    updateHomeStatus();
-  }
-  function closeScreen(screenId) {
-    document.getElementById(screenId).classList.remove('active');
-    document.getElementById('homeScreen').classList.add('active');
-  }
-
   function toggleTTS() {
     isTTSOn = !isTTSOn;
     const btn = document.getElementById('ttsToggleBtn');
@@ -738,6 +729,7 @@
   }
 
   function startLearning() {
+    document.getElementById('mainBottomNav').style.display = 'none'; // 학습 시 탭바 숨김
     document.getElementById('homeScreen').classList.remove('active');
     document.getElementById('learningScreen').classList.add('active');
     todayCards = getTodayStudyCards();
@@ -790,7 +782,7 @@
       setTimeout(() => { 
         if (!userStats.dailyStudyDone && sessionTotal > 0) {
           userStats.dailyStudyDone = true; userStats.money += 100; addExp(sessionTotal);
-          document.getElementById('completionMsg').innerHTML = `훌륭하게 단어 토벌에 성공했습니다!<br><br><span style="font-size:18px; color:#3b82f6; font-weight:800;">EXP +${sessionTotal}  |  💰 +100원</span>`;
+          document.getElementById('completionMsg').innerHTML = `훌륭하게 단어 토벌에 성공했습니다!<br><br><span style="font-size:16px; color:#3b82f6; font-weight:800;">EXP +${sessionTotal}  |  💰 +100원</span>`;
         } else {
           document.getElementById('completionMsg').innerHTML = `오늘의 토벌을 완벽하게 마쳤습니다.<br>푹 쉬고 내일 다시 만나요!`;
         }
@@ -847,7 +839,6 @@
   function closeSettings() { document.getElementById('settingsModal').classList.remove('show'); }
   function saveSettings() { const newVal = parseInt(document.getElementById('limitInput').value); if (newVal >= 0) { dailyNewLimit = newVal; syncToCloud(); updateHomeStatus(); closeSettings(); } else { alert("0 이상의 숫자를 입력해 주세요."); } }
   
-  function openVocab() { document.getElementById('homeScreen').classList.remove('active'); document.getElementById('vocabScreen').classList.add('active'); renderVocabList(); }
   function renderVocabList() {
     const learnedCards = myHanjaData.filter(card => card.interval > 0);
     document.getElementById('vocabStatsCount').innerText = `${learnedCards.length} / ${myHanjaData.length}`;
@@ -864,6 +855,7 @@
   function startQuiz() {
     const learnedCards = myHanjaData.filter(card => card.interval > 0);
     if (learnedCards.length < 4) { alert("학습을 완료한 단어가 최소 4개 이상이어야 합니다."); return; }
+    document.getElementById('mainBottomNav').style.display = 'none'; // 제초 시 탭바 숨김
     const shuffledLearned = [...learnedCards].sort(() => 0.5 - Math.random());
     quizQuestions = shuffledLearned.slice(0, Math.min(10, learnedCards.length));
     currentQuizIdx = 0; quizScore = 0; isAnswering = false;
@@ -902,11 +894,11 @@
     
     if (!userStats.dailyQuizDone) {
       userStats.dailyQuizDone = true; userStats.money += 50; addExp(20);
-      msg += `<br><br><span style="font-size:16px; color:#10b981; font-weight:700;">EXP +20  |  💰 +50원</span>`;
+      msg += `<br><br><span style="font-size:16px; color:#10b981; font-weight:800;">EXP +20  |  💰 +50원</span>`;
     }
     document.getElementById('quizResultMsg').innerHTML = msg; document.getElementById('quizResultModal').classList.add('show');
   }
-  function closeQuizResult() { document.getElementById('quizResultModal').classList.remove('show'); closeScreen('quizScreen'); }
+  function closeQuizResult() { document.getElementById('quizResultModal').classList.remove('show'); goHome(); }
 
   if ('serviceWorker' in navigator) { window.addEventListener('load', () => { navigator.serviceWorker.register('./sw.js').catch(e => console.log('SW 실패', e)); }); }
 </script>
