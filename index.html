@@ -8,7 +8,9 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="apple-mobile-web-app-title" content="Vocawa">
-<link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/5968/5968282.png">
+<!-- 🎯 직접 만든 앱 아이콘 적용 -->
+<link rel="icon" href="./image/app_logo.png">
+<link rel="apple-touch-icon" href="./image/app_logo.png">
 <meta name="theme-color" content="#f8fafc">
 
 <!-- 구글 머터리얼 심볼 & 프리텐다드 폰트 -->
@@ -20,7 +22,6 @@
   .screen { position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; opacity: 0; visibility: hidden; transition: opacity 0.4s ease, transform 0.4s ease; transform: translateY(20px); padding-top: 50px; box-sizing: border-box; }
   .screen.active { opacity: 1; visibility: visible; transform: translateY(0); }
   
-  /* 반응형 넓이 변수 세팅 */
   .responsive-width { width: 90%; max-width: 440px; }
 
   .auth-container { display: flex; flex-direction: column; gap: 12px; margin-top: 40px; }
@@ -33,12 +34,10 @@
   .settings-btn { background: none; border: none; color: #64748b; cursor: pointer; padding: 6px; border-radius: 50%; display: flex; transition: background 0.2s, color 0.2s; }
   .settings-btn:active { background: #f1f5f9; color: #0f172a; }
 
-  /* 🎯 치이카와 유저 상태창 UI */
   .user-stats-card { background-color: white; border-radius: 20px; padding: 20px; box-sizing: border-box; display: flex; flex-direction: column; gap: 12px; box-shadow: 0 4px 24px rgba(0, 0, 0, 0.04); border: 1px solid #e2e8f0; margin-bottom: 20px; position: relative; overflow: hidden; }
   .stat-header { display: flex; justify-content: flex-start; align-items: center; gap: 20px; }
   .stat-info-wrap { display: flex; flex-direction: column; gap: 8px; justify-content: center; }
   
-  /* 캐릭터 프로필 이미지 플레이스홀더 (좌측 배치, 사이즈 확대) */
   .user-avatar-img { width: 96px; height: 96px; background: #f1f5f9; border-radius: 20px; border: 2px dashed #cbd5e1; display: flex; align-items: center; justify-content: center; color: #94a3b8; font-size: 14px; font-weight: 600; flex-shrink: 0; }
 
   .stat-level { font-size: 18px; font-weight: 800; color: #0f172a; display: flex; align-items: center; gap: 8px; }
@@ -63,7 +62,6 @@
   .action-btn:active { transform: scale(0.96); background-color: #f8fafc; }
   .action-btn .material-symbols-rounded { font-size: 26px; }
 
-  /* 🎯 상점 UI 전용 CSS */
   .shop-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
   .shop-tabs { display: flex; background: #f1f5f9; border-radius: 12px; padding: 6px; box-sizing: border-box; margin-bottom: 20px; }
   .shop-tab { flex: 1; text-align: center; padding: 12px 0; font-size: 15px; font-weight: 700; color: #64748b; cursor: pointer; border-radius: 8px; transition: 0.2s; }
@@ -72,7 +70,6 @@
   .shop-list::-webkit-scrollbar { display: none; }
   
   .shop-item { background: white; padding: 16px; border-radius: 16px; border: 1px solid #e2e8f0; display: flex; gap: 14px; align-items: center; box-shadow: 0 2px 10px rgba(0,0,0,0.02); }
-  /* 아이템 이미지 플레이스홀더 */
   .shop-item-img { width: 64px; height: 64px; background: #f8fafc; border-radius: 12px; border: 2px dashed #cbd5e1; display: flex; align-items: center; justify-content: center; color: #94a3b8; font-size: 12px; font-weight: 600; flex-shrink: 0; }
   
   .shop-item-content { display: flex; flex: 1; justify-content: space-between; align-items: center; gap: 8px; }
@@ -84,7 +81,6 @@
   .btn-equip { background: #f1f5f9; color: #475569; border: 1px solid #e2e8f0; }
   .btn-equipped { background: #10b981; color: white; }
 
-  /* 단어장, 퀴즈, 모달 등 공통 요소 */
   .vocab-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
   .vocab-list { flex: 1; overflow-y: auto; padding-bottom: 40px; display: flex; flex-direction: column; gap: 12px; }
   .vocab-list::-webkit-scrollbar { display: none; }
@@ -164,7 +160,8 @@
 <!-- 🔐 로그인 화면 -->
 <div id="authScreen" class="screen active">
   <div class="responsive-width header-title" style="text-align: center; margin-bottom: 40px; font-size: 24px;">
-    <span class="material-symbols-rounded" style="font-size: 56px; color: #3b82f6; margin-bottom: 16px; display: block;">school</span>
+    <!-- 🎯 직접 만든 메인 로고 적용 -->
+    <img src="./image/logo.png" alt="Vocawa Logo" style="width: 100px; height: auto; margin-bottom: 16px; display: block; margin-left: auto; margin-right: auto; border-radius: 24px; box-shadow: 0 4px 12px rgba(0,0,0,0.05);">
     <span>Vocawa</span> 시작하기
   </div>
   <div class="responsive-width auth-container">
@@ -179,9 +176,13 @@
 <!-- 홈 화면 -->
 <div id="homeScreen" class="screen">
   <div class="responsive-width header-container">
-    <div class="header-title"><span>Vocawa</span> 홈</div>
+    <div class="header-title" style="display: flex; align-items: center; gap: 8px;">
+      <!-- 🎯 앱 아이콘 상단 배치 -->
+      <img src="./image/app_logo.png" style="width: 32px; height: 32px; border-radius: 8px;" alt="app icon">
+      <span>Vocawa</span> 홈
+    </div>
     <div style="display: flex; gap: 12px;">
-      <!-- 설정이 왼쪽, 로그아웃이 오른쪽으로 위치 변경 -->
+      <!-- 설정이 왼쪽, 로그아웃이 오른쪽 -->
       <button class="settings-btn" onclick="openSettings()" title="설정">
         <span class="material-symbols-rounded" style="font-size: 26px;">tune</span>
       </button>
@@ -191,12 +192,9 @@
     </div>
   </div>
   
-  <!-- 🎯 치이카와 테마 상태창 -->
   <div class="responsive-width user-stats-card">
     <div class="stat-header">
-      <!-- 🎯 프로필 이미지 공간 (좌측으로 이동 및 크기 확대) -->
       <div class="user-avatar-img" id="userAvatarImg">이미지<br>(96x96)</div>
-      
       <div class="stat-info-wrap">
         <div class="stat-level">
           <span class="badge" id="userLevelBadge">백수</span>
@@ -423,7 +421,6 @@
     { name: "제초자격증 4급", maxExp: 1000 }, { name: "제초자격증 3급", maxExp: 1500 }, { name: "제초자격증 2급", maxExp: 2100 }, { name: "제초자격증 1급", maxExp: 3000 }
   ];
 
-  // 🎯 캐릭터와 장비 완벽 업데이트
   const SHOP_DB = {
     char: [
       { id: 'c_chiikawa', name: '치이카와', price: 0, desc: '다정하고 눈물이 많은 기본 캐릭터' },
@@ -481,7 +478,6 @@
     }
   }
 
-  // 🎯 로그아웃 확인 팝업 추가
   async function handleLogout() { 
     if (confirm("정말 로그아웃 하시겠습니까? 기기의 연동이 해제됩니다.")) {
       await signOut(auth); 
@@ -592,7 +588,6 @@
     renderShopList();
   }
   
-  // 🎯 상점 리스트 (이미지 공간 확보)
   function renderShopList() {
     const listData = SHOP_DB[currentShopTab];
     const container = document.getElementById('shopListContainer');
