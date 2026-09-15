@@ -857,10 +857,32 @@
     if (isTTSOn) { btn.classList.add('active'); icon.innerText = 'volume_up'; } 
     else { btn.classList.remove('active'); icon.innerText = 'volume_off'; window.speechSynthesis.cancel(); }
   }
+  // 보이스 목록을 미리 불러오기 (비동기 로드 대응)
+  let availableVoices = [];
+  window.speechSynthesis.onvoiceschanged = () => {
+    availableVoices = window.speechSynthesis.getVoices();
+  };
+
   function playSpeech(text) {
     if (!isTTSOn || !('speechSynthesis' in window)) return;
     window.speechSynthesis.cancel();
-    const msg = new SpeechSynthesisUtterance(text); msg.lang = 'ko-KR'; msg.rate = 1.0;     
+    const msg = new SpeechSynthesisUtterance(text); 
+    msg.lang = 'ko-KR'; 
+    msg.rate = 1.0; // 속도 (0.9 정도로 낮추면 덜 기계스러울 때도 있습니다)
+    
+    if (availableVoices.length === 0) availableVoices = window.speechSynthesis.getVoices();
+
+    // 퀄리티가 좋은 음성을 1순위로 찾기 (크롬, 사파리 등)
+    const bestVoice = availableVoices.find(v => 
+      v.name.includes('Google 한국의') || // 안드로이드/크롬 고음질
+      v.name.includes('Yuna') ||         // 애플(iOS/Mac) 시리음성
+      v.name.includes('Google Korean')
+    ) || availableVoices.find(v => v.lang === 'ko-KR' || v.lang === 'ko_KR'); // 없으면 기본 한국어
+
+    if (bestVoice) {
+      msg.voice = bestVoice;
+    }
+
     window.speechSynthesis.speak(msg);
   }
 
