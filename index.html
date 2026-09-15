@@ -39,26 +39,66 @@
   .settings-btn { background: none; border: none; color: #868e96; cursor: pointer; padding: 6px; border-radius: 50%; display: flex; transition: background 0.2s, color 0.2s; }
   .settings-btn:active { background: white; color: #343a40; }
 
-  /* 🎯 공통 흰색 카드 스타일 */
-  .user-stats-card, .course-card, .shop-item, .vocab-item, .quiz-q-container, .card-face, .modal-content {
+  /* 🎯 공통 흰색 카드 스타일 (user-stats-card 글자만 삭제) */
+  .course-card, .shop-item, .vocab-item, .quiz-q-container, .card-face, .modal-content {
     background-color: white; border: none; box-shadow: 0 12px 36px rgba(180, 160, 140, 0.12);
   }
 
-  /* 🎯 치이카와 유저 상태창 UI (다이어트 적용) */
-  .user-stats-card { border-radius: 24px; padding: 20px; box-sizing: border-box; display: flex; flex-direction: column; gap: 16px; margin-bottom: 36px; position: relative; }
-  
-  .stat-header { display: flex; justify-content: flex-start; align-items: center; gap: 16px; }
-  .stat-info-wrap { display: flex; flex-direction: column; gap: 6px; justify-content: center; }
-  .user-avatar-img { width: 88px; height: 88px; background-color: #f8f9fa; border-radius: 20px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; object-fit: cover; border: 1px solid #f1f3f5; }
+  /* 🎯 재사용되는 텍스트 및 경험치 바 UI (유지) */
   .stat-level { font-size: 17px; font-weight: 700; color: #343a40; display: flex; align-items: center; gap: 8px; }
   .stat-level .badge { background: #4dabf7; color: white; padding: 4px 8px; border-radius: 8px; font-size: 12px; font-weight: 700; }
   .stat-money { font-size: 15px; font-weight: 700; color: #ff922b; display: flex; align-items: center; gap: 4px; }
-  .stat-equip-info { font-size: 13px; color: #868e96; display: flex; align-items: center; gap: 4px; font-weight: 600; }
   
   .exp-wrapper { display: flex; flex-direction: column; gap: 8px; width: 100%; margin-top: 4px; }
   .exp-container { width: 100%; height: 12px; background-color: #f1f3f5; border-radius: 6px; overflow: hidden; position: relative; box-shadow: inset 0 2px 4px rgba(160,140,120,0.05);}
   .exp-bar { height: 100%; width: 0%; background-color: #51cf66; border-radius: 6px; transition: width 0.5s ease-out; box-shadow: inset 0 -2px 4px rgba(0,0,0,0.1);}
   .exp-text { font-size: 11px; font-weight: 700; color: #adb5bd; text-align: right; }
+
+  /* 🎯 마이룸(상태창) 리빌딩 스타일 (새로 추가됨) */
+  .user-room-card { 
+    width: 100%; 
+    height: 240px; 
+    position: relative; 
+    margin-bottom: 32px; 
+    overflow: hidden; 
+    background-color: #f1f3f5; 
+    border-bottom-left-radius: 24px; 
+    border-bottom-right-radius: 24px;
+    box-shadow: 0 12px 24px rgba(180, 160, 140, 0.15);
+  }
+  
+  .room-bg-img { 
+    width: 100%; 
+    height: 100%; 
+    object-fit: cover; 
+    position: absolute; 
+    top: 0; left: 0; 
+    z-index: 1; 
+  }
+  
+  .room-ui-top-left { 
+    position: absolute; 
+    top: 16px; left: 16px; 
+    z-index: 2; 
+    display: flex; flex-direction: column; 
+    background: rgba(255, 255, 255, 0.9); 
+    padding: 12px 16px; 
+    border-radius: 16px; 
+    backdrop-filter: blur(4px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  }
+  
+  .room-character { 
+    position: absolute; 
+    bottom: 25px; 
+    left: 50%; 
+    transform: translateX(-50%); 
+    z-index: 3; 
+    width: 90px; 
+    height: auto; 
+    object-fit: contain;
+    filter: drop-shadow(0 10px 10px rgba(0,0,0,0.25)); 
+  }
 
   /* 🎯 오늘의 할 일 (세련된 사이즈로 다이어트) */
   .course-list { display: flex; flex-direction: column; gap: 12px; margin-bottom: 12px; box-sizing: border-box;}
@@ -212,31 +252,31 @@
     </div>
   </div>
   
-  <div class="responsive-width user-stats-card">
-    <div class="stat-header">
-      <img id="userAvatarImg" class="user-avatar-img" src="./image/chiikawa.png" alt="profile" onerror="this.src='./image/app_logo.png'">
-      <div class="stat-info-wrap">
-        <div class="stat-level">
-          <span class="badge" id="userLevelBadge">백수</span>
-          <span id="userLevelName">치이카와</span>
-        </div>
-        <div class="stat-money">
-          <span class="material-symbols-rounded" style="font-size: 18px;">monetization_on</span>
-          <span id="userMoneyText">0</span>원
-        </div>
-        <div class="stat-equip-info">
-          <span class="material-symbols-rounded" style="font-size:15px;">checkroom</span>
-          <span id="userEquipName">맨몸</span> 장착 중
-        </div>
-      </div>
-    </div>
+  <!-- 🎯 리빌드된 마이룸 (상태창) -->
+  <div class="user-room-card">
+    <!-- 배경 이미지 -->
+    <img id="userRoomBg" class="room-bg-img" src="./image/cave.png" alt="room background">
     
-    <div class="exp-wrapper">
-      <div class="exp-container">
-        <div class="exp-bar" id="userExpBar"></div>
+    <!-- 좌측 상단 UI 패널 -->
+    <div class="room-ui-top-left">
+      <div class="stat-level" style="font-size: 15px;">
+        <span class="badge" id="userLevelBadge">백수</span>
+        <span id="userLevelName">치이카와</span>
       </div>
-      <div class="exp-text" id="userExpText">EXP 0 / 100</div>
+      <div class="stat-money" style="font-size: 14px; margin-top: 2px;">
+        <span class="material-symbols-rounded" style="font-size: 16px;">monetization_on</span>
+        <span id="userMoneyText">0</span>원
+      </div>
+      <div class="exp-wrapper" style="width: 130px; margin-top: 6px;">
+        <div class="exp-container" style="height: 10px;">
+          <div class="exp-bar" id="userExpBar"></div>
+        </div>
+        <div class="exp-text" id="userExpText" style="text-align: right; color: #868e96; margin-top: 2px;">EXP 0 / 100</div>
+      </div>
     </div>
+
+    <!-- 중앙 캐릭터 -->
+    <img id="userAvatarImg" class="room-character" src="./image/chiikawa.png" alt="character" onerror="this.src='./image/app_logo.png'">
   </div>
   
   <div class="responsive-width course-list">
@@ -459,11 +499,7 @@
       { id: 'c_chiikawa', name: '치이카와', price: 0, desc: '다정하고 눈물이 많은 기본 캐릭터' },
       { id: 'c_hachiware', name: '하치와레', price: 1000, desc: '긍정적이고 말할 줄 아는 고양이' },
       { id: 'c_usagi', name: '우사기', price: 1500, desc: '우라라라! 자유분방한 천재 토끼' },
-      { id: 'c_momonga', name: '모몽가', price: 2000, desc: '귀여움 받는 것을 제일 좋아하는 관종' },
-      { id: 'c_armor', name: '갑옷씨', price: 2500, desc: '다정하고 손재주가 좋은 포셰트 갑옷씨' },
-      { id: 'c_chimera', name: '키메라', price: 3000, desc: '이런 모습이 되어버렸어... 슬픈 키메라' },
-      { id: 'c_dekatsuyo', name: '데카츠요', price: 3500, desc: '크고 강한 녀석. 사실은 착할지도?' },
-      { id: 'c_anoko', name: '아노코', price: 4000, desc: '커다랗고 푹신한 정체불명의 몬스터' }
+      { id: 'c_momonga', name: '모몽가', price: 2000, desc: '귀여움 받는 것을 제일 좋아하는 관종' }
     ],
     equip: [
       { id: 'e_none', name: '맨몸', price: 0, desc: '기본 상태입니다.' },
@@ -471,12 +507,17 @@
       { id: 'e_pajama', name: '분홍 파자마', price: 800, desc: '포근하고 귀여운 수면 잠옷' },
       { id: 'e_stick', name: '토벌 랭커의 봉', price: 1200, desc: '고수들만 들 수 있는 전설의 무기' },
       { id: 'e_beetle', name: '풍뎅이', price: 1500, desc: '작고 소중한 친구. 함께 싸워줍니다.' }
+    ],
+    house: [
+      { id: 'h_cave', name: '아늑한 동굴', price: 0, desc: '바람을 피할 수 있는 시원한 기본 동굴' },
+      { id: 'h_yogurt', name: '요구르트 집', price: 3000, desc: '달콤한 냄새가 나는 커다란 요구르트 병' }
     ]
   };
 
   let userStats = {
     levelIdx: 0, exp: 0, money: 0, lastLoginDate: "", dailyStudyDone: false, dailyQuizDone: false,
-    character: 'c_chiikawa', equipment: 'e_none', ownedItems: ['c_chiikawa', 'e_none'],
+    character: 'c_chiikawa', equipment: 'e_none', house: 'h_cave', // house 추가
+    ownedItems: ['c_chiikawa', 'e_none', 'h_cave'], // h_cave 추가
     streakDays: 0
   };
 
@@ -632,16 +673,21 @@
     const lvl = LEVELS[userStats.levelIdx];
     document.getElementById('userLevelBadge').innerText = lvl.name;
     const charObj = SHOP_DB.char.find(c => c.id === userStats.character);
-    const eqObj = SHOP_DB.equip.find(e => e.id === userStats.equipment);
     document.getElementById('userLevelName').innerText = charObj ? charObj.name : '치이카와';
-    document.getElementById('userEquipName').innerText = eqObj ? eqObj.name : '맨몸';
     document.getElementById('userMoneyText').innerText = userStats.money;
+    
     const expPercent = (userStats.exp / lvl.maxExp) * 100;
     document.getElementById('userExpBar').style.width = `${expPercent}%`;
     document.getElementById('userExpText').innerText = `EXP ${userStats.exp} / ${lvl.maxExp}`;
     
-    document.getElementById('streakDaysText').innerText = userStats.streakDays || 1;
-    if (charObj) { document.getElementById('userAvatarImg').src = getImageUrl(userStats.character); }
+    // 캐릭터 및 배경 이미지 적용 (이름에서 c_, h_ 제거 후 이미지 매칭)
+    if (charObj) { 
+      document.getElementById('userAvatarImg').src = `./image/${userStats.character.replace('c_', '')}.png`; 
+    }
+    
+    // 집(배경) 로드 로직
+    const bgName = userStats.house ? userStats.house.replace('h_', '') : 'cave';
+    document.getElementById('userRoomBg').src = `./image/${bgName}.png`;
   }
 
   let currentShopTab = 'char';
