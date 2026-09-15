@@ -20,184 +20,205 @@
   .screen { position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; opacity: 0; visibility: hidden; transition: opacity 0.4s ease, transform 0.4s ease; transform: translateY(20px); padding-top: 50px; box-sizing: border-box; }
   .screen.active { opacity: 1; visibility: visible; transform: translateY(0); }
   
-  .auth-container { width: 280px; display: flex; flex-direction: column; gap: 12px; margin-top: 40px; }
+  /* 반응형 넓이 변수 세팅 */
+  .responsive-width { width: 90%; max-width: 440px; }
+
+  .auth-container { display: flex; flex-direction: column; gap: 12px; margin-top: 40px; }
   .google-btn { display: flex; align-items: center; justify-content: center; gap: 12px; background-color: white; color: #1e293b; font-size: 16px; font-weight: 600; padding: 16px; border-radius: 12px; border: 1px solid #e2e8f0; cursor: pointer; transition: all 0.2s; box-shadow: 0 2px 8px rgba(0,0,0,0.02); }
   .google-btn:active { transform: scale(0.98); background-color: #f1f5f9; }
   
-  .header-container { width: 320px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
-  .header-title { font-size: 24px; font-weight: 700; color: #0f172a; margin: 0; letter-spacing: -0.5px; }
+  .header-container { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+  .header-title { font-size: 26px; font-weight: 800; color: #0f172a; margin: 0; letter-spacing: -0.5px; }
   .header-title span { color: #3b82f6; }
   .settings-btn { background: none; border: none; color: #64748b; cursor: pointer; padding: 6px; border-radius: 50%; display: flex; transition: background 0.2s, color 0.2s; }
   .settings-btn:active { background: #f1f5f9; color: #0f172a; }
 
-  /* 🎯 치이카와 유저 상태창 UI */
-  .user-stats-card { width: 320px; background-color: white; border-radius: 16px; padding: 16px; box-sizing: border-box; display: flex; flex-direction: column; gap: 10px; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03); border: 1px solid #e2e8f0; margin-bottom: 20px; position: relative; overflow: hidden; }
+  /* 🎯 치이카와 유저 상태창 UI (이미지 영역 확보) */
+  .user-stats-card { background-color: white; border-radius: 20px; padding: 20px; box-sizing: border-box; display: flex; flex-direction: column; gap: 12px; box-shadow: 0 4px 24px rgba(0, 0, 0, 0.04); border: 1px solid #e2e8f0; margin-bottom: 20px; position: relative; overflow: hidden; }
   .stat-header { display: flex; justify-content: space-between; align-items: center; }
-  .stat-level { font-size: 16px; font-weight: 800; color: #0f172a; display: flex; align-items: center; gap: 6px; }
+  .stat-info-wrap { display: flex; flex-direction: column; gap: 8px; }
+  
+  /* 캐릭터 프로필 이미지 플레이스홀더 */
+  .user-avatar-img { width: 72px; height: 72px; background: #f1f5f9; border-radius: 16px; border: 2px dashed #cbd5e1; display: flex; align-items: center; justify-content: center; color: #94a3b8; font-size: 13px; font-weight: 600; flex-shrink: 0; margin-left: 12px; }
+
+  .stat-level { font-size: 18px; font-weight: 800; color: #0f172a; display: flex; align-items: center; gap: 8px; }
   .stat-level .badge { background: #3b82f6; color: white; padding: 4px 8px; border-radius: 8px; font-size: 12px; font-weight: 700; }
   .stat-money { font-size: 16px; font-weight: 700; color: #f59e0b; display: flex; align-items: center; gap: 4px; }
-  .stat-equip-info { font-size: 13px; color: #64748b; display: flex; align-items: center; gap: 4px; font-weight: 500; }
-  .exp-container { width: 100%; height: 8px; background-color: #f1f5f9; border-radius: 4px; overflow: hidden; position: relative; }
+  .stat-equip-info { font-size: 14px; color: #64748b; display: flex; align-items: center; gap: 4px; font-weight: 500; }
+  .exp-container { width: 100%; height: 8px; background-color: #f1f5f9; border-radius: 4px; overflow: hidden; position: relative; margin-top: 4px;}
   .exp-bar { height: 100%; width: 0%; background-color: #10b981; border-radius: 4px; transition: width 0.5s ease-out; }
-  .exp-text { font-size: 11px; font-weight: 600; color: #64748b; text-align: right; margin-top: -4px; }
+  .exp-text { font-size: 12px; font-weight: 600; color: #64748b; text-align: right; margin-top: -2px; }
 
-  .course-list { width: 320px; display: flex; flex-direction: column; gap: 12px; }
-  .course-card { background-color: white; border-radius: 16px; padding: 20px; box-sizing: border-box; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03); border: 1px solid #f1f5f9; cursor: pointer; transition: transform 0.2s; }
+  .course-list { display: flex; flex-direction: column; gap: 12px; }
+  .course-header { display: flex; justify-content: space-between; align-items: center; width: 100%; padding: 0 4px; box-sizing: border-box; margin-bottom: 4px; }
+  .course-header h3 { margin: 0; font-size: 16px; font-weight: 700; color: #0f172a; }
+  .course-card { background-color: white; border-radius: 20px; padding: 20px; box-sizing: border-box; box-shadow: 0 4px 24px rgba(0, 0, 0, 0.04); border: 1px solid #f1f5f9; cursor: pointer; transition: transform 0.2s; }
   .course-card:active { transform: scale(0.98); }
-  .course-title { display: flex; align-items: center; gap: 8px; font-size: 17px; font-weight: 600; color: #0f172a; margin-bottom: 8px; }
-  .course-title .material-symbols-rounded { color: #3b82f6; font-size: 20px; }
-  .course-desc { display: flex; align-items: center; gap: 4px; font-size: 13px; color: #64748b; }
+  .course-title { display: flex; align-items: center; gap: 8px; font-size: 18px; font-weight: 700; color: #0f172a; margin-bottom: 8px; }
+  .course-title .material-symbols-rounded { color: #3b82f6; font-size: 22px; }
+  .course-desc { display: flex; align-items: center; gap: 4px; font-size: 14px; color: #64748b; font-weight: 500; }
 
-  .btn-row { display: flex; gap: 10px; width: 320px; margin-top: 10px; }
-  .action-btn { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; background-color: white; color: #475569; font-size: 13px; font-weight: 600; padding: 14px; border-radius: 16px; border: 1px solid #f1f5f9; cursor: pointer; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03); transition: transform 0.2s; }
+  .btn-row { display: flex; gap: 12px; margin-top: 12px; }
+  .action-btn { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; background-color: white; color: #475569; font-size: 14px; font-weight: 600; padding: 18px 12px; border-radius: 16px; border: 1px solid #e2e8f0; cursor: pointer; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03); transition: transform 0.2s; }
   .action-btn:active { transform: scale(0.96); background-color: #f8fafc; }
-  .action-btn .material-symbols-rounded { font-size: 24px; }
+  .action-btn .material-symbols-rounded { font-size: 26px; }
 
   /* 🎯 상점 UI 전용 CSS */
-  .shop-header { width: 320px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
-  .shop-tabs { display: flex; width: 320px; background: #f1f5f9; border-radius: 12px; padding: 4px; box-sizing: border-box; margin-bottom: 16px; }
-  .shop-tab { flex: 1; text-align: center; padding: 10px 0; font-size: 14px; font-weight: 700; color: #64748b; cursor: pointer; border-radius: 8px; transition: 0.2s; }
+  .shop-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
+  .shop-tabs { display: flex; background: #f1f5f9; border-radius: 12px; padding: 6px; box-sizing: border-box; margin-bottom: 20px; }
+  .shop-tab { flex: 1; text-align: center; padding: 12px 0; font-size: 15px; font-weight: 700; color: #64748b; cursor: pointer; border-radius: 8px; transition: 0.2s; }
   .shop-tab.active { background: white; color: #0f172a; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
-  .shop-list { width: 320px; flex: 1; overflow-y: auto; padding-bottom: 40px; display: flex; flex-direction: column; gap: 12px; }
+  .shop-list { flex: 1; overflow-y: auto; padding-bottom: 40px; display: flex; flex-direction: column; gap: 14px; width: 100%;}
   .shop-list::-webkit-scrollbar { display: none; }
-  .shop-item { background: white; padding: 16px; border-radius: 16px; border: 1px solid #e2e8f0; display: flex; justify-content: space-between; align-items: center; }
-  .shop-item-info h4 { margin: 0 0 4px 0; font-size: 16px; font-weight: 700; color: #0f172a; }
-  .shop-item-info p { margin: 0; font-size: 12px; color: #64748b; }
-  .shop-buy-btn { padding: 8px 14px; font-size: 13px; font-weight: 700; border-radius: 8px; border: none; cursor: pointer; transition: 0.2s; display: flex; align-items: center; gap: 4px; }
+  
+  .shop-item { background: white; padding: 16px; border-radius: 16px; border: 1px solid #e2e8f0; display: flex; gap: 14px; align-items: center; box-shadow: 0 2px 10px rgba(0,0,0,0.02); }
+  /* 아이템 이미지 플레이스홀더 */
+  .shop-item-img { width: 64px; height: 64px; background: #f8fafc; border-radius: 12px; border: 2px dashed #cbd5e1; display: flex; align-items: center; justify-content: center; color: #94a3b8; font-size: 12px; font-weight: 600; flex-shrink: 0; }
+  
+  .shop-item-content { display: flex; flex: 1; justify-content: space-between; align-items: center; gap: 8px; }
+  .shop-item-info { flex: 1; }
+  .shop-item-info h4 { margin: 0 0 6px 0; font-size: 16px; font-weight: 700; color: #0f172a; line-height: 1.2; }
+  .shop-item-info p { margin: 0; font-size: 13px; color: #64748b; line-height: 1.4; word-break: keep-all; }
+  .shop-buy-btn { padding: 10px 16px; font-size: 14px; font-weight: 700; border-radius: 10px; border: none; cursor: pointer; transition: 0.2s; display: flex; align-items: center; justify-content: center; gap: 4px; flex-shrink: 0; }
   .btn-buy { background: #eff6ff; color: #3b82f6; }
-  .btn-equip { background: #f1f5f9; color: #475569; }
+  .btn-equip { background: #f1f5f9; color: #475569; border: 1px solid #e2e8f0; }
   .btn-equipped { background: #10b981; color: white; }
 
   /* 단어장, 퀴즈, 모달 등 공통 요소 */
-  .vocab-header { width: 320px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
-  .vocab-list { width: 320px; flex: 1; overflow-y: auto; padding-bottom: 40px; display: flex; flex-direction: column; gap: 10px; }
+  .vocab-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+  .vocab-list { flex: 1; overflow-y: auto; padding-bottom: 40px; display: flex; flex-direction: column; gap: 12px; }
   .vocab-list::-webkit-scrollbar { display: none; }
-  .vocab-item { background: white; padding: 16px; border-radius: 12px; border: 1px solid #f1f5f9; display: flex; gap: 16px; align-items: center; }
-  .vocab-hanja { font-size: 28px; font-weight: 500; color: #0f172a; width: 44px; text-align: center; }
+  .vocab-item { background: white; padding: 20px; border-radius: 16px; border: 1px solid #f1f5f9; display: flex; gap: 16px; align-items: center; box-shadow: 0 2px 12px rgba(0,0,0,0.02); }
+  .vocab-hanja { font-size: 32px; font-weight: 600; color: #0f172a; width: 48px; text-align: center; }
   .vocab-details { flex: 1; }
-  .vocab-meaning { font-size: 15px; font-weight: 600; color: #3b82f6; margin-bottom: 4px; }
-  .vocab-story { font-size: 13px; color: #64748b; line-height: 1.5; word-break: keep-all; }
-  .level-badge { font-size: 11px; padding: 4px 8px; border-radius: 6px; font-weight: 600; background: #f1f5f9; color: #64748b; }
+  .vocab-meaning { font-size: 16px; font-weight: 700; color: #3b82f6; margin-bottom: 6px; }
+  .vocab-story { font-size: 14px; color: #64748b; line-height: 1.5; word-break: keep-all; }
+  .level-badge { font-size: 12px; padding: 4px 10px; border-radius: 6px; font-weight: 600; background: #f1f5f9; color: #64748b; }
   .level-high { background: #eff6ff; color: #3b82f6; }
-  .level-mid { background: #f8fafc; color: #475569; border: 1px solid #e2e8f0; }
 
-  .top-nav { width: 320px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; }
-  .back-btn { display: flex; align-items: center; gap: 4px; background: none; border: none; color: #64748b; font-size: 15px; font-weight: 500; cursor: pointer; padding: 8px 0; }
-  .sound-btn { display: flex; align-items: center; justify-content: center; background: transparent; border: 1px solid #e2e8f0; color: #64748b; width: 36px; height: 36px; border-radius: 50%; cursor: pointer; transition: 0.2s; }
+  .top-nav { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; }
+  .back-btn { display: flex; align-items: center; gap: 4px; background: none; border: none; color: #64748b; font-size: 16px; font-weight: 600; cursor: pointer; padding: 8px 0; }
+  .sound-btn { display: flex; align-items: center; justify-content: center; background: transparent; border: 1px solid #e2e8f0; color: #64748b; width: 40px; height: 40px; border-radius: 50%; cursor: pointer; transition: 0.2s; }
   .sound-btn.active { background: #f1f5f9; color: #0f172a; border-color: #cbd5e1; }
 
-  .progress-container { width: 320px; height: 6px; background-color: #f1f5f9; border-radius: 4px; overflow: hidden; margin-bottom: 24px; }
+  .progress-container { height: 8px; background-color: #f1f5f9; border-radius: 4px; overflow: hidden; margin-bottom: 24px; }
   .progress-bar { height: 100%; width: 0%; background-color: #3b82f6; border-radius: 4px; transition: width 0.5s ease-out; }
   
-  .card-container { width: 320px; height: 400px; perspective: 1000px; cursor: pointer; margin-bottom: 24px; position: relative; }
+  .card-container { height: 50vh; min-height: 380px; perspective: 1000px; cursor: pointer; margin-bottom: 24px; position: relative; }
   .card { width: 100%; height: 100%; position: absolute; transition: transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1); transform-style: preserve-3d; will-change: transform; }
   .card.flipped { transform: rotateY(180deg); }
   .card.dragging { transition: none; }
-  .card-face { position: absolute; width: 100%; height: 100%; backface-visibility: hidden; border-radius: 20px; background-color: white; border: 1px solid #e2e8f0; box-shadow: 0 8px 30px rgba(0, 0, 0, 0.04); display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 32px; box-sizing: border-box; text-align: center; }
-  .card-front { font-size: 110px; font-weight: 500; color: #0f172a; }
+  .card-face { position: absolute; width: 100%; height: 100%; backface-visibility: hidden; border-radius: 24px; background-color: white; border: 1px solid #e2e8f0; box-shadow: 0 12px 40px rgba(0, 0, 0, 0.05); display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 32px; box-sizing: border-box; text-align: center; }
+  .card-front { font-size: 120px; font-weight: 600; color: #0f172a; }
   .card-back { transform: rotateY(180deg); }
-  .mini-hanja { font-size: 24px; font-weight: 500; color: #94a3b8; margin: 0 0 8px 0; }
-  .meaning { font-size: 28px; font-weight: 700; color: #3b82f6; margin: 0 0 20px 0; letter-spacing: -0.5px; }
-  .radical { font-size: 14px; color: #475569; margin: 0 0 20px 0; background-color: #f8fafc; padding: 6px 12px; border-radius: 8px; font-weight: 500; border: 1px solid #e2e8f0; }
-  .story { font-size: 15px; color: #475569; line-height: 1.6; word-break: keep-all; }
+  .mini-hanja { font-size: 26px; font-weight: 600; color: #94a3b8; margin: 0 0 12px 0; }
+  .meaning { font-size: 30px; font-weight: 700; color: #3b82f6; margin: 0 0 20px 0; letter-spacing: -0.5px; }
+  .radical { font-size: 15px; color: #475569; margin: 0 0 20px 0; background-color: #f8fafc; padding: 8px 14px; border-radius: 10px; font-weight: 600; border: 1px solid #e2e8f0; }
+  .story { font-size: 16px; color: #475569; line-height: 1.6; word-break: keep-all; }
   
-  .swipe-hint { position: absolute; top: 24px; font-size: 20px; font-weight: 700; opacity: 0; transition: opacity 0.2s; pointer-events: none; padding: 8px 16px; border-radius: 8px; z-index: 10; }
-  .hint-bad { color: #ef4444; border: 2px solid #ef4444; right: 24px; transform: rotate(10deg); }
-  .hint-perfect { color: #10b981; border: 2px solid #10b981; left: 24px; transform: rotate(-10deg); }
-  .hint-soso { color: #f59e0b; border: 2px solid #f59e0b; top: auto; bottom: 24px; left: 50%; transform: translateX(-50%); }
+  .swipe-hint { position: absolute; top: 24px; font-size: 22px; font-weight: 700; opacity: 0; transition: opacity 0.2s; pointer-events: none; padding: 10px 20px; border-radius: 10px; z-index: 10; background: white;}
+  .hint-bad { color: #ef4444; border: 3px solid #ef4444; right: 24px; transform: rotate(10deg); }
+  .hint-perfect { color: #10b981; border: 3px solid #10b981; left: 24px; transform: rotate(-10deg); }
+  .hint-soso { color: #f59e0b; border: 3px solid #f59e0b; top: auto; bottom: 30px; left: 50%; transform: translateX(-50%); }
 
-  .eval-buttons { display: flex; gap: 10px; opacity: 0; transform: translateY(10px); transition: all 0.4s ease; pointer-events: none; width: 320px; }
+  .eval-buttons { display: flex; gap: 12px; opacity: 0; transform: translateY(10px); transition: all 0.4s ease; pointer-events: none; }
   .eval-buttons.show { opacity: 1; transform: translateY(0); pointer-events: auto; }
-  .eval-buttons button { flex: 1; padding: 16px 0; font-size: 15px; font-weight: 600; border: none; border-radius: 12px; cursor: pointer; transition: transform 0.1s; }
+  .eval-buttons button { flex: 1; padding: 18px 0; font-size: 16px; font-weight: 700; border: none; border-radius: 16px; cursor: pointer; transition: transform 0.1s; }
   .eval-buttons button:active { transform: scale(0.96); }
-  .btn-bad { background-color: #fef2f2; color: #ef4444; }
-  .btn-soso { background-color: #fffbeb; color: #f59e0b; }
-  .btn-perfect { background-color: #ecfdf5; color: #10b981; }
+  .btn-bad { background-color: #fef2f2; color: #ef4444; border: 1px solid #fee2e2; }
+  .btn-soso { background-color: #fffbeb; color: #f59e0b; border: 1px solid #fef3c7; }
+  .btn-perfect { background-color: #ecfdf5; color: #10b981; border: 1px solid #d1fae5; }
 
-  .quiz-q-container { width: 320px; background: white; border-radius: 20px; padding: 48px 0; text-align: center; border: 1px solid #e2e8f0; box-shadow: 0 8px 30px rgba(0, 0, 0, 0.04); margin-bottom: 24px; }
-  .quiz-hanja { font-size: 80px; font-weight: 500; color: #0f172a; line-height: 1; }
-  .quiz-options { display: flex; flex-direction: column; gap: 10px; width: 320px; }
-  .quiz-opt-btn { padding: 18px; border-radius: 12px; border: 1px solid #cbd5e1; background: white; font-size: 16px; font-weight: 600; color: #334155; cursor: pointer; transition: all 0.2s; word-break: keep-all; }
-  .quiz-opt-btn.correct { background-color: #eff6ff; border-color: #3b82f6; color: #3b82f6; }
+  .quiz-q-container { background: white; border-radius: 24px; padding: 60px 0; text-align: center; border: 1px solid #e2e8f0; box-shadow: 0 12px 40px rgba(0, 0, 0, 0.05); margin-bottom: 24px; }
+  .quiz-hanja { font-size: 90px; font-weight: 600; color: #0f172a; line-height: 1; }
+  .quiz-options { display: flex; flex-direction: column; gap: 12px; }
+  .quiz-opt-btn { padding: 20px; border-radius: 16px; border: 1px solid #cbd5e1; background: white; font-size: 17px; font-weight: 600; color: #334155; cursor: pointer; transition: all 0.2s; word-break: keep-all; }
+  .quiz-opt-btn.correct { background-color: #eff6ff; border-color: #3b82f6; color: #3b82f6; font-weight: 700; }
   .quiz-opt-btn.wrong { background-color: #fef2f2; border-color: #ef4444; color: #ef4444; opacity: 0.8; }
 
-  .empty-state { display: none; flex-direction: column; align-items: center; justify-content: center; height: 380px; width: 320px; text-align: center; margin-top: 20px; }
+  .empty-state { display: none; flex-direction: column; align-items: center; justify-content: center; height: 50vh; text-align: center; }
   .empty-state.show { display: flex; }
-  .empty-icon { color: #94a3b8; font-size: 48px; margin-bottom: 16px; }
-  .empty-title { font-size: 18px; font-weight: 700; color: #0f172a; margin-bottom: 8px; }
-  .empty-desc { font-size: 14px; color: #64748b; line-height: 1.5; }
+  .empty-icon { color: #cbd5e1; font-size: 56px; margin-bottom: 16px; }
+  .empty-title { font-size: 20px; font-weight: 700; color: #0f172a; margin-bottom: 8px; }
+  .empty-desc { font-size: 15px; color: #64748b; line-height: 1.5; }
 
-  .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15, 23, 42, 0.4); backdrop-filter: blur(4px); display: flex; justify-content: center; align-items: center; opacity: 0; visibility: hidden; transition: all 0.3s ease; z-index: 999; }
+  .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15, 23, 42, 0.5); backdrop-filter: blur(4px); display: flex; justify-content: center; align-items: center; opacity: 0; visibility: hidden; transition: all 0.3s ease; z-index: 999; }
   .modal-overlay.show { opacity: 1; visibility: visible; }
-  .modal-content { background: white; width: 280px; border-radius: 20px; padding: 32px 24px; text-align: center; transform: scale(0.9); transition: transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1); box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1); }
+  .modal-content { background: white; width: 300px; border-radius: 24px; padding: 36px 24px; text-align: center; transform: scale(0.9); transition: transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1); box-shadow: 0 24px 50px rgba(0, 0, 0, 0.15); }
   .modal-overlay.show .modal-content { transform: scale(1); }
-  .modal-icon { color: #3b82f6; font-size: 48px; margin-bottom: 16px; }
-  .modal-title { font-size: 20px; font-weight: 700; color: #0f172a; margin: 0 0 8px 0; }
-  .modal-desc { font-size: 14px; color: #64748b; margin: 0 0 24px 0; line-height: 1.5; }
-  .quiz-score-text { font-size: 32px; font-weight: 700; color: #3b82f6; margin: 16px 0; }
+  .modal-icon { color: #3b82f6; font-size: 52px; margin-bottom: 16px; }
+  .modal-title { font-size: 22px; font-weight: 700; color: #0f172a; margin: 0 0 10px 0; }
+  .modal-desc { font-size: 15px; color: #64748b; margin: 0 0 28px 0; line-height: 1.5; }
+  .quiz-score-text { font-size: 36px; font-weight: 800; color: #3b82f6; margin: 16px 0; }
   
-  .input-group { display: flex; justify-content: center; align-items: center; gap: 8px; margin-bottom: 24px; }
-  .input-group input { width: 80px; padding: 12px; font-size: 18px; font-weight: 600; text-align: center; border: 1px solid #cbd5e1; border-radius: 8px; outline: none; }
+  .input-group { display: flex; justify-content: center; align-items: center; gap: 10px; margin-bottom: 28px; }
+  .input-group input { width: 90px; padding: 14px; font-size: 20px; font-weight: 700; text-align: center; border: 2px solid #cbd5e1; border-radius: 12px; outline: none; transition: 0.2s; color: #0f172a;}
   .input-group input:focus { border-color: #3b82f6; }
-  .modal-buttons { display: flex; gap: 10px; width: 100%; }
-  .btn-primary { flex: 1; padding: 14px; background-color: #3b82f6; color: white; font-size: 15px; font-weight: 600; border: none; border-radius: 10px; cursor: pointer; }
-  .btn-secondary { flex: 1; padding: 14px; background-color: #f1f5f9; color: #475569; font-size: 15px; font-weight: 600; border: none; border-radius: 10px; cursor: pointer; }
+  .modal-buttons { display: flex; gap: 12px; width: 100%; }
+  .btn-primary { flex: 1; padding: 16px; background-color: #3b82f6; color: white; font-size: 16px; font-weight: 700; border: none; border-radius: 14px; cursor: pointer; transition: 0.2s; }
+  .btn-secondary { flex: 1; padding: 16px; background-color: #f1f5f9; color: #475569; font-size: 16px; font-weight: 700; border: none; border-radius: 14px; cursor: pointer; transition: 0.2s; }
 </style>
 </head>
 <body>
 
 <!-- 🔐 로그인 화면 -->
 <div id="authScreen" class="screen active">
-  <div class="header-title" style="text-align: center; width: 100%; margin-bottom: 40px; font-size: 22px;">
-    <span class="material-symbols-rounded" style="font-size: 48px; color: #3b82f6; margin-bottom: 12px; display: block;">school</span>
+  <div class="responsive-width header-title" style="text-align: center; margin-bottom: 40px; font-size: 24px;">
+    <span class="material-symbols-rounded" style="font-size: 56px; color: #3b82f6; margin-bottom: 16px; display: block;">school</span>
     <span>Vocawa</span> 시작하기
   </div>
-  <div class="auth-container">
+  <div class="responsive-width auth-container">
     <button class="google-btn" id="googleLoginBtn" onclick="handleGoogleLogin()">
-      <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google" style="width: 20px; height: 20px;">
+      <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google" style="width: 22px; height: 22px;">
       Google 계정으로 로그인
     </button>
-    <p id="authErrorMsg" style="color: #ef4444; font-size: 13px; text-align: center; margin-top: 12px; font-weight: 500;"></p>
+    <p id="authErrorMsg" style="color: #ef4444; font-size: 14px; text-align: center; margin-top: 14px; font-weight: 500;"></p>
   </div>
 </div>
 
 <!-- 홈 화면 -->
 <div id="homeScreen" class="screen">
-  <div class="header-container">
-    <div class="header-title"><span>Vocawa</span> 시작하기</div>
-    <div style="display: flex; gap: 8px;">
-      <button class="settings-btn" onclick="handleLogout()" title="로그아웃">
-        <span class="material-symbols-rounded" style="font-size: 22px;">logout</span>
+  <div class="responsive-width header-container">
+    <div class="header-title"><span>Vocawa</span> 홈</div>
+    <div style="display: flex; gap: 12px;">
+      <!-- 설정이 왼쪽, 로그아웃이 오른쪽으로 위치 변경 -->
+      <button class="settings-btn" onclick="openSettings()" title="설정">
+        <span class="material-symbols-rounded" style="font-size: 26px;">tune</span>
       </button>
-      <button class="settings-btn" onclick="openSettings()">
-        <span class="material-symbols-rounded" style="font-size: 24px;">tune</span>
+      <button class="settings-btn" onclick="handleLogout()" title="로그아웃">
+        <span class="material-symbols-rounded" style="font-size: 24px;">logout</span>
       </button>
     </div>
   </div>
   
   <!-- 🎯 치이카와 테마 상태창 -->
-  <div class="user-stats-card">
+  <div class="responsive-width user-stats-card">
     <div class="stat-header">
-      <div class="stat-level">
-        <span class="badge" id="userLevelBadge">백수</span>
-        <span id="userLevelName">치이카와</span>
+      <div class="stat-info-wrap">
+        <div class="stat-level">
+          <span class="badge" id="userLevelBadge">백수</span>
+          <span id="userLevelName">치이카와</span>
+        </div>
+        <div class="stat-money">
+          <span class="material-symbols-rounded" style="font-size: 20px;">monetization_on</span>
+          <span id="userMoneyText">0</span>원
+        </div>
+        <div class="stat-equip-info">
+          <span class="material-symbols-rounded" style="font-size:16px;">checkroom</span>
+          <span id="userEquipName">맨몸</span> 장착 중
+        </div>
       </div>
-      <div class="stat-money">
-        <span class="material-symbols-rounded" style="font-size: 18px;">monetization_on</span>
-        <span id="userMoneyText">0</span>원
-      </div>
+      <!-- 🎯 프로필 이미지 공간 -->
+      <div class="user-avatar-img" id="userAvatarImg">이미지</div>
     </div>
-    <div class="stat-equip-info">
-      <span class="material-symbols-rounded" style="font-size:14px;">checkroom</span>
-      장착 중: <span id="userEquipName">맨몸</span>
-    </div>
+    
     <div class="exp-container">
       <div class="exp-bar" id="userExpBar"></div>
     </div>
     <div class="exp-text" id="userExpText">EXP 0 / 100</div>
   </div>
   
-  <div class="course-list">
+  <div class="responsive-width course-list">
     <div class="course-header">
       <h3>오늘의 할 일</h3>
     </div>
@@ -210,7 +231,7 @@
     </div>
   </div>
 
-  <div class="btn-row">
+  <div class="responsive-width btn-row">
     <button class="action-btn" onclick="openShop()">
       <span class="material-symbols-rounded" style="color: #f59e0b;">storefront</span>
       치장 상점
@@ -228,69 +249,69 @@
 
 <!-- 🎯 치장 상점 화면 -->
 <div id="shopScreen" class="screen">
-  <div class="shop-header">
+  <div class="responsive-width shop-header">
     <button class="settings-btn" onclick="closeScreen('shopScreen')">
-      <span class="material-symbols-rounded" style="font-size: 22px;">close</span>
+      <span class="material-symbols-rounded" style="font-size: 26px;">close</span>
     </button>
-    <h2 style="font-size: 18px; font-weight: 700; margin: 0;">치장 상점</h2>
-    <div class="stat-money" style="font-size: 14px;">
-      <span class="material-symbols-rounded" style="font-size: 16px;">monetization_on</span>
+    <h2 style="font-size: 20px; font-weight: 800; margin: 0;">치장 상점</h2>
+    <div class="stat-money" style="font-size: 15px;">
+      <span class="material-symbols-rounded" style="font-size: 18px;">monetization_on</span>
       <span id="shopMoneyText">0</span>원
     </div>
   </div>
   
-  <div class="shop-tabs">
+  <div class="responsive-width shop-tabs">
     <div class="shop-tab active" id="tabChar" onclick="changeShopTab('char')">캐릭터</div>
     <div class="shop-tab" id="tabEquip" onclick="changeShopTab('equip')">장비/의상</div>
   </div>
   
-  <div class="shop-list" id="shopListContainer"></div>
+  <div class="responsive-width shop-list" id="shopListContainer"></div>
 </div>
 
 <!-- 단어장 화면 -->
 <div id="vocabScreen" class="screen">
-  <div class="vocab-header">
+  <div class="responsive-width vocab-header">
     <button class="settings-btn" onclick="closeScreen('vocabScreen')">
-      <span class="material-symbols-rounded" style="font-size: 22px;">close</span>
+      <span class="material-symbols-rounded" style="font-size: 26px;">close</span>
     </button>
-    <h2 style="font-size: 18px; font-weight: 700; margin: 0;">내 단어장</h2>
+    <h2 style="font-size: 20px; font-weight: 800; margin: 0;">내 단어장</h2>
     <div class="vocab-stats" id="vocabStatsCount">0 / 2355</div>
   </div>
-  <div class="vocab-list" id="vocabListContainer"></div>
+  <div class="responsive-width vocab-list" id="vocabListContainer"></div>
 </div>
 
 <!-- 모의고사 화면 -->
 <div id="quizScreen" class="screen">
-  <div class="top-nav">
+  <div class="responsive-width top-nav">
     <button class="back-btn" onclick="closeScreen('quizScreen')">
-      <span class="material-symbols-rounded" style="font-size: 18px;">close</span> 중단하기
+      <span class="material-symbols-rounded" style="font-size: 20px;">close</span> 중단하기
     </button>
     <div class="quiz-header-text" id="quizProgressText">문제 1/10</div>
     <div style="width: 24px;"></div> 
   </div>
-  <div class="quiz-q-container"><div class="quiz-hanja" id="quizHanjaTarget"></div></div>
-  <div class="quiz-options" id="quizOptionsContainer"></div>
+  <div class="responsive-width quiz-q-container"><div class="quiz-hanja" id="quizHanjaTarget"></div></div>
+  <div class="responsive-width quiz-options" id="quizOptionsContainer"></div>
 </div>
 
 <!-- 학습 화면 -->
 <div id="learningScreen" class="screen">
-  <div class="top-nav">
+  <div class="responsive-width top-nav">
     <button class="back-btn" onclick="goHome()">
-      <span class="material-symbols-rounded" style="font-size: 18px;">arrow_back_ios_new</span> 뒤로가기
+      <span class="material-symbols-rounded" style="font-size: 20px;">arrow_back_ios_new</span> 뒤로가기
     </button>
     <button class="sound-btn active" id="ttsToggleBtn" onclick="toggleTTS()">
-      <span class="material-symbols-rounded" style="font-size: 18px;" id="ttsIcon">volume_up</span>
+      <span class="material-symbols-rounded" style="font-size: 20px;" id="ttsIcon">volume_up</span>
     </button>
   </div>
-  <div class="progress-container"><div class="progress-bar" id="progressBar"></div></div>
+  <div class="responsive-width progress-container"><div class="progress-bar" id="progressBar"></div></div>
   
-  <div class="empty-state" id="emptyState">
+  <div class="responsive-width empty-state" id="emptyState">
     <div class="empty-icon material-symbols-rounded">coffee</div>
     <div class="empty-title">오늘 학습 완료</div>
     <div class="empty-desc">충분한 휴식을 취하세요.</div>
   </div>
   
-  <div class="card-container" id="cardContainer">
+  <div class="responsive-width card-container" id="cardContainer">
     <div class="card" id="flashcard" onclick="flipCard()">
       <div class="card-face card-front" id="cardHanja"></div>
       <div class="card-face card-back">
@@ -304,7 +325,7 @@
       </div>
     </div>
   </div>
-  <div class="eval-buttons" id="evalButtons">
+  <div class="responsive-width eval-buttons" id="evalButtons">
     <button class="btn-bad" onclick="processEvaluation('모름')">모름</button>
     <button class="btn-soso" onclick="processEvaluation('헷갈림')">헷갈림</button>
     <button class="btn-perfect" onclick="processEvaluation('완벽함')">완벽함</button>
@@ -348,16 +369,14 @@
 </div>
 
 <script type="module">
-  // 1️⃣ 함수 바인딩
   window.handleGoogleLogin = handleGoogleLogin; window.handleLogout = handleLogout;
   window.startLearning = startLearning; window.openSettings = openSettings; window.closeSettings = closeSettings; window.saveSettings = saveSettings;
   window.openVocab = openVocab; window.closeScreen = closeScreen; window.startQuiz = startQuiz; window.goHome = goHome;
   window.flipCard = flipCard; window.processEvaluation = processEvaluation; window.resetAndGoHome = resetAndGoHome; window.closeQuizResult = closeQuizResult;
-  window.toggleTTS = toggleTTS; window.openShop = openShop; window.changeShopTab = changeShopTab; window.buyOrEquipItem = buyOrEquipItem; window.openCourseModal = openCourseModal; window.closeCourseModal = closeCourseModal; window.confirmCourse = confirmCourse;
+  window.toggleTTS = toggleTTS; window.openShop = openShop; window.changeShopTab = changeShopTab; window.buyOrEquipItem = buyOrEquipItem;
 
   import { initializeApp } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-app.js";
   import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-firestore.js";
-  // 💡 Redirect 대신 signInWithPopup을 가져옵니다.
   import { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-auth.js";
 
   const firebaseConfig = {
@@ -403,18 +422,24 @@
     { name: "제초자격증 4급", maxExp: 1000 }, { name: "제초자격증 3급", maxExp: 1500 }, { name: "제초자격증 2급", maxExp: 2100 }, { name: "제초자격증 1급", maxExp: 3000 }
   ];
 
+  // 🎯 캐릭터와 장비 완벽 업데이트
   const SHOP_DB = {
     char: [
       { id: 'c_chiikawa', name: '치이카와', price: 0, desc: '다정하고 눈물이 많은 기본 캐릭터' },
       { id: 'c_hachiware', name: '하치와레', price: 1000, desc: '긍정적이고 말할 줄 아는 고양이' },
       { id: 'c_usagi', name: '우사기', price: 1500, desc: '우라라라! 자유분방한 천재 토끼' },
-      { id: 'c_momonga', name: '모몬가', price: 2000, desc: '귀여움 받는 것을 제일 좋아하는 관종' }
+      { id: 'c_momonga', name: '모몽가', price: 2000, desc: '귀여움 받는 것을 제일 좋아하는 관종' },
+      { id: 'c_armor', name: '갑옷씨', price: 2500, desc: '다정하고 손재주가 좋은 포셰트 갑옷씨' },
+      { id: 'c_chimera', name: '키메라', price: 3000, desc: '이런 모습이 되어버렸어... 슬픈 키메라' },
+      { id: 'c_dekatsuyo', name: '데카츠요', price: 3500, desc: '크고 강한 녀석. 사실은 착할지도?' },
+      { id: 'c_anoko', name: '아노코', price: 4000, desc: '커다랗고 푹신한 정체불명의 몬스터' }
     ],
     equip: [
       { id: 'e_none', name: '맨몸', price: 0, desc: '기본 상태입니다.' },
       { id: 'e_sasumata', name: '파란색 사스마타', price: 500, desc: '초보 토벌자를 위한 기본 무기' },
       { id: 'e_pajama', name: '분홍 파자마', price: 800, desc: '포근하고 귀여운 수면 잠옷' },
-      { id: 'e_stick', name: '토벌 랭커의 봉', price: 1200, desc: '고수들만 들 수 있는 전설의 무기' }
+      { id: 'e_stick', name: '토벌 랭커의 봉', price: 1200, desc: '고수들만 들 수 있는 전설의 무기' },
+      { id: 'e_beetle', name: '풍뎅이', price: 1500, desc: '작고 소중한 친구. 함께 싸워줍니다.' }
     ]
   };
 
@@ -444,22 +469,23 @@
     }
   });
 
-  // 💡 Popup 방식으로 로그인 함수 변경
   async function handleGoogleLogin() { 
     try {
       const btn = document.getElementById('googleLoginBtn');
       btn.innerHTML = `<span class="material-symbols-rounded">hourglass_empty</span> 팝업창에서 로그인 중...`;
-      
       await signInWithPopup(auth, provider); 
-      // 로그인이 성공하면 onAuthStateChanged가 알아서 화면을 넘겨줍니다.
-
     } catch (e) {
       document.getElementById('authErrorMsg').innerText = "팝업이 차단되었거나 로그인이 취소되었습니다.";
       document.getElementById('googleLoginBtn').innerHTML = `<img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google" style="width: 20px; height: 20px;"> Google 계정으로 로그인`;
     }
   }
 
-  async function handleLogout() { await signOut(auth); }
+  // 🎯 로그아웃 확인 팝업 추가
+  async function handleLogout() { 
+    if (confirm("정말 로그아웃 하시겠습니까? 기기의 연동이 해제됩니다.")) {
+      await signOut(auth); 
+    }
+  }
 
   async function syncToCloud() {
     if (!USER_UID) return; 
@@ -564,6 +590,8 @@
     document.getElementById(tab === 'char' ? 'tabChar' : 'tabEquip').classList.add('active');
     renderShopList();
   }
+  
+  // 🎯 상점 리스트 (이미지 공간 확보)
   function renderShopList() {
     const listData = SHOP_DB[currentShopTab];
     const container = document.getElementById('shopListContainer');
@@ -578,7 +606,17 @@
       } else {
         btnHtml = `<button class="shop-buy-btn btn-buy" onclick="buyOrEquipItem('${item.id}', '${currentShopTab}')">${item.price}원 구매</button>`;
       }
-      return `<div class="shop-item"><div class="shop-item-info"><h4>${item.name}</h4><p>${item.desc}</p></div>${btnHtml}</div>`;
+      return `
+        <div class="shop-item">
+          <div class="shop-item-img">이미지</div>
+          <div class="shop-item-content">
+            <div class="shop-item-info">
+              <h4>${item.name}</h4>
+              <p>${item.desc}</p>
+            </div>
+            ${btnHtml}
+          </div>
+        </div>`;
     }).join('');
   }
 
@@ -623,10 +661,6 @@
     document.getElementById(screenId).classList.remove('active');
     document.getElementById('homeScreen').classList.add('active');
   }
-
-  function openCourseModal() { document.getElementById('courseModal').classList.add('show'); }
-  function closeCourseModal() { document.getElementById('courseModal').classList.remove('show'); }
-  function confirmCourse() { closeCourseModal(); }
 
   function toggleTTS() {
     isTTSOn = !isTTSOn;
@@ -757,7 +791,7 @@
     const learnedCards = myHanjaData.filter(card => card.interval > 0);
     document.getElementById('vocabStatsCount').innerText = `${learnedCards.length} / ${myHanjaData.length}`;
     const listContainer = document.getElementById('vocabListContainer');
-    if (learnedCards.length === 0) { listContainer.innerHTML = `<div class="empty-state show" style="height: 100%;"><div class="empty-icon material-symbols-rounded" style="font-size: 48px;">menu_book</div><div class="empty-desc">학습을 시작해 단어를 누적해 보세요.</div></div>`; return; }
+    if (learnedCards.length === 0) { listContainer.innerHTML = `<div class="empty-state show"><div class="empty-icon material-symbols-rounded">menu_book</div><div class="empty-desc">학습을 시작해 단어를 누적해 보세요.</div></div>`; return; }
     listContainer.innerHTML = learnedCards.reverse().map(card => {
       let badgeClass = ''; let badgeText = '초급';
       if (card.interval >= 7) { badgeClass = 'level-high'; badgeText = '장기기억'; } else if (card.interval >= 3) { badgeClass = 'level-mid'; badgeText = '숙련'; }
