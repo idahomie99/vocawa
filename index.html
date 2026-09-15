@@ -10,7 +10,6 @@
 <meta name="apple-mobile-web-app-title" content="Vocawa">
 <link rel="icon" href="./image/app_logo.png">
 <link rel="apple-touch-icon" href="./image/app_logo.png">
-<!-- 🎨 테마 컬러를 웜톤 베이지로 변경 -->
 <meta name="theme-color" content="#fcf6ef">
 
 <!-- 구글 머터리얼 심볼 & 프리텐다드 폰트 -->
@@ -18,17 +17,16 @@
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v3.2.1/dist/web/static/pretendard.css" />
 
 <style>
-  /* 🎨 배경색: 따뜻한 파스텔 베이지 (#fcf6ef), 기본 글씨: 다크그레이 */
   body { display: flex; justify-content: center; align-items: center; height: 100vh; background-color: #fcf6ef; margin: 0; font-family: Pretendard, -apple-system, sans-serif; user-select: none; -webkit-tap-highlight-color: transparent; overflow: hidden; overscroll-behavior-y: contain; color: #343a40; }
   .screen { position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; opacity: 0; visibility: hidden; transition: opacity 0.3s ease, transform 0.3s ease; box-sizing: border-box; }
   .screen.active { opacity: 1; visibility: visible; transform: translateY(0); }
   
-  /* 🎯 여백 조정 (플로팅 탭바를 위해 하단 여백 추가) */
   #authScreen { justify-content: center; padding-top: 0; }
   #homeScreen, #shopScreen, #vocabScreen { padding-top: 30px; justify-content: flex-start; padding-bottom: 120px; }
   #quizScreen, #learningScreen { padding-top: 40px; justify-content: flex-start; }
   
-  .responsive-width { width: 90%; max-width: 440px; }
+  /* 🎯 화면 넓이를 살짝 더 키워 시원한 느낌 극대화 */
+  .responsive-width { width: 92%; max-width: 460px; }
 
   /* 🔐 로그인 화면 */
   .auth-container { display: flex; flex-direction: column; gap: 12px; margin-top: 20px; width: 100%; }
@@ -36,18 +34,18 @@
   .google-btn:active { transform: scale(0.98); background-color: #f8f9fa; }
   
   /* 🎯 홈 화면 상단 헤더 */
-  .header-container { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; margin-top: -4px; width: 100%; }
+  .header-container { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; margin-top: -4px; width: 100%; }
   .streak-badge { background: #fff4e6; color: #ff922b; border: 1px solid #ffe8cc; padding: 6px 12px; border-radius: 14px; display: flex; align-items: center; gap: 4px; font-weight: 800; font-size: 14px; margin-right: 4px; box-shadow: 0 4px 12px rgba(255, 146, 43, 0.15); }
   .settings-btn { background: none; border: none; color: #868e96; cursor: pointer; padding: 6px; border-radius: 50%; display: flex; transition: background 0.2s, color 0.2s; }
   .settings-btn:active { background: white; color: #343a40; }
 
-  /* 🎯 공통 흰색 카드 스타일 (은은한 코코아 그림자로 마시멜로 느낌 연출) */
+  /* 🎯 공통 흰색 카드 스타일 */
   .user-stats-card, .course-card, .shop-item, .vocab-item, .quiz-q-container, .card-face, .modal-content {
     background-color: white; border: none; box-shadow: 0 12px 36px rgba(180, 160, 140, 0.12);
   }
 
   /* 치이카와 유저 상태창 UI */
-  .user-stats-card { border-radius: 28px; padding: 24px 20px; box-sizing: border-box; display: flex; flex-direction: column; gap: 16px; margin-bottom: 24px; position: relative; }
+  .user-stats-card { border-radius: 28px; padding: 26px 24px; box-sizing: border-box; display: flex; flex-direction: column; gap: 18px; margin-bottom: 24px; position: relative; }
   
   .stat-header { display: flex; justify-content: flex-start; align-items: center; gap: 16px; }
   .stat-info-wrap { display: flex; flex-direction: column; gap: 8px; justify-content: center; }
@@ -63,16 +61,16 @@
   .exp-text { font-size: 12px; font-weight: 700; color: #adb5bd; text-align: right; }
 
   /* 🎯 오늘의 할 일 */
-  .course-list { display: flex; flex-direction: column; gap: 14px; margin-bottom: 12px; width: 100%; }
-  .course-header { display: flex; justify-content: space-between; align-items: center; width: 100%; padding: 0 4px; box-sizing: border-box; margin-bottom: 4px; }
+  .course-list { display: flex; flex-direction: column; gap: 16px; margin-bottom: 12px; width: 100%; }
+  .course-header { display: flex; justify-content: space-between; align-items: center; width: 100%; padding: 0 4px; box-sizing: border-box; margin-bottom: 2px; }
   .course-header h3 { margin: 0; font-size: 18px; font-weight: 800; color: #343a40; }
   
-  .course-card { border-radius: 28px; padding: 24px; box-sizing: border-box; cursor: pointer; transition: transform 0.2s; display: flex; flex-direction: column; justify-content: center; }
+  .course-card { border-radius: 28px; padding: 26px 24px; box-sizing: border-box; cursor: pointer; transition: transform 0.2s; display: flex; flex-direction: column; justify-content: center; }
   .course-card:active { transform: scale(0.97); }
-  .course-title { display: flex; align-items: center; gap: 10px; font-size: 19px; font-weight: 800; color: #343a40; margin-bottom: 8px; letter-spacing: -0.5px;}
-  .course-desc { display: flex; align-items: center; gap: 4px; font-size: 14px; color: #868e96; font-weight: 600; margin-left: 2px;}
+  .course-title { display: flex; align-items: center; gap: 10px; font-size: 20px; font-weight: 800; color: #343a40; margin-bottom: 8px; letter-spacing: -0.5px;}
+  .course-desc { display: flex; align-items: center; gap: 4px; font-size: 15px; color: #868e96; font-weight: 600; margin-left: 2px;}
 
-  /* 🎯 플로팅 하단 탭 바 (알약 모양) */
+  /* 🎯 플로팅 하단 탭 바 */
   .bottom-nav-bar { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%); width: 90%; max-width: 440px; height: 76px; background-color: white; border-radius: 38px; display: flex; justify-content: space-around; align-items: center; z-index: 100; box-shadow: 0 16px 40px rgba(180, 160, 140, 0.25); }
   .nav-item { display: flex; flex-direction: column; align-items: center; gap: 4px; color: #adb5bd; font-size: 11px; font-weight: 800; cursor: pointer; transition: 0.2s; width: 33%; }
   .nav-item .material-symbols-rounded { font-size: 26px; }
@@ -181,7 +179,8 @@
 <!-- 🔐 로그인 화면 -->
 <div id="authScreen" class="screen active">
   <div class="responsive-width header-title" style="text-align: center; margin-bottom: 60px; justify-content: center; display: flex; flex-direction: column; align-items: center;">
-    <img src="./image/logo.png" alt="Vocawa Logo" style="width: 100%; max-width: 320px; height: auto; display: block;">
+    <!-- 🎯 로고 크기 축소 (여백이 잘린 원본 이미지에 맞춰 축소) -->
+    <img src="./image/logo.png" alt="Vocawa Logo" style="width: 180px; height: auto; display: block;">
   </div>
   <div class="responsive-width auth-container">
     <button class="google-btn" id="googleLoginBtn" onclick="handleGoogleLogin()">
@@ -196,8 +195,8 @@
 <div id="homeScreen" class="screen">
   <div class="responsive-width header-container">
     <div class="header-title">
-      <!-- 🎯 로고 V자 정렬 교정 (-16px로 당겨서 흰 박스 라인과 일치) -->
-      <img src="./image/logo.png" style="height: 76px; width: auto; transform: translateX(-16px);" alt="Vocawa Logo">
+      <!-- 🎯 transform 제거 및 높이 최적화로 좌측 라인 완벽 정렬 -->
+      <img src="./image/logo.png" style="height: 48px; width: auto;" alt="Vocawa Logo">
     </div>
     <div style="display: flex; gap: 8px; align-items: center;">
       <div class="streak-badge">
@@ -286,7 +285,7 @@
   <div class="responsive-width vocab-list" id="vocabListContainer"></div>
 </div>
 
-<!-- 🎯 플로팅 하단 고정 탭 바 (알약 모양) -->
+<!-- 🎯 하단 고정 탭 바 (GNB) -->
 <div class="bottom-nav-bar" id="mainBottomNav" style="display: none;">
   <div class="nav-item active" id="navHome" onclick="switchMainTab('homeScreen')">
     <span class="material-symbols-rounded">home</span>
@@ -302,7 +301,7 @@
   </div>
 </div>
 
-<!-- 모의고사 화면 -->
+<!-- 모의고사 화면 (학습 중 탭바 숨김) -->
 <div id="quizScreen" class="screen">
   <div class="responsive-width top-nav">
     <button class="back-btn" onclick="goHome()">
@@ -315,7 +314,7 @@
   <div class="responsive-width quiz-options" id="quizOptionsContainer"></div>
 </div>
 
-<!-- 학습 화면 -->
+<!-- 학습 화면 (학습 중 탭바 숨김) -->
 <div id="learningScreen" class="screen">
   <div class="responsive-width top-nav">
     <button class="back-btn" onclick="goHome()">
