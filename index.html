@@ -23,7 +23,7 @@
   
   #authScreen { justify-content: center; padding-top: 0; }
   #homeScreen { padding-top: 16px; justify-content: flex-start; padding-bottom: 120px; }
-#shopScreen, #vocabScreen { padding-top: 30px; justify-content: flex-start; padding-bottom: 120px; }
+  #shopScreen, #vocabScreen { padding-top: 30px; justify-content: flex-start; padding-bottom: 120px; }
   #quizScreen, #learningScreen { padding-top: 40px; justify-content: flex-start; }
   
   .responsive-width { width: 90%; max-width: 440px; }
@@ -39,12 +39,12 @@
   .settings-btn { background: none; border: none; color: #868e96; cursor: pointer; padding: 6px; border-radius: 50%; display: flex; transition: background 0.2s, color 0.2s; }
   .settings-btn:active { background: white; color: #343a40; }
 
-  /* 🎯 공통 흰색 카드 스타일 (user-stats-card 글자만 삭제) */
+  /* 🎯 공통 흰색 카드 스타일 */
   .course-card, .shop-item, .vocab-item, .quiz-q-container, .card-face, .modal-content {
     background-color: white; border: none; box-shadow: 0 12px 36px rgba(180, 160, 140, 0.12);
   }
 
-  /* 🎯 재사용되는 텍스트 및 경험치 바 UI (유지) */
+  /* 🎯 재사용되는 텍스트 및 경험치 바 UI */
   .stat-level { font-size: 17px; font-weight: 700; color: #343a40; display: flex; align-items: center; gap: 8px; }
   .stat-level .badge { background: #4dabf7; color: white; padding: 4px 8px; border-radius: 8px; font-size: 12px; font-weight: 700; }
   .stat-money { font-size: 15px; font-weight: 700; color: #ff922b; display: flex; align-items: center; gap: 4px; }
@@ -54,7 +54,7 @@
   .exp-bar { height: 100%; width: 0%; background-color: #51cf66; border-radius: 6px; transition: width 0.5s ease-out; box-shadow: inset 0 -2px 4px rgba(0,0,0,0.1);}
   .exp-text { font-size: 11px; font-weight: 700; color: #adb5bd; text-align: right; }
 
-  /* 🎯 마이룸(상태창) - 상단 1줄 가로 배치형 */
+  /* 🎯 마이룸(상태창) */
   .user-room-card { 
     display: flex; 
     flex-direction: column;
@@ -62,16 +62,16 @@
     background-color: white; 
     border-radius: 28px; 
     box-shadow: 0 12px 36px rgba(180, 160, 140, 0.12);
-    padding: 6px; /* 좋은 평가를 주신 흰색 테두리 효과 유지 */
+    padding: 6px; 
     box-sizing: border-box;
   }
   
   .room-view {
     width: 100%;
-    height: 240px; /* 배경 이미지를 크고 시원하게 */
+    height: 240px; 
     position: relative;
     overflow: hidden;
-    border-radius: 22px; /* 방 이미지 안쪽 모서리 둥글게 */
+    border-radius: 22px; 
     background-color: #f1f3f5;
   }
   
@@ -96,7 +96,6 @@
     filter: drop-shadow(0 8px 12px rgba(0,0,0,0.3)); 
   }
 
-  /* 🎯 아이템(가구/펫) 위치 스타일 */
   .room-item { 
     position: absolute; 
     z-index: 2; 
@@ -107,41 +106,30 @@
   .room-guitar { bottom: 35px; left: 15%; width: 45px; height: auto; object-fit: contain; transform: rotate(-10deg); } 
   .room-tv { bottom: 30px; right: 15%; width: 60px; height: auto; object-fit: contain; } 
 
-  /* 🎯 상단 반투명 가로 정보바 */
   .room-info-top-bar {
     position: absolute;
     top: 10px; 
     left: 10px;
-    right: 10px; /* 좌우 여백을 주어 둥근 모서리에 예쁘게 안착 */
+    right: 10px; 
     z-index: 3;
     display: flex;
     align-items: center;
-    justify-content: space-between; /* 요소를 3등분하여 고르게 분배 */
-    background: rgba(255, 255, 255, 0.85); /* 반투명 박스 (가독성 확보) */
-    backdrop-filter: blur(6px); /* 뒤쪽 배경을 살짝 흐리게 하여 고급스러움 추가 */
+    justify-content: space-between; 
+    background: rgba(255, 255, 255, 0.85); 
+    backdrop-filter: blur(6px); 
     padding: 8px 12px;
     border-radius: 16px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
   }
 
-  /* 가로 바 내부 요소 크기 미세조정 (모바일에서 한 줄로 겹치지 않도록) */
   .room-info-top-bar .stat-level { font-size: 14px; gap: 4px; }
   .room-info-top-bar .stat-level .badge { padding: 3px 6px; font-size: 11px; }
   .room-info-top-bar .stat-money { font-size: 13px; gap: 2px; }
   
-  /* 한 줄 배치에 맞게 경험치 바 레이아웃 덮어쓰기 */
-  .top-bar-exp {
-    width: 75px; /* 남는 공간에 맞게 너비 고정 */
-    margin-top: 0; 
-    gap: 4px; 
-  }
-  .top-bar-exp .exp-text {
-    font-size: 10px;
-    text-align: center; /* 우측 정렬에서 가운데 정렬로 변경 */
-    color: #495057;
-  }
+  .top-bar-exp { width: 75px; margin-top: 0; gap: 4px; }
+  .top-bar-exp .exp-text { font-size: 10px; text-align: center; color: #495057; }
 
-  /* 🎯 오늘의 할 일 (세련된 사이즈로 다이어트) */
+  /* 🎯 오늘의 할 일 */
   .course-list { display: flex; flex-direction: column; gap: 12px; margin-bottom: 12px; box-sizing: border-box;}
   .course-header { display: flex; justify-content: space-between; align-items: center; width: 100%; padding: 0 4px; box-sizing: border-box; margin-bottom: 2px; }
   .course-header h3 { margin: 0; font-size: 15px; font-weight: 700; color: #495057; letter-spacing: -0.3px;}
@@ -186,7 +174,7 @@
   .vocab-hanja { font-size: 32px; font-weight: 600; color: #343a40; width: 44px; text-align: center; }
   .vocab-details { flex: 1; }
   .vocab-meaning { font-size: 16px; font-weight: 700; color: #4dabf7; margin-bottom: 6px; letter-spacing: -0.3px; }
-  .vocab-story { font-size: 13px; color: #868e96; line-height: 1.5; word-break: keep-all; font-weight: 500;}
+  .vocab-story { font-size: 13px; color: #adb5bd; line-height: 1.5; word-break: keep-all; font-weight: 700;}
   .level-badge { font-size: 11px; padding: 4px 8px; border-radius: 6px; font-weight: 700; background: #f8f9fa; color: #868e96; }
   .level-high { background: #e7f5ff; color: #4dabf7; }
 
@@ -262,10 +250,27 @@
   .course-btn.locked { background: #f8f9fa; color: #adb5bd; cursor: not-allowed; }
   .course-btn.locked:active { transform: scale(0.98); }
   
-  .level-grid { display: flex; gap: 10px; }
-  .level-btn { flex: 1; padding: 14px 0; border-radius: 14px; font-size: 14px; font-weight: 700; display: flex; justify-content: center; align-items: center; gap: 4px; cursor: pointer; transition: 0.2s; border: 2px solid transparent; }
+  /* 🎯 레벨 스크롤 그리드로 변경 */
+  .level-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; max-height: 180px; overflow-y: auto; padding-right: 4px; margin-bottom: 10px; }
+  .level-grid::-webkit-scrollbar { width: 4px; }
+  .level-grid::-webkit-scrollbar-thumb { background: #dee2e6; border-radius: 4px; }
+  
+  .level-btn { flex: 1; padding: 12px 0; border-radius: 14px; font-size: 14px; font-weight: 700; display: flex; justify-content: center; align-items: center; gap: 4px; cursor: pointer; transition: 0.2s; border: 2px solid transparent; background: #f8f9fa; color: #868e96; }
   .level-btn.active { background: #e7f5ff; color: #4dabf7; border-color: #4dabf7; }
-  .level-btn.locked { background: #f8f9fa; color: #adb5bd; cursor: not-allowed; }
+
+  /* 🎯 가구 음악 재생 애니메이션 */
+  @keyframes playShakeGuitar {
+    0%, 100% { transform: rotate(-10deg); }
+    50% { transform: rotate(-13deg) scale(1.05); } 
+  }
+  .playing-guitar { animation: playShakeGuitar 0.5s infinite ease-in-out; }
+
+  @keyframes playShakeTv {
+    0%, 100% { transform: rotate(0deg); }
+    25% { transform: rotate(-3deg) scale(1.02); }
+    75% { transform: rotate(3deg) scale(1.02); }
+  }
+  .playing-tv { animation: playShakeTv 0.5s infinite ease-in-out; }
 </style>
 </head>
 <body>
@@ -287,7 +292,6 @@
 <!-- 🏠 홈 화면 -->
 <div id="homeScreen" class="screen">
   <div class="responsive-width header-container">
-    <!-- 🎯 로고 이미지 크기 확대 & 좌측 칼정렬 (transform: translateX 및 object-fit 활용) -->
     <div class="header-title" style="flex: 1; display: flex; align-items: center;">
       <img src="./image/logo.png" style="height: 74px; width: auto; object-fit: contain; object-position: left; transform: translateX(15px);" alt="Vocawa Logo">
     </div>
@@ -305,27 +309,18 @@
     </div>
   </div>
   
-  <!-- 🎯 리빌드된 마이룸 (상태창 - 상단 반투명 가로 바) -->
   <div class="responsive-width user-room-card">
     <div class="room-view">
-      <!-- 배경 이미지 -->
       <img id="userRoomBg" class="room-bg-img" src="./image/cave.png" alt="room background">
-      
-      <!-- 상단 가로 정보창 (반투명 박스) -->
       <div class="room-info-top-bar">
-        <!-- 1. 직업뱃지와 이름 -->
         <div class="stat-level">
           <span class="badge" id="userLevelBadge">백수</span>
           <span id="userLevelName">치이카와</span>
         </div>
-        
-        <!-- 2. 소지금 -->
         <div class="stat-money">
           <span class="material-symbols-rounded" style="font-size: 16px;">monetization_on</span>
           <span id="userMoneyText">0</span>원
         </div>
-
-        <!-- 3. 경험치 바 (가로 길이에 맞게 축소) -->
         <div class="exp-wrapper top-bar-exp">
           <div class="exp-container" style="height: 8px;">
             <div class="exp-bar" id="userExpBar"></div>
@@ -333,19 +328,14 @@
           <div class="exp-text" id="userExpText">EXP 0 / 100</div>
         </div>
       </div>
-
-      <!-- 중앙 캐릭터 -->
       <img id="userAvatarImg" class="room-character" src="./image/chiikawa.png" alt="character" onerror="this.src='./image/app_logo.png'">
-      
-      <!-- 장착 아이템 (가구 & 펫) 레이어 -->
       <img id="itemBeetle" class="room-item room-beetle" src="./image/beetle.png" alt="beetle" style="display: none;">
-      <img id="itemGuitar" class="room-item room-guitar" src="./image/guitar.png" alt="guitar" style="display: none;">
-      <img id="itemTv" class="room-item room-tv" src="./image/tv.png" alt="tv" style="display: none;">
+      <img id="itemGuitar" class="room-item room-guitar" src="./image/guitar.png" alt="guitar" style="display: none; cursor: pointer;" onclick="toggleFurnitureBGM('guitar')">
+      <img id="itemTv" class="room-item room-tv" src="./image/tv.png" alt="tv" style="display: none; cursor: pointer;" onclick="toggleFurnitureBGM('tv')">
     </div>
   </div>
   
   <div class="responsive-width course-list">
-    <!-- 헤더 (과정 변경 버튼 포함) -->
     <div class="course-header" style="margin-bottom: 8px;">
       <h3>오늘의 할 일</h3>
       <button onclick="openCourseModal()" style="background:none; border:none; color:#adb5bd; font-size:13px; font-weight:700; display:flex; align-items:center; gap:2px; cursor:pointer; padding: 4px;">
@@ -353,16 +343,15 @@
       </button>
     </div>
     
-    <!-- 1. 기존: 한자 2급 토벌 -->
+    <!-- 🎯 1. 기존 학습 버튼 (급수 동적표시) -->
     <div class="course-card" onclick="startLearning()">
-      <div class="course-title">
+      <div class="course-title" id="currentCourseTitle">
         <span class="material-symbols-rounded" style="color: #4dabf7; font-size: 24px;">swords</span>
-        한자 2급 토벌
+        한자 8급 토벌
       </div>
       <div class="course-desc" id="courseStatus">데이터 불러오는 중...</div>
     </div>
     
-    <!-- 2. 기존: 실전 모의고사 제초 -->
     <div class="course-card" onclick="startQuiz()">
       <div class="course-title">
         <span class="material-symbols-rounded" style="color: #51cf66; font-size: 24px;">grass</span>
@@ -371,7 +360,6 @@
       <div class="course-desc" id="quizStatusText">일일 1회 보상 대기 중</div>
     </div>
 
-    <!-- 👇 3. 신규: 오답 노트 👇 -->
     <div class="course-card" onclick="startMistakeReview()">
       <div class="course-title">
         <span class="material-symbols-rounded" style="color: #ff922b; font-size: 24px;">menu_book</span>
@@ -380,7 +368,6 @@
       <div class="course-desc" id="mistakeStatusText">틀렸던 단어만 집중 토벌</div>
     </div>
     
-    <!-- 👇 4. 신규: 훈음 하드코어 👇 -->
     <div class="course-card" onclick="startHardcoreQuiz()">
       <div class="course-title">
         <span class="material-symbols-rounded" style="color: #ff8787; font-size: 24px;">local_fire_department</span>
@@ -412,12 +399,12 @@
 <div id="vocabScreen" class="screen">
   <div class="responsive-width vocab-header">
     <h2 style="font-size: 20px; font-weight: 800; margin: 0; color: #343a40;">내 단어장</h2>
-    <div class="vocab-stats" id="vocabStatsCount" style="font-size: 14px; color: #868e96;">0 / 2355</div>
+    <div class="vocab-stats" id="vocabStatsCount" style="font-size: 14px; color: #868e96;">0 / 0</div>
   </div>
   <div class="responsive-width vocab-list" id="vocabListContainer"></div>
 </div>
 
-<!-- 🎯 플로팅 하단 고정 탭 바 (알약 모양) -->
+<!-- 🎯 플로팅 하단 고정 탭 바 -->
 <div class="bottom-nav-bar" id="mainBottomNav" style="display: none;">
   <div class="nav-item active" id="navHome" onclick="switchMainTab('homeScreen')">
     <span class="material-symbols-rounded">home</span>
@@ -433,7 +420,7 @@
   </div>
 </div>
 
-<!-- 모의고사 화면 (학습 중 탭바 숨김) -->
+<!-- 모의고사 화면 -->
 <div id="quizScreen" class="screen">
   <div class="responsive-width top-nav">
     <button class="back-btn" onclick="goHome()">
@@ -446,7 +433,7 @@
   <div class="responsive-width quiz-options" id="quizOptionsContainer"></div>
 </div>
 
-<!-- 학습 화면 (학습 중 탭바 숨김) -->
+<!-- 학습 화면 -->
 <div id="learningScreen" class="screen">
   <div class="responsive-width top-nav">
     <button class="back-btn" onclick="goHome()">
@@ -491,7 +478,7 @@
   </div>
 </div>
 
-<!-- 🎯 토벌 완료 모달창 -->
+<!-- 토벌 완료 모달창 -->
 <div class="modal-overlay" id="completionModal">
   <div class="modal-content">
     <div class="reward-img-placeholder">
@@ -503,14 +490,13 @@
   </div>
 </div>
 
-<!-- 🎯 학습 과정 선택 모달 -->
+<!-- 🎯 학습 과정(급수) 선택 모달 -->
 <div class="modal-overlay" id="courseModal">
   <div class="modal-content" style="width: 320px; padding: 32px 20px;">
     <div class="modal-icon material-symbols-rounded" style="color: #4dabf7; font-size: 32px; margin-bottom: 8px;">explore</div>
     <h2 class="modal-title">학습 과정 선택</h2>
-    <p class="modal-desc" style="margin-bottom: 24px;">어떤 언어를 정복해 볼까요?</p>
+    <p class="modal-desc" style="margin-bottom: 24px;">어떤 급수를 정복해 볼까요?</p>
 
-    <!-- 언어 선택 그리드 -->
     <div class="course-grid">
       <div class="course-btn active">
         <span class="material-symbols-rounded">translate</span>
@@ -530,21 +516,15 @@
       </div>
     </div>
 
-    <!-- 레벨 선택 -->
     <h3 style="font-size: 14px; font-weight: 700; color: #868e96; text-align: left; margin: 24px 0 10px 4px;">상세 레벨 (한자)</h3>
-    <div class="level-grid">
-      <div class="level-btn active">
-        2급 (진행 중)
-      </div>
-      <div class="level-btn locked" onclick="alertLocked('한자 1급')">
-        <span class="material-symbols-rounded" style="font-size: 16px;">lock</span>
-        1급 (준비 중)
-      </div>
+    <!-- 🎯 8급부터 1급까지 선택할 수 있는 동적 그리드 -->
+    <div class="level-grid" id="courseLevelGrid">
+      <!-- JS 렌더링 -->
     </div>
 
-    <div class="modal-buttons" style="margin-top: 28px;">
+    <div class="modal-buttons" style="margin-top: 16px;">
       <button class="btn-secondary" onclick="closeCourseModal()">취소</button>
-      <button class="btn-primary" onclick="closeCourseModal()">유지하기</button>
+      <button class="btn-primary" onclick="applyCourseChange()">변경하기</button>
     </div>
   </div>
 </div>
@@ -565,7 +545,6 @@
   </div>
 </div>
 
-<!-- 🎯 제초 완료 모달창 -->
 <div class="modal-overlay" id="quizResultModal">
   <div class="modal-content">
     <div class="reward-img-placeholder">
@@ -588,6 +567,62 @@
   window.openCourseModal = openCourseModal;
   window.closeCourseModal = closeCourseModal;
   window.alertLocked = alertLocked;
+  window.tempSelectLevel = tempSelectLevel;
+  window.applyCourseChange = applyCourseChange;
+
+  let bgmAudio = new Audio();
+  bgmAudio.loop = true; 
+  let isFirstInteraction = true;
+  
+  window.toggleFurnitureBGM = toggleFurnitureBGM;
+  window.stopBGM = stopBGM;
+
+  function toggleFurnitureBGM(track) {
+    const guitarEl = document.getElementById('itemGuitar');
+    const tvEl = document.getElementById('itemTv');
+
+    if (userStats.bgmTrack === track && !bgmAudio.paused) {
+      stopBGM();
+      userStats.bgmTrack = 'none'; 
+      syncToCloud();
+      return;
+    }
+
+    userStats.bgmTrack = track;
+    syncToCloud(); 
+    playBGMTrack(track);
+  }
+
+  function playBGMTrack(track) {
+    const guitarEl = document.getElementById('itemGuitar');
+    const tvEl = document.getElementById('itemTv');
+    if (track === 'none') return;
+    bgmAudio.src = `./audio/${track}.mp3`;
+    bgmAudio.play().catch(e => console.log("재생 오류:", e));
+
+    if (track === 'guitar') {
+      guitarEl.classList.add('playing-guitar');
+      tvEl.classList.remove('playing-tv');
+    } else if (track === 'tv') {
+      tvEl.classList.add('playing-tv');
+      guitarEl.classList.remove('playing-guitar');
+    }
+  }
+
+  function stopBGM() {
+    bgmAudio.pause();
+    document.getElementById('itemGuitar').classList.remove('playing-guitar');
+    document.getElementById('itemTv').classList.remove('playing-tv');
+  }
+
+  document.body.addEventListener('click', () => {
+    if (isFirstInteraction) {
+      isFirstInteraction = false;
+      if (userStats.bgmTrack && userStats.bgmTrack !== 'none') {
+        playBGMTrack(userStats.bgmTrack);
+      }
+    }
+  }, { once: true });
 
   import { initializeApp } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-app.js";
   import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-firestore.js";
@@ -658,11 +693,13 @@
     ]
   };
 
+  // 🎯 새로 추가된 급수 저장소
   let userStats = {
     levelIdx: 0, exp: 0, money: 0, lastLoginDate: "", dailyStudyDone: false, dailyQuizDone: false,
-    character: 'c_chiikawa', equipment: 'e_none', house: 'h_cave', // house 추가
-    ownedItems: ['c_chiikawa', 'e_none', 'h_cave'], // h_cave 추가
-    streakDays: 0
+    character: 'c_chiikawa', equipment: 'e_none', house: 'h_cave', 
+    ownedItems: ['c_chiikawa', 'e_none', 'h_cave'], 
+    streakDays: 0,
+    courseLevel: '8급' // 기본 학습 급수
   };
 
   function getTodayString() {
@@ -672,7 +709,7 @@
   function getDaysDifference(date1, date2) {
     const d1 = new Date(date1); d1.setHours(0, 0, 0, 0);
     const d2 = new Date(date2); d2.setHours(0, 0, 0, 0);
-    return Math.round((d2 - d1) / (1000 * 60 * 60 * 24)); // 반올림으로 오차 방지
+    return Math.round((d2 - d1) / (1000 * 60 * 60 * 24)); 
   }
 
   function switchMainTab(tabId) {
@@ -730,7 +767,6 @@
   async function syncToCloud() {
     if (!USER_UID) return; 
     
-    // 🎯 학습한 단어이거나 오답 기록이 있는 단어만 필터링해서 클라우드에 저장
     const learnedData = myHanjaData
       .filter(c => c.interval > 0 || (c.mistakes && c.mistakes > 0))
       .map(c => ({ id: c.id, interval: c.interval, nextReview: c.nextReview, mistakes: c.mistakes || 0 }));
@@ -763,10 +799,10 @@
           userStats = { ...userStats, ...data.stats };
           if (!userStats.ownedItems) userStats.ownedItems = ['c_chiikawa', 'e_none', 'h_cave'];
           if (userStats.streakDays === undefined) userStats.streakDays = 0;
+          if (!userStats.courseLevel) userStats.courseLevel = '8급'; // 기본값 세팅
         }
       }
       
-      // 🎯 서버 데이터(cloudProgress)와 원본 데이터(fetchedData)를 합치면서 오답(mistakes) 데이터 연결
       myHanjaData = fetchedData.map(card => {
         const savedCard = cloudProgress.find(c => c.id === card.id);
         if (savedCard) {
@@ -846,30 +882,26 @@
     document.getElementById('userExpBar').style.width = `${expPercent}%`;
     document.getElementById('userExpText').innerText = `EXP ${userStats.exp} / ${lvl.maxExp}`;
     
-    // 캐릭터 및 파자마/가구 장착 처리
     if (charObj) { 
       let charImgName = userStats.character.replace('c_', '');
       
-      // 모든 아이템 레이어 우선 숨기기
       document.getElementById('itemBeetle').style.display = 'none';
       document.getElementById('itemGuitar').style.display = 'none';
       document.getElementById('itemTv').style.display = 'none';
 
-      // 장착한 아이템에 따라 이미지 교체 또는 레이어 표시
       if (userStats.equipment === 'e_pajama') {
-        charImgName += '_paj'; // 파자마 장착 시 _paj 파일 불러오기
+        charImgName += '_paj'; 
       } else if (userStats.equipment === 'e_beetle') {
-        document.getElementById('itemBeetle').style.display = 'block'; // 풍뎅이 띄우기
+        document.getElementById('itemBeetle').style.display = 'block'; 
       } else if (userStats.equipment === 'e_guitar') {
-        document.getElementById('itemGuitar').style.display = 'block'; // 기타 띄우기
+        document.getElementById('itemGuitar').style.display = 'block'; 
       } else if (userStats.equipment === 'e_tv') {
-        document.getElementById('itemTv').style.display = 'block'; // 티비 띄우기
+        document.getElementById('itemTv').style.display = 'block'; 
       }
       
       document.getElementById('userAvatarImg').src = `./image/${charImgName}.png`; 
     }
     
-    // 집(배경) 로드 로직
     const bgName = userStats.house ? userStats.house.replace('h_', '') : 'cave';
     document.getElementById('userRoomBg').src = `./image/${bgName}.png`;
   }
@@ -877,12 +909,10 @@
   let currentShopTab = 'char';
   function changeShopTab(tab) {
     currentShopTab = tab;
-    // 모든 탭의 색상(active) 초기화
     document.getElementById('tabChar').classList.remove('active');
     document.getElementById('tabEquip').classList.remove('active');
     document.getElementById('tabHouse').classList.remove('active');
     
-    // 선택된 탭만 색상 켜기
     if (tab === 'char') document.getElementById('tabChar').classList.add('active');
     else if (tab === 'equip') document.getElementById('tabEquip').classList.add('active');
     else if (tab === 'house') document.getElementById('tabHouse').classList.add('active');
@@ -895,7 +925,6 @@
     const container = document.getElementById('shopListContainer');
     container.innerHTML = listData.map(item => {
       const isOwned = userStats.ownedItems.includes(item.id);
-      // '집' 카테고리의 장착 여부 검사 추가
       const isEquipped = userStats.character === item.id || userStats.equipment === item.id || userStats.house === item.id;
       let btnHtml = '';
       if (isEquipped) {
@@ -925,36 +954,41 @@
     if (userStats.ownedItems.includes(itemId)) {
       if (type === 'char') userStats.character = itemId; 
       else if (type === 'equip') userStats.equipment = itemId;
-      else if (type === 'house') userStats.house = itemId; // 집 장착 로직
+      else if (type === 'house') userStats.house = itemId; 
     } else {
       if (userStats.money >= itemObj.price) {
         userStats.money -= itemObj.price;
         userStats.ownedItems.push(itemId);
         if (type === 'char') userStats.character = itemId; 
         else if (type === 'equip') userStats.equipment = itemId;
-        else if (type === 'house') userStats.house = itemId; // 집 구매+장착 로직
+        else if (type === 'house') userStats.house = itemId; 
       } else { alert("재화가 부족합니다."); return; }
     }
     syncToCloud(); updateUserStatsUI();
     document.getElementById('shopMoneyText').innerText = userStats.money; renderShopList();
   }
 
+  // 🎯 급수 필터링을 적용하여 오늘의 카드 불러오기
   function getTodayStudyCards() {
     const now = new Date().getTime();
     const reviewCards = myHanjaData.filter(card => card.interval > 0 && card.nextReview <= now);
-    const newCards = myHanjaData.filter(card => card.interval === 0);
-    const dailyNewCards = newCards.slice(0, dailyNewLimit);
+    const newCardsInLevel = myHanjaData.filter(card => card.interval === 0 && card.level === userStats.courseLevel);
+    const dailyNewCards = newCardsInLevel.slice(0, dailyNewLimit);
     return [...reviewCards, ...dailyNewCards];
   }
 
   function updateHomeStatus() {
     const pendingCards = getTodayStudyCards();
-    const newCount = myHanjaData.filter(c => c.interval === 0).length > 0 ? Math.min(myHanjaData.filter(c => c.interval === 0).length, dailyNewLimit) : 0;
+    const newCardsInLevel = myHanjaData.filter(c => c.interval === 0 && c.level === userStats.courseLevel);
+    const newCount = newCardsInLevel.length > 0 ? Math.min(newCardsInLevel.length, dailyNewLimit) : 0;
     const reviewCount = pendingCards.length - newCount;
     
     const statusText = pendingCards.length > 0 ? `복습: ${reviewCount}개 / 신규: ${newCount}개` : `<span class="material-symbols-rounded" style="font-size:16px; margin-right:4px; vertical-align:middle; color:#4dabf7;">check_circle</span>오늘의 토벌 완료`;
     document.getElementById('courseStatus').innerHTML = statusText;
     
+    // 🎯 동적으로 현재 급수 표시
+    document.getElementById('currentCourseTitle').innerHTML = `<span class="material-symbols-rounded" style="color: #4dabf7; font-size: 24px;">swords</span>한자 ${userStats.courseLevel} 토벌`;
+
     document.getElementById('quizStatusText').innerHTML = userStats.dailyQuizDone 
       ? `<span class="material-symbols-rounded" style="font-size:16px; margin-right:4px; vertical-align:middle; color:#51cf66;">check_circle</span>오늘의 제초 완료` 
       : `일일 1회 보상 대기 중 (EXP 20 / 50원)`;
@@ -967,7 +1001,7 @@
     if (isTTSOn) { btn.classList.add('active'); icon.innerText = 'volume_up'; } 
     else { btn.classList.remove('active'); icon.innerText = 'volume_off'; window.speechSynthesis.cancel(); }
   }
-  // 보이스 목록을 미리 불러오기 (비동기 로드 대응)
+  
   let availableVoices = [];
   window.speechSynthesis.onvoiceschanged = () => {
     availableVoices = window.speechSynthesis.getVoices();
@@ -978,16 +1012,15 @@
     window.speechSynthesis.cancel();
     const msg = new SpeechSynthesisUtterance(text); 
     msg.lang = 'ko-KR'; 
-    msg.rate = 1.0; // 속도 (0.9 정도로 낮추면 덜 기계스러울 때도 있습니다)
+    msg.rate = 1.0; 
     
     if (availableVoices.length === 0) availableVoices = window.speechSynthesis.getVoices();
 
-    // 퀄리티가 좋은 음성을 1순위로 찾기 (크롬, 사파리 등)
     const bestVoice = availableVoices.find(v => 
-      v.name.includes('Google 한국의') || // 안드로이드/크롬 고음질
-      v.name.includes('Yuna') ||         // 애플(iOS/Mac) 시리음성
+      v.name.includes('Google 한국의') || 
+      v.name.includes('Yuna') ||         
       v.name.includes('Google Korean')
-    ) || availableVoices.find(v => v.lang === 'ko-KR' || v.lang === 'ko_KR'); // 없으면 기본 한국어
+    ) || availableVoices.find(v => v.lang === 'ko-KR' || v.lang === 'ko_KR'); 
 
     if (bestVoice) {
       msg.voice = bestVoice;
@@ -997,6 +1030,7 @@
   }
 
   function startLearning() {
+    stopBGM();
     document.getElementById('mainBottomNav').style.display = 'none'; 
     document.getElementById('homeScreen').classList.remove('active');
     document.getElementById('learningScreen').classList.add('active');
@@ -1014,12 +1048,16 @@
     resetCardStyle(); document.getElementById('evalButtons').classList.remove('show');
   }
 
+  // 🎯 데이터가 없을 수 있는 예문이나 부수를 급수로 예쁘게 대체
   function renderCard(index) {
     if (index >= todayCards.length) return;
     const data = todayCards[index];
-    document.getElementById('cardHanja').innerText = data.hanja; document.getElementById('cardMiniHanja').innerText = data.hanja; 
-    document.getElementById('cardMeaning').innerText = data.meaning; document.getElementById('cardRadical').innerText = data.radical;
-    document.getElementById('cardStory').innerText = data.story;
+    document.getElementById('cardHanja').innerText = data.hanja; 
+    document.getElementById('cardMiniHanja').innerText = data.hanja; 
+    document.getElementById('cardMeaning').innerText = data.meaning; 
+    
+    document.getElementById('cardRadical').innerText = `[${data.level}]`;
+    document.getElementById('cardStory').innerText = ""; 
   }
 
   function flipCard() {
@@ -1033,7 +1071,6 @@
   let isMistakeMode = false;
   let isHardcoreMode = false;
 
-  // 🎯 전역 객체 등록 (HTML에서 클릭할 수 있게)
   window.startMistakeReview = startMistakeReview;
   window.startHardcoreQuiz = startHardcoreQuiz;
 
@@ -1044,7 +1081,7 @@
 
     if (result === '모름') { 
       playSound('swipe'); 
-      originalCard.mistakes = (originalCard.mistakes || 0) + 1; // 오답 기록
+      originalCard.mistakes = (originalCard.mistakes || 0) + 1; 
       todayCards.splice(currentIndex + 2, 0, currentCard); 
     } 
     else if (result === '헷갈림') { playSound('swipe'); todayCards.push(currentCard); } 
@@ -1053,7 +1090,7 @@
       originalCard.interval = originalCard.interval === 0 ? 1 : originalCard.interval * 2;
       originalCard.nextReview = now + (originalCard.interval * ONE_DAY);
       
-      if (isMistakeMode) originalCard.mistakes = 0; // 오답노트에서 완벽함을 누르면 오답 리스트에서 탈출!
+      if (isMistakeMode) originalCard.mistakes = 0; 
       completedCount++; 
     }
     
@@ -1061,7 +1098,7 @@
     
     if (currentIndex >= todayCards.length) { 
       setTimeout(() => { 
-        isMistakeMode = false; // 모드 초기화
+        isMistakeMode = false; 
         if (!userStats.dailyStudyDone && sessionTotal > 0) {
           userStats.dailyStudyDone = true; userStats.money += 100; addExp(sessionTotal);
           document.getElementById('completionMsg').innerHTML = `훌륭하게 단어 토벌에 성공했습니다!<br><br><span style="font-size:16px; color:#4dabf7; font-weight:800;">EXP +${sessionTotal}  |  💰 +100원</span>`;
@@ -1121,8 +1158,35 @@
   function closeSettings() { document.getElementById('settingsModal').classList.remove('show'); }
   function saveSettings() { const newVal = parseInt(document.getElementById('limitInput').value); if (newVal >= 0) { dailyNewLimit = newVal; syncToCloud(); updateHomeStatus(); closeSettings(); } else { alert("0 이상의 숫자를 입력해 주세요."); } }
   
+  // 🎯 8급부터 1급까지 급수를 동적으로 그려주고 관리하는 모달 기능들
+  let tempSelectedLevel = '8급';
+  const HANJA_LEVELS = ['8급', '7급', '6급', '5급', '4급', '3급', '2급', '1급'];
+
   function openCourseModal() {
+    tempSelectedLevel = userStats.courseLevel || '8급';
+    renderLevelGrid();
     document.getElementById('courseModal').classList.add('show');
+  }
+
+  function renderLevelGrid() {
+    const grid = document.getElementById('courseLevelGrid');
+    grid.innerHTML = HANJA_LEVELS.map(lvl => `
+      <div class="level-btn ${tempSelectedLevel === lvl ? 'active' : ''}" onclick="tempSelectLevel('${lvl}')">
+        ${lvl}
+      </div>
+    `).join('');
+  }
+
+  function tempSelectLevel(lvl) {
+    tempSelectedLevel = lvl;
+    renderLevelGrid();
+  }
+
+  function applyCourseChange() {
+    userStats.courseLevel = tempSelectedLevel;
+    syncToCloud();
+    updateHomeStatus();
+    closeCourseModal();
   }
 
   function closeCourseModal() {
@@ -1133,6 +1197,7 @@
     alert(`[${courseName}] 과정은 현재 열심히 준비 중입니다!\n업데이트를 기대해 주세요.`);
   }
   
+  // 🎯 단어장 렌더링 시에도 깔끔하게 급수 위주로 보이게 정리
   function renderVocabList() {
     const learnedCards = myHanjaData.filter(card => card.interval > 0);
     document.getElementById('vocabStatsCount').innerText = `${learnedCards.length} / ${myHanjaData.length}`;
@@ -1141,14 +1206,14 @@
     listContainer.innerHTML = learnedCards.reverse().map(card => {
       let badgeClass = ''; let badgeText = '초급';
       if (card.interval >= 7) { badgeClass = 'level-high'; badgeText = '장기기억'; } else if (card.interval >= 3) { badgeClass = 'level-mid'; badgeText = '숙련'; }
-      return `<div class="vocab-item"><div class="vocab-hanja">${card.hanja}</div><div class="vocab-details"><div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 4px;"><div class="vocab-meaning">${card.meaning}</div><div class="level-badge ${badgeClass}">${badgeText}</div></div><div class="vocab-story">${card.radical} | ${card.story}</div></div></div>`;
+      return `<div class="vocab-item"><div class="vocab-hanja">${card.hanja}</div><div class="vocab-details"><div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 4px;"><div class="vocab-meaning">${card.meaning}</div><div class="level-badge ${badgeClass}">${badgeText}</div></div><div class="vocab-story" style="color:#adb5bd; font-size:12px; font-weight:700;">${card.level}</div></div></div>`;
     }).join('');
   }
 
   let quizQuestions = []; let currentQuizIdx = 0; let quizScore = 0; let isAnswering = false;
 
-  // 🎯 오답노트 시작 함수
   function startMistakeReview() {
+    stopBGM();
     const mistakeCards = myHanjaData.filter(c => c.mistakes > 0);
     if (mistakeCards.length === 0) { alert("완벽합니다! 현재 복습할 오답이 없습니다."); return; }
     
@@ -1166,14 +1231,14 @@
     resetCardStyle(); document.getElementById('evalButtons').classList.remove('show');
   }
 
-  // 🎯 훈음 하드코어 퀴즈 시작 함수
   function startHardcoreQuiz() {
     isHardcoreMode = true;
     startQuiz(true); 
   }
 
   function startQuiz(skipCheck = false) {
-    if(!skipCheck) isHardcoreMode = false; // 일반 퀴즈일 경우 플래그 해제
+    stopBGM();
+    if(!skipCheck) isHardcoreMode = false; 
     
     const learnedCards = myHanjaData.filter(card => card.interval > 0);
     if (learnedCards.length < 4) { alert("학습을 완료한 단어가 최소 4개 이상이어야 합니다."); return; }
@@ -1192,11 +1257,10 @@
     isAnswering = false; const currentQ = quizQuestions[currentQuizIdx];
     document.getElementById('quizProgressText').innerText = `문제 ${currentQuizIdx + 1}/${quizQuestions.length}`;
     
-    // 🎯 하드코어 모드일 경우: 텍스트는 뜻(의미), 버튼은 한자
     const targetEl = document.getElementById('quizHanjaTarget');
     if (isHardcoreMode) {
       targetEl.innerText = currentQ.meaning;
-      targetEl.style.fontSize = '36px'; // 뜻이 기니까 사이즈 줄임
+      targetEl.style.fontSize = '36px'; 
     } else {
       targetEl.innerText = currentQ.hanja;
       targetEl.style.fontSize = '80px';
@@ -1209,8 +1273,7 @@
     
     options.forEach(opt => {
       const btn = document.createElement('button'); btn.className = 'quiz-opt-btn'; 
-      btn.innerText = isHardcoreMode ? opt.hanja : opt.meaning; // 버튼에 들어갈 텍스트 전환
-      // 정답 체크 시 오답노트 등록을 위해 currentQ 전달
+      btn.innerText = isHardcoreMode ? opt.hanja : opt.meaning; 
       btn.onclick = () => checkQuizAnswer(btn, opt.id === currentQ.id, isHardcoreMode ? currentQ.hanja : currentQ.meaning, currentQ);
       container.appendChild(btn);
     });
@@ -1225,13 +1288,13 @@
       playSound('wrong'); btn.classList.add('wrong'); 
       allBtns.forEach(b => { if (b.innerText === correctText) b.classList.add('correct'); }); 
       
-      // 🎯 퀴즈 오답 시 오답노트에 추가
       const originalCard = myHanjaData.find(c => c.id === currentQ.id);
       originalCard.mistakes = (originalCard.mistakes || 0) + 1;
       syncToCloud();
     }
     setTimeout(() => { currentQuizIdx++; renderQuizQuestion(); }, 1200);
   }
+
   function finishQuiz() {
     document.getElementById('finalQuizScore').innerText = `${quizScore} / ${quizQuestions.length}`;
     let msg = ''; const ratio = quizScore / quizQuestions.length;
@@ -1245,38 +1308,28 @@
     }
     document.getElementById('quizResultMsg').innerHTML = msg; document.getElementById('quizResultModal').classList.add('show');
   }
+
   function closeQuizResult() { document.getElementById('quizResultModal').classList.remove('show'); goHome(); }
 
-  // 🎯 상점 스와이프 탭 전환 로직
   const shopScreenEl = document.getElementById('shopScreen');
-  let shopStartX = 0;
-  let shopStartY = 0;
+  let shopStartX = 0; let shopStartY = 0;
 
   shopScreenEl.addEventListener('touchstart', (e) => {
-    shopStartX = e.touches[0].clientX;
-    shopStartY = e.touches[0].clientY;
+    shopStartX = e.touches[0].clientX; shopStartY = e.touches[0].clientY;
   });
 
   shopScreenEl.addEventListener('touchend', (e) => {
-    // 상점 화면이 열려있을 때만 작동
     if (!shopScreenEl.classList.contains('active')) return;
+    const shopEndX = e.changedTouches[0].clientX; const shopEndY = e.changedTouches[0].clientY;
+    const diffX = shopStartX - shopEndX; const diffY = shopStartY - shopEndY;
 
-    const shopEndX = e.changedTouches[0].clientX;
-    const shopEndY = e.changedTouches[0].clientY;
-    
-    const diffX = shopStartX - shopEndX;
-    const diffY = shopStartY - shopEndY;
-
-    // Y축(상하 스크롤) 이동보다 X축(좌우) 이동이 크고, 스와이프 거리가 50px 이상일 때만 동작
     if (Math.abs(diffX) > Math.abs(diffY) && Math.abs(diffX) > 50) {
       const tabs = ['char', 'equip', 'house'];
       const currentIndex = tabs.indexOf(currentShopTab);
       
       if (diffX > 0 && currentIndex < tabs.length - 1) {
-        // 우측에서 좌측으로 스와이프 (다음 탭으로)
         changeShopTab(tabs[currentIndex + 1]);
       } else if (diffX < 0 && currentIndex > 0) {
-        // 좌측에서 우측으로 스와이프 (이전 탭으로)
         changeShopTab(tabs[currentIndex - 1]);
       }
     }
