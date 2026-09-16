@@ -1056,8 +1056,8 @@
     document.getElementById('cardMiniHanja').innerText = data.hanja; 
     document.getElementById('cardMeaning').innerText = data.meaning; 
     
-    document.getElementById('cardRadical').innerText = `[${data.level}]`;
-    document.getElementById('cardStory').innerText = ""; 
+    document.getElementById('cardRadical').innerText = `[${data.level}] 부수: ${data.radical}`;
+    document.getElementById('cardStory').innerText = data.story || ""; 
   }
 
   function flipCard() {
@@ -1202,11 +1202,31 @@
     const learnedCards = myHanjaData.filter(card => card.interval > 0);
     document.getElementById('vocabStatsCount').innerText = `${learnedCards.length} / ${myHanjaData.length}`;
     const listContainer = document.getElementById('vocabListContainer');
-    if (learnedCards.length === 0) { listContainer.innerHTML = `<div class="empty-state show"><div class="empty-icon material-symbols-rounded">menu_book</div><div class="empty-desc">학습을 시작해 단어를 누적해 보세요.</div></div>`; return; }
+    
+    if (learnedCards.length === 0) { 
+      listContainer.innerHTML = `<div class="empty-state show"><div class="empty-icon material-symbols-rounded">menu_book</div><div class="empty-desc">학습을 시작해 단어를 누적해 보세요.</div></div>`; 
+      return; 
+    }
+    
     listContainer.innerHTML = learnedCards.reverse().map(card => {
       let badgeClass = ''; let badgeText = '초급';
-      if (card.interval >= 7) { badgeClass = 'level-high'; badgeText = '장기기억'; } else if (card.interval >= 3) { badgeClass = 'level-mid'; badgeText = '숙련'; }
-      return `<div class="vocab-item"><div class="vocab-hanja">${card.hanja}</div><div class="vocab-details"><div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 4px;"><div class="vocab-meaning">${card.meaning}</div><div class="level-badge ${badgeClass}">${badgeText}</div></div><div class="vocab-story" style="color:#adb5bd; font-size:12px; font-weight:700;">${card.level}</div></div></div>`;
+      if (card.interval >= 7) { badgeClass = 'level-high'; badgeText = '장기기억'; } 
+      else if (card.interval >= 3) { badgeClass = 'level-mid'; badgeText = '숙련'; }
+      
+      // 🎯 복구: vocab-story 영역에 급수와 부수를 함께 표시
+      return `
+        <div class="vocab-item">
+          <div class="vocab-hanja">${card.hanja}</div>
+          <div class="vocab-details">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 4px;">
+              <div class="vocab-meaning">${card.meaning}</div>
+              <div class="level-badge ${badgeClass}">${badgeText}</div>
+            </div>
+            <div class="vocab-story" style="color:#adb5bd; font-size:12px; font-weight:700;">
+              [${card.level}] 부수: ${card.radical}
+            </div>
+          </div>
+        </div>`;
     }).join('');
   }
 
