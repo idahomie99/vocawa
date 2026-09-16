@@ -345,12 +345,15 @@
   </div>
   
   <div class="responsive-width course-list">
+    <!-- 헤더 (과정 변경 버튼 포함) -->
     <div class="course-header" style="margin-bottom: 8px;">
       <h3>오늘의 할 일</h3>
       <button onclick="openCourseModal()" style="background:none; border:none; color:#adb5bd; font-size:13px; font-weight:700; display:flex; align-items:center; gap:2px; cursor:pointer; padding: 4px;">
         과정 변경 <span class="material-symbols-rounded" style="font-size:16px;">edit</span>
       </button>
     </div>
+    
+    <!-- 1. 기존: 한자 2급 토벌 -->
     <div class="course-card" onclick="startLearning()">
       <div class="course-title">
         <span class="material-symbols-rounded" style="color: #4dabf7; font-size: 24px;">swords</span>
@@ -358,12 +361,32 @@
       </div>
       <div class="course-desc" id="courseStatus">데이터 불러오는 중...</div>
     </div>
+    
+    <!-- 2. 기존: 실전 모의고사 제초 -->
     <div class="course-card" onclick="startQuiz()">
       <div class="course-title">
         <span class="material-symbols-rounded" style="color: #51cf66; font-size: 24px;">grass</span>
         실전 모의고사 제초
       </div>
       <div class="course-desc" id="quizStatusText">일일 1회 보상 대기 중</div>
+    </div>
+
+    <!-- 👇 3. 신규: 오답 노트 👇 -->
+    <div class="course-card" onclick="startMistakeReview()">
+      <div class="course-title">
+        <span class="material-symbols-rounded" style="color: #ff922b; font-size: 24px;">menu_book</span>
+        오답 노트 (복습)
+      </div>
+      <div class="course-desc" id="mistakeStatusText">틀렸던 단어만 집중 토벌</div>
+    </div>
+    
+    <!-- 👇 4. 신규: 훈음 하드코어 👇 -->
+    <div class="course-card" onclick="startHardcoreQuiz()">
+      <div class="course-title">
+        <span class="material-symbols-rounded" style="color: #ff8787; font-size: 24px;">local_fire_department</span>
+        훈음 하드코어
+      </div>
+      <div class="course-desc" id="hardcoreStatusText">뜻과 음을 보고 한자 맞추기</div>
     </div>
   </div>
 </div>
@@ -647,7 +670,9 @@
     return new Date(Date.now() - tzOffset).toISOString().split('T')[0];
   }
   function getDaysDifference(date1, date2) {
-    return Math.floor((new Date(date2) - new Date(date1)) / (1000 * 60 * 60 * 24));
+    const d1 = new Date(date1); d1.setHours(0, 0, 0, 0);
+    const d2 = new Date(date2); d2.setHours(0, 0, 0, 0);
+    return Math.round((d2 - d1) / (1000 * 60 * 60 * 24)); // 반올림으로 오차 방지
   }
 
   function switchMainTab(tabId) {
@@ -704,8 +729,21 @@
 
   async function syncToCloud() {
     if (!USER_UID) return; 
-    const learnedData = myHanjaData.filter(c => c.interval > 0).map(c => ({ id: c.id, interval: c.interval, nextReview: c.nextReview }));
-    try { await setDoc(doc(db, "vocawa_progress", USER_UID), { dailyNewLimit: dailyNewLimit, progress: learnedData, stats: userStats }); } catch(e) {}
+    
+    // 🎯 학습한 단어이거나 오답 기록이 있는 단어만 필터링해서 클라우드에 저장
+    const learnedData = myHanjaData
+      .filter(c => c.interval > 0 || (c.mistakes && c.mistakes > 0))
+      .map(c => ({ id: c.id, interval: c.interval, nextReview: c.nextReview, mistakes: c.mistakes || 0 }));
+      
+    try { 
+      await setDoc(doc(db, "vocawa_progress", USER_UID), { 
+        dailyNewLimit: dailyNewLimit, 
+        progress: learnedData, 
+        stats: userStats 
+      }); 
+    } catch(e) { 
+      console.error("동기화 에러:", e); 
+    }
   }
 
   async function loadData() {
@@ -716,26 +754,33 @@
       
       let cloudProgress = [];
       const docSnap = await getDoc(doc(db, "vocawa_progress", USER_UID));
+      
       if (docSnap.exists()) {
         const data = docSnap.data();
         cloudProgress = data.progress || [];
         if (data.dailyNewLimit) dailyNewLimit = data.dailyNewLimit;
         if (data.stats) {
           userStats = { ...userStats, ...data.stats };
-          if (!userStats.ownedItems) userStats.ownedItems = ['c_chiikawa', 'e_none'];
+          if (!userStats.ownedItems) userStats.ownedItems = ['c_chiikawa', 'e_none', 'h_cave'];
           if (userStats.streakDays === undefined) userStats.streakDays = 0;
         }
       }
+      
+      // 🎯 서버 데이터(cloudProgress)와 원본 데이터(fetchedData)를 합치면서 오답(mistakes) 데이터 연결
       myHanjaData = fetchedData.map(card => {
         const savedCard = cloudProgress.find(c => c.id === card.id);
-        if (savedCard) return { ...card, interval: savedCard.interval, nextReview: savedCard.nextReview };
-        return { ...card, interval: 0, nextReview: 0 };
+        if (savedCard) {
+          return { ...card, interval: savedCard.interval, nextReview: savedCard.nextReview, mistakes: savedCard.mistakes || 0 };
+        }
+        return { ...card, interval: 0, nextReview: 0, mistakes: 0 };
       });
 
       checkDailyLogin(); 
       updateHomeStatus();
       updateUserStatsUI();
-    } catch (error) { console.log(error); }
+    } catch (error) { 
+      console.log("데이터 불러오기 에러:", error); 
+    }
   }
 
   function checkDailyLogin() {
@@ -985,17 +1030,30 @@
     }
   }
 
+  let isMistakeMode = false;
+  let isHardcoreMode = false;
+
+  // 🎯 전역 객체 등록 (HTML에서 클릭할 수 있게)
+  window.startMistakeReview = startMistakeReview;
+  window.startHardcoreQuiz = startHardcoreQuiz;
+
   function processEvaluation(result) {
     let currentCard = todayCards[currentIndex];
     let originalCard = myHanjaData.find(c => c.id === currentCard.id);
     const ONE_DAY = 24 * 60 * 60 * 1000; const now = new Date().getTime();
 
-    if (result === '모름') { playSound('swipe'); todayCards.splice(currentIndex + 2, 0, currentCard); } 
+    if (result === '모름') { 
+      playSound('swipe'); 
+      originalCard.mistakes = (originalCard.mistakes || 0) + 1; // 오답 기록
+      todayCards.splice(currentIndex + 2, 0, currentCard); 
+    } 
     else if (result === '헷갈림') { playSound('swipe'); todayCards.push(currentCard); } 
     else if (result === '완벽함') {
       playSound('correct');
       originalCard.interval = originalCard.interval === 0 ? 1 : originalCard.interval * 2;
       originalCard.nextReview = now + (originalCard.interval * ONE_DAY);
+      
+      if (isMistakeMode) originalCard.mistakes = 0; // 오답노트에서 완벽함을 누르면 오답 리스트에서 탈출!
       completedCount++; 
     }
     
@@ -1003,6 +1061,7 @@
     
     if (currentIndex >= todayCards.length) { 
       setTimeout(() => { 
+        isMistakeMode = false; // 모드 초기화
         if (!userStats.dailyStudyDone && sessionTotal > 0) {
           userStats.dailyStudyDone = true; userStats.money += 100; addExp(sessionTotal);
           document.getElementById('completionMsg').innerHTML = `훌륭하게 단어 토벌에 성공했습니다!<br><br><span style="font-size:16px; color:#4dabf7; font-weight:800;">EXP +${sessionTotal}  |  💰 +100원</span>`;
@@ -1087,9 +1146,38 @@
   }
 
   let quizQuestions = []; let currentQuizIdx = 0; let quizScore = 0; let isAnswering = false;
-  function startQuiz() {
+
+  // 🎯 오답노트 시작 함수
+  function startMistakeReview() {
+    const mistakeCards = myHanjaData.filter(c => c.mistakes > 0);
+    if (mistakeCards.length === 0) { alert("완벽합니다! 현재 복습할 오답이 없습니다."); return; }
+    
+    isMistakeMode = true;
+    document.getElementById('mainBottomNav').style.display = 'none'; 
+    document.getElementById('homeScreen').classList.remove('active');
+    document.getElementById('learningScreen').classList.add('active');
+    
+    todayCards = [...mistakeCards];
+    currentIndex = 0; completedCount = 0; sessionTotal = todayCards.length; 
+    updateProgress();
+    document.getElementById('emptyState').classList.remove('show');
+    document.getElementById('cardContainer').style.display = 'block';
+    renderCard(currentIndex);
+    resetCardStyle(); document.getElementById('evalButtons').classList.remove('show');
+  }
+
+  // 🎯 훈음 하드코어 퀴즈 시작 함수
+  function startHardcoreQuiz() {
+    isHardcoreMode = true;
+    startQuiz(true); 
+  }
+
+  function startQuiz(skipCheck = false) {
+    if(!skipCheck) isHardcoreMode = false; // 일반 퀴즈일 경우 플래그 해제
+    
     const learnedCards = myHanjaData.filter(card => card.interval > 0);
     if (learnedCards.length < 4) { alert("학습을 완료한 단어가 최소 4개 이상이어야 합니다."); return; }
+    
     document.getElementById('mainBottomNav').style.display = 'none'; 
     const shuffledLearned = [...learnedCards].sort(() => 0.5 - Math.random());
     quizQuestions = shuffledLearned.slice(0, Math.min(10, learnedCards.length));
@@ -1098,26 +1186,50 @@
     document.getElementById('quizScreen').classList.add('active');
     renderQuizQuestion();
   }
+
   function renderQuizQuestion() {
     if (currentQuizIdx >= quizQuestions.length) { finishQuiz(); return; }
     isAnswering = false; const currentQ = quizQuestions[currentQuizIdx];
     document.getElementById('quizProgressText').innerText = `문제 ${currentQuizIdx + 1}/${quizQuestions.length}`;
-    document.getElementById('quizHanjaTarget').innerText = currentQ.hanja;
+    
+    // 🎯 하드코어 모드일 경우: 텍스트는 뜻(의미), 버튼은 한자
+    const targetEl = document.getElementById('quizHanjaTarget');
+    if (isHardcoreMode) {
+      targetEl.innerText = currentQ.meaning;
+      targetEl.style.fontSize = '36px'; // 뜻이 기니까 사이즈 줄임
+    } else {
+      targetEl.innerText = currentQ.hanja;
+      targetEl.style.fontSize = '80px';
+    }
+
     let options = [currentQ];
     let distractorPool = myHanjaData.filter(card => card.id !== currentQ.id).sort(() => 0.5 - Math.random()).slice(0, 3);
     options = options.concat(distractorPool).sort(() => 0.5 - Math.random());
     const container = document.getElementById('quizOptionsContainer'); container.innerHTML = '';
+    
     options.forEach(opt => {
-      const btn = document.createElement('button'); btn.className = 'quiz-opt-btn'; btn.innerText = opt.meaning;
-      btn.onclick = () => checkQuizAnswer(btn, opt.id === currentQ.id, currentQ.meaning);
+      const btn = document.createElement('button'); btn.className = 'quiz-opt-btn'; 
+      btn.innerText = isHardcoreMode ? opt.hanja : opt.meaning; // 버튼에 들어갈 텍스트 전환
+      // 정답 체크 시 오답노트 등록을 위해 currentQ 전달
+      btn.onclick = () => checkQuizAnswer(btn, opt.id === currentQ.id, isHardcoreMode ? currentQ.hanja : currentQ.meaning, currentQ);
       container.appendChild(btn);
     });
   }
-  function checkQuizAnswer(btn, isCorrect, correctMeaning) {
+
+  function checkQuizAnswer(btn, isCorrect, correctText, currentQ) {
     if (isAnswering) return; isAnswering = true;
     const allBtns = document.querySelectorAll('.quiz-opt-btn');
-    if (isCorrect) { playSound('correct'); btn.classList.add('correct'); quizScore++; } 
-    else { playSound('wrong'); btn.classList.add('wrong'); allBtns.forEach(b => { if (b.innerText === correctMeaning) b.classList.add('correct'); }); }
+    if (isCorrect) { 
+      playSound('correct'); btn.classList.add('correct'); quizScore++; 
+    } else { 
+      playSound('wrong'); btn.classList.add('wrong'); 
+      allBtns.forEach(b => { if (b.innerText === correctText) b.classList.add('correct'); }); 
+      
+      // 🎯 퀴즈 오답 시 오답노트에 추가
+      const originalCard = myHanjaData.find(c => c.id === currentQ.id);
+      originalCard.mistakes = (originalCard.mistakes || 0) + 1;
+      syncToCloud();
+    }
     setTimeout(() => { currentQuizIdx++; renderQuizQuestion(); }, 1200);
   }
   function finishQuiz() {
