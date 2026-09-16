@@ -254,6 +254,18 @@
   .modal-buttons { display: flex; gap: 12px; width: 100%; }
   .btn-primary { flex: 1; padding: 16px; background-color: #4dabf7; color: white; font-size: 15px; font-weight: 700; border: none; border-radius: 16px; cursor: pointer; transition: 0.2s; box-shadow: 0 8px 24px rgba(77, 171, 247, 0.25);}
   .btn-secondary { flex: 1; padding: 16px; background-color: #f1f3f5; color: #495057; font-size: 15px; font-weight: 700; border: none; border-radius: 16px; cursor: pointer; transition: 0.2s; }
+
+  /* 🎯 학습 과정 선택 UI 스타일 */
+  .course-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .course-btn { padding: 16px 10px; border-radius: 18px; font-size: 15px; font-weight: 700; display: flex; flex-direction: column; align-items: center; gap: 6px; cursor: pointer; transition: 0.2s; border: 2px solid transparent; box-sizing: border-box; }
+  .course-btn.active { background: #e7f5ff; color: #4dabf7; border-color: #4dabf7; box-shadow: 0 4px 12px rgba(77, 171, 247, 0.15); }
+  .course-btn.locked { background: #f8f9fa; color: #adb5bd; cursor: not-allowed; }
+  .course-btn.locked:active { transform: scale(0.98); }
+  
+  .level-grid { display: flex; gap: 10px; }
+  .level-btn { flex: 1; padding: 14px 0; border-radius: 14px; font-size: 14px; font-weight: 700; display: flex; justify-content: center; align-items: center; gap: 4px; cursor: pointer; transition: 0.2s; border: 2px solid transparent; }
+  .level-btn.active { background: #e7f5ff; color: #4dabf7; border-color: #4dabf7; }
+  .level-btn.locked { background: #f8f9fa; color: #adb5bd; cursor: not-allowed; }
 </style>
 </head>
 <body>
@@ -333,8 +345,11 @@
   </div>
   
   <div class="responsive-width course-list">
-    <div class="course-header">
+    <div class="course-header" style="margin-bottom: 8px;">
       <h3>오늘의 할 일</h3>
+      <button onclick="openCourseModal()" style="background:none; border:none; color:#adb5bd; font-size:13px; font-weight:700; display:flex; align-items:center; gap:2px; cursor:pointer; padding: 4px;">
+        과정 변경 <span class="material-symbols-rounded" style="font-size:16px;">edit</span>
+      </button>
     </div>
     <div class="course-card" onclick="startLearning()">
       <div class="course-title">
@@ -465,6 +480,52 @@
   </div>
 </div>
 
+<!-- 🎯 학습 과정 선택 모달 -->
+<div class="modal-overlay" id="courseModal">
+  <div class="modal-content" style="width: 320px; padding: 32px 20px;">
+    <div class="modal-icon material-symbols-rounded" style="color: #4dabf7; font-size: 32px; margin-bottom: 8px;">explore</div>
+    <h2 class="modal-title">학습 과정 선택</h2>
+    <p class="modal-desc" style="margin-bottom: 24px;">어떤 언어를 정복해 볼까요?</p>
+
+    <!-- 언어 선택 그리드 -->
+    <div class="course-grid">
+      <div class="course-btn active">
+        <span class="material-symbols-rounded">translate</span>
+        <span>한자</span>
+      </div>
+      <div class="course-btn locked" onclick="alertLocked('영어')">
+        <span class="material-symbols-rounded">lock</span>
+        <span>영어</span>
+      </div>
+      <div class="course-btn locked" onclick="alertLocked('중국어')">
+        <span class="material-symbols-rounded">lock</span>
+        <span>중국어</span>
+      </div>
+      <div class="course-btn locked" onclick="alertLocked('일본어')">
+        <span class="material-symbols-rounded">lock</span>
+        <span>일본어</span>
+      </div>
+    </div>
+
+    <!-- 레벨 선택 -->
+    <h3 style="font-size: 14px; font-weight: 700; color: #868e96; text-align: left; margin: 24px 0 10px 4px;">상세 레벨 (한자)</h3>
+    <div class="level-grid">
+      <div class="level-btn active">
+        2급 (진행 중)
+      </div>
+      <div class="level-btn locked" onclick="alertLocked('한자 1급')">
+        <span class="material-symbols-rounded" style="font-size: 16px;">lock</span>
+        1급 (준비 중)
+      </div>
+    </div>
+
+    <div class="modal-buttons" style="margin-top: 28px;">
+      <button class="btn-secondary" onclick="closeCourseModal()">취소</button>
+      <button class="btn-primary" onclick="closeCourseModal()">유지하기</button>
+    </div>
+  </div>
+</div>
+
 <div class="modal-overlay" id="settingsModal">
   <div class="modal-content">
     <div class="modal-icon material-symbols-rounded" style="color: #868e96;">tune</div>
@@ -500,6 +561,10 @@
   window.goHome = goHome; window.flipCard = flipCard; window.processEvaluation = processEvaluation; window.resetAndGoHome = resetAndGoHome; window.closeQuizResult = closeQuizResult;
   window.toggleTTS = toggleTTS; window.changeShopTab = changeShopTab; window.buyOrEquipItem = buyOrEquipItem; window.startQuiz = startQuiz;
   window.switchMainTab = switchMainTab;
+
+  window.openCourseModal = openCourseModal;
+  window.closeCourseModal = closeCourseModal;
+  window.alertLocked = alertLocked;
 
   import { initializeApp } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-app.js";
   import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-firestore.js";
@@ -996,6 +1061,18 @@
   function openSettings() { document.getElementById('limitInput').value = dailyNewLimit; document.getElementById('settingsModal').classList.add('show'); }
   function closeSettings() { document.getElementById('settingsModal').classList.remove('show'); }
   function saveSettings() { const newVal = parseInt(document.getElementById('limitInput').value); if (newVal >= 0) { dailyNewLimit = newVal; syncToCloud(); updateHomeStatus(); closeSettings(); } else { alert("0 이상의 숫자를 입력해 주세요."); } }
+  
+  function openCourseModal() {
+    document.getElementById('courseModal').classList.add('show');
+  }
+
+  function closeCourseModal() {
+    document.getElementById('courseModal').classList.remove('show');
+  }
+
+  function alertLocked(courseName) {
+    alert(`[${courseName}] 과정은 현재 열심히 준비 중입니다!\n업데이트를 기대해 주세요.`);
+  }
   
   function renderVocabList() {
     const learnedCards = myHanjaData.filter(card => card.interval > 0);
