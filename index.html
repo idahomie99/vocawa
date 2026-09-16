@@ -12,21 +12,22 @@
 <link rel="apple-touch-icon" href="./image/app_logo.png">
 <meta name="theme-color" content="#fcf6ef">
 
-<!-- 구글 머터리얼 심볼 & 프리텐다드 폰트 -->
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,400,1,0" />
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v3.2.1/dist/web/static/pretendard.css" />
 
 <style>
   body { display: flex; justify-content: center; align-items: center; height: 100vh; background-color: #fcf6ef; margin: 0; font-family: Pretendard, -apple-system, sans-serif; user-select: none; -webkit-tap-highlight-color: transparent; overflow: hidden; overscroll-behavior-y: contain; color: #343a40; }
-  .screen { position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; opacity: 0; visibility: hidden; transition: opacity 0.3s ease, transform 0.3s ease; box-sizing: border-box; }
-  .screen.active { opacity: 1; visibility: visible; transform: translateY(0); }
   
-  #authScreen { justify-content: center; padding-top: 0; }
-  #homeScreen { padding-top: 16px; justify-content: flex-start; padding-bottom: 120px; }
-  #shopScreen, #vocabScreen { padding-top: 30px; justify-content: flex-start; padding-bottom: 120px; }
+  /* 🎯 스크롤 잘림 문제 해결: 화면 스크롤 허용 및 하단 여백 대폭 추가 */
+  .screen { position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; opacity: 0; visibility: hidden; transition: opacity 0.3s ease; box-sizing: border-box; overflow-y: auto; overflow-x: hidden; -webkit-overflow-scrolling: touch; padding-bottom: 120px; }
+  .screen.active { opacity: 1; visibility: visible; }
+  
+  #authScreen { justify-content: center; padding-top: 0; padding-bottom: 0; }
+  #homeScreen { padding-top: 16px; justify-content: flex-start; }
+  #shopScreen, #vocabScreen { padding-top: 30px; justify-content: flex-start; }
   #quizScreen, #learningScreen { padding-top: 40px; justify-content: flex-start; }
   
-  .responsive-width { width: 90%; max-width: 440px; }
+  .responsive-width { width: 90%; max-width: 440px; margin: 0 auto; }
 
   /* 🔐 로그인 화면 */
   .auth-container { display: flex; flex-direction: column; gap: 12px; margin-top: 20px; width: 100%; }
@@ -56,81 +57,25 @@
 
   /* 🎯 마이룸(상태창) */
   .user-room-card { 
-    display: flex; 
-    flex-direction: column;
-    margin-bottom: 32px; 
-    background-color: white; 
-    border-radius: 28px; 
-    box-shadow: 0 12px 36px rgba(180, 160, 140, 0.12);
-    padding: 6px; 
-    box-sizing: border-box;
+    display: flex; flex-direction: column; margin-bottom: 32px; background-color: white; border-radius: 28px; box-shadow: 0 12px 36px rgba(180, 160, 140, 0.12); padding: 6px; box-sizing: border-box;
   }
-  
-  .room-view {
-    width: 100%;
-    height: 240px; 
-    position: relative;
-    overflow: hidden;
-    border-radius: 22px; 
-    background-color: #f1f3f5;
-  }
-  
-  .room-bg-img { 
-    width: 100%; 
-    height: 100%; 
-    object-fit: cover; 
-    position: absolute; 
-    top: 0; left: 0; 
-    z-index: 1; 
-  }
-  
-  .room-character { 
-    position: absolute; 
-    bottom: 25px; 
-    left: 50%; 
-    transform: translateX(-50%); 
-    z-index: 2; 
-    width: 90px; 
-    height: auto; 
-    object-fit: contain;
-    filter: drop-shadow(0 8px 12px rgba(0,0,0,0.3)); 
-  }
-
-  .room-item { 
-    position: absolute; 
-    z-index: 2; 
-    filter: drop-shadow(0 6px 8px rgba(0,0,0,0.25)); 
-  }
-  
+  .room-view { width: 100%; height: 240px; position: relative; overflow: hidden; border-radius: 22px; background-color: #f1f3f5; }
+  .room-bg-img { width: 100%; height: 100%; object-fit: cover; position: absolute; top: 0; left: 0; z-index: 1; }
+  .room-character { position: absolute; bottom: 25px; left: 50%; transform: translateX(-50%); z-index: 2; width: 90px; height: auto; object-fit: contain; filter: drop-shadow(0 8px 12px rgba(0,0,0,0.3)); }
+  .room-item { position: absolute; z-index: 2; filter: drop-shadow(0 6px 8px rgba(0,0,0,0.25)); }
   .room-beetle { bottom: 20px; left: 65%; width: 35px; height: auto; object-fit: contain; } 
   .room-guitar { bottom: 35px; left: 15%; width: 45px; height: auto; object-fit: contain; transform: rotate(-10deg); } 
   .room-tv { bottom: 30px; right: 15%; width: 60px; height: auto; object-fit: contain; } 
 
-  .room-info-top-bar {
-    position: absolute;
-    top: 10px; 
-    left: 10px;
-    right: 10px; 
-    z-index: 3;
-    display: flex;
-    align-items: center;
-    justify-content: space-between; 
-    background: rgba(255, 255, 255, 0.85); 
-    backdrop-filter: blur(6px); 
-    padding: 8px 12px;
-    border-radius: 16px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-  }
-
+  .room-info-top-bar { position: absolute; top: 10px; left: 10px; right: 10px; z-index: 3; display: flex; align-items: center; justify-content: space-between; background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(6px); padding: 8px 12px; border-radius: 16px; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08); }
   .room-info-top-bar .stat-level { font-size: 14px; gap: 4px; }
   .room-info-top-bar .stat-level .badge { padding: 3px 6px; font-size: 11px; }
   .room-info-top-bar .stat-money { font-size: 13px; gap: 2px; }
-  
   .top-bar-exp { width: 75px; margin-top: 0; gap: 4px; }
   .top-bar-exp .exp-text { font-size: 10px; text-align: center; color: #495057; }
 
   /* 🎯 오늘의 할 일 */
-  .course-list { display: flex; flex-direction: column; gap: 12px; margin-bottom: 12px; box-sizing: border-box;}
+  .course-list { display: flex; flex-direction: column; gap: 12px; box-sizing: border-box;}
   .course-header { display: flex; justify-content: space-between; align-items: center; width: 100%; padding: 0 4px; box-sizing: border-box; margin-bottom: 2px; }
   .course-header h3 { margin: 0; font-size: 15px; font-weight: 700; color: #495057; letter-spacing: -0.3px;}
   
@@ -152,8 +97,15 @@
   .shop-tabs { display: flex; background: rgba(255,255,255,0.5); border-radius: 14px; padding: 6px; box-sizing: border-box; margin-bottom: 20px; border: 1px solid white; box-shadow: 0 4px 12px rgba(180, 160, 140, 0.05);}
   .shop-tab { flex: 1; text-align: center; padding: 10px 0; font-size: 14px; font-weight: 700; color: #868e96; cursor: pointer; border-radius: 10px; transition: 0.2s; }
   .shop-tab.active { background: white; color: #343a40; box-shadow: 0 4px 12px rgba(160, 140, 120, 0.1); }
-  .shop-list { flex: 1; overflow-y: auto; padding-bottom: 40px; display: flex; flex-direction: column; gap: 12px; width: 100%;}
-  .shop-list::-webkit-scrollbar { display: none; }
+  .shop-list-wrapper { width: 100%; overflow: hidden; position: relative; flex: 1; }
+  .shop-list { display: flex; flex-direction: column; gap: 12px; width: 100%; padding-bottom: 20px; }
+  
+  /* 부드러운 스와이프 애니메이션 클래스 */
+  .slide-in-right { animation: slideInRight 0.3s cubic-bezier(0.25, 0.8, 0.25, 1) forwards; }
+  .slide-in-left { animation: slideInLeft 0.3s cubic-bezier(0.25, 0.8, 0.25, 1) forwards; }
+  
+  @keyframes slideInRight { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+  @keyframes slideInLeft { from { transform: translateX(-100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
   
   .shop-item { border-radius: 20px; padding: 16px; display: flex; gap: 14px; align-items: center; }
   .shop-item-img { width: 64px; height: 64px; background: #f8f9fa; border-radius: 16px; display: flex; align-items: center; justify-content: center; color: #adb5bd; font-size: 12px; font-weight: 600; flex-shrink: 0; object-fit: cover; }
@@ -168,8 +120,7 @@
 
   /* 🎯 단어장 UI */
   .vocab-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
-  .vocab-list { flex: 1; overflow-y: auto; padding-bottom: 40px; display: flex; flex-direction: column; gap: 12px; }
-  .vocab-list::-webkit-scrollbar { display: none; }
+  .vocab-list { width: 100%; display: flex; flex-direction: column; gap: 12px; }
   .vocab-item { border-radius: 20px; padding: 16px 20px; display: flex; gap: 16px; align-items: center; }
   .vocab-hanja { font-size: 32px; font-weight: 600; color: #343a40; width: 44px; text-align: center; }
   .vocab-details { flex: 1; }
@@ -225,6 +176,7 @@
   .empty-title { font-size: 20px; font-weight: 700; color: #343a40; margin-bottom: 8px; }
   .empty-desc { font-size: 15px; color: #868e96; line-height: 1.5; font-weight: 500;}
 
+  /* 모달 공통 */
   .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(52, 58, 64, 0.6); backdrop-filter: blur(4px); display: flex; justify-content: center; align-items: center; opacity: 0; visibility: hidden; transition: all 0.3s ease; z-index: 999; }
   .modal-overlay.show { opacity: 1; visibility: visible; }
   .modal-content { width: 320px; border-radius: 32px; padding: 40px 24px; text-align: center; transform: scale(0.9); transition: transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1); }
@@ -243,33 +195,25 @@
   .btn-primary { flex: 1; padding: 16px; background-color: #4dabf7; color: white; font-size: 15px; font-weight: 700; border: none; border-radius: 16px; cursor: pointer; transition: 0.2s; box-shadow: 0 8px 24px rgba(77, 171, 247, 0.25);}
   .btn-secondary { flex: 1; padding: 16px; background-color: #f1f3f5; color: #495057; font-size: 15px; font-weight: 700; border: none; border-radius: 16px; cursor: pointer; transition: 0.2s; }
 
-  /* 🎯 학습 과정 선택 UI 스타일 */
-  .course-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  /* 🎯 과정 변경 - 예쁜 드롭다운 스타일 */
+  .course-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px;}
   .course-btn { padding: 16px 10px; border-radius: 18px; font-size: 15px; font-weight: 700; display: flex; flex-direction: column; align-items: center; gap: 6px; cursor: pointer; transition: 0.2s; border: 2px solid transparent; box-sizing: border-box; }
   .course-btn.active { background: #e7f5ff; color: #4dabf7; border-color: #4dabf7; box-shadow: 0 4px 12px rgba(77, 171, 247, 0.15); }
   .course-btn.locked { background: #f8f9fa; color: #adb5bd; cursor: not-allowed; }
-  .course-btn.locked:active { transform: scale(0.98); }
   
-  /* 🎯 레벨 스크롤 그리드로 변경 */
-  .level-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; max-height: 180px; overflow-y: auto; padding-right: 4px; margin-bottom: 10px; }
-  .level-grid::-webkit-scrollbar { width: 4px; }
-  .level-grid::-webkit-scrollbar-thumb { background: #dee2e6; border-radius: 4px; }
-  
-  .level-btn { flex: 1; padding: 12px 0; border-radius: 14px; font-size: 14px; font-weight: 700; display: flex; justify-content: center; align-items: center; gap: 4px; cursor: pointer; transition: 0.2s; border: 2px solid transparent; background: #f8f9fa; color: #868e96; }
-  .level-btn.active { background: #e7f5ff; color: #4dabf7; border-color: #4dabf7; }
+  .custom-select-wrapper { position: relative; width: 100%; }
+  .custom-select { appearance: none; -webkit-appearance: none; width: 100%; background: #f8f9fa; border: 2px solid #e9ecef; border-radius: 16px; padding: 16px 20px; font-size: 16px; font-weight: 700; color: #495057; cursor: pointer; outline: none; transition: 0.2s; font-family: inherit; }
+  .custom-select:focus { border-color: #4dabf7; background: #fff; box-shadow: 0 4px 12px rgba(77, 171, 247, 0.1); }
+  .custom-select-arrow { position: absolute; right: 16px; top: 50%; transform: translateY(-50%); pointer-events: none; color: #adb5bd; font-size: 24px; }
 
-  /* 🎯 가구 음악 재생 애니메이션 */
-  @keyframes playShakeGuitar {
-    0%, 100% { transform: rotate(-10deg); }
-    50% { transform: rotate(-13deg) scale(1.05); } 
-  }
+  /* 🎯 불꽃 애니메이션 (출석체크) */
+  .fire-icon-large { font-size: 64px; color: #ff922b; margin-bottom: 12px; filter: drop-shadow(0 4px 12px rgba(255, 146, 43, 0.4)); animation: pulseFire 1.5s infinite; }
+  @keyframes pulseFire { 0% { transform: scale(1); opacity: 0.9; } 50% { transform: scale(1.1); opacity: 1; } 100% { transform: scale(1); opacity: 0.9; } }
+  .streak-number { font-size: 48px; font-weight: 900; color: #ff922b; display: inline-block; }
+
+  @keyframes playShakeGuitar { 0%, 100% { transform: rotate(-10deg); } 50% { transform: rotate(-13deg) scale(1.05); } }
   .playing-guitar { animation: playShakeGuitar 0.5s infinite ease-in-out; }
-
-  @keyframes playShakeTv {
-    0%, 100% { transform: rotate(0deg); }
-    25% { transform: rotate(-3deg) scale(1.02); }
-    75% { transform: rotate(3deg) scale(1.02); }
-  }
+  @keyframes playShakeTv { 0%, 100% { transform: rotate(0deg); } 25% { transform: rotate(-3deg) scale(1.02); } 75% { transform: rotate(3deg) scale(1.02); } }
   .playing-tv { animation: playShakeTv 0.5s infinite ease-in-out; }
 </style>
 </head>
@@ -343,7 +287,6 @@
       </button>
     </div>
     
-    <!-- 🎯 1. 기존 학습 버튼 (급수 동적표시) -->
     <div class="course-card" onclick="startLearning()">
       <div class="course-title" id="currentCourseTitle">
         <span class="material-symbols-rounded" style="color: #4dabf7; font-size: 24px;">swords</span>
@@ -392,7 +335,10 @@
     <div class="shop-tab" id="tabEquip" onclick="changeShopTab('equip')">장비/의상</div>
     <div class="shop-tab" id="tabHouse" onclick="changeShopTab('house')">집/배경</div>
   </div>
-  <div class="responsive-width shop-list" id="shopListContainer"></div>
+  <!-- 🎯 애니메이션 래퍼 추가 -->
+  <div class="responsive-width shop-list-wrapper">
+    <div class="shop-list" id="shopListContainer"></div>
+  </div>
 </div>
 
 <!-- 📖 단어장 화면 -->
@@ -478,6 +424,19 @@
   </div>
 </div>
 
+<!-- 🎯 출석 체크(불꽃) 모달 -->
+<div class="modal-overlay" id="attendanceModal">
+  <div class="modal-content" style="padding: 50px 24px;">
+    <div class="material-symbols-rounded fire-icon-large">local_fire_department</div>
+    <h2 class="modal-title" style="margin-bottom: 20px;">출석 완료!</h2>
+    <div style="font-size: 20px; font-weight: 700; color: #495057; margin-bottom: 24px;">
+      연속 <span class="streak-number" id="attendanceStreakNum">0</span>일째 토벌 중!
+    </div>
+    <p class="modal-desc" id="attendanceMsg" style="margin-bottom: 30px;">오늘도 단어들을 물리쳐 볼까요?<br>(💰 +50원 지급 완료)</p>
+    <button class="btn-primary" onclick="closeAttendanceModal()">확인</button>
+  </div>
+</div>
+
 <!-- 토벌 완료 모달창 -->
 <div class="modal-overlay" id="completionModal">
   <div class="modal-content">
@@ -495,7 +454,7 @@
   <div class="modal-content" style="width: 320px; padding: 32px 20px;">
     <div class="modal-icon material-symbols-rounded" style="color: #4dabf7; font-size: 32px; margin-bottom: 8px;">explore</div>
     <h2 class="modal-title">학습 과정 선택</h2>
-    <p class="modal-desc" style="margin-bottom: 24px;">어떤 급수를 정복해 볼까요?</p>
+    <p class="modal-desc" style="margin-bottom: 24px;">어떤 언어를 정복해 볼까요?</p>
 
     <div class="course-grid">
       <div class="course-btn active">
@@ -516,13 +475,24 @@
       </div>
     </div>
 
-    <h3 style="font-size: 14px; font-weight: 700; color: #868e96; text-align: left; margin: 24px 0 10px 4px;">상세 레벨 (한자)</h3>
-    <!-- 🎯 8급부터 1급까지 선택할 수 있는 동적 그리드 -->
-    <div class="level-grid" id="courseLevelGrid">
-      <!-- JS 렌더링 -->
+    <h3 style="font-size: 14px; font-weight: 700; color: #868e96; text-align: left; margin: 24px 0 10px 4px;">목표 급수 (한자)</h3>
+    <!-- 🎯 예쁜 드롭다운 적용 -->
+    <div class="custom-select-wrapper">
+      <select id="courseLevelSelect" class="custom-select">
+        <option value="8급">8급</option>
+        <option value="7급">7급</option>
+        <option value="6급">6급</option>
+        <option value="5급">5급</option>
+        <option value="4급">4급</option>
+        <option value="3급">3급</option>
+        <option value="2급">2급</option>
+        <option value="1급">1급</option>
+      </select>
+      <span class="custom-select-arrow material-symbols-rounded">expand_more</span>
     </div>
+    <p style="font-size: 12px; color: #adb5bd; margin-top: 8px; text-align: left; padding-left: 4px;">* 8급부터 선택한 목표 급수까지 누적 학습합니다.</p>
 
-    <div class="modal-buttons" style="margin-top: 16px;">
+    <div class="modal-buttons" style="margin-top: 24px;">
       <button class="btn-secondary" onclick="closeCourseModal()">취소</button>
       <button class="btn-primary" onclick="applyCourseChange()">변경하기</button>
     </div>
@@ -563,12 +533,10 @@
   window.goHome = goHome; window.flipCard = flipCard; window.processEvaluation = processEvaluation; window.resetAndGoHome = resetAndGoHome; window.closeQuizResult = closeQuizResult;
   window.toggleTTS = toggleTTS; window.changeShopTab = changeShopTab; window.buyOrEquipItem = buyOrEquipItem; window.startQuiz = startQuiz;
   window.switchMainTab = switchMainTab;
+  window.openCourseModal = openCourseModal; window.closeCourseModal = closeCourseModal; window.alertLocked = alertLocked; window.applyCourseChange = applyCourseChange;
+  window.closeAttendanceModal = closeAttendanceModal;
 
-  window.openCourseModal = openCourseModal;
-  window.closeCourseModal = closeCourseModal;
-  window.alertLocked = alertLocked;
-  window.tempSelectLevel = tempSelectLevel;
-  window.applyCourseChange = applyCourseChange;
+  const HANJA_LEVELS = ['8급', '7급', '6급', '5급', '4급', '3급', '2급', '1급'];
 
   let bgmAudio = new Audio();
   bgmAudio.loop = true; 
@@ -580,33 +548,18 @@
   function toggleFurnitureBGM(track) {
     const guitarEl = document.getElementById('itemGuitar');
     const tvEl = document.getElementById('itemTv');
-
     if (userStats.bgmTrack === track && !bgmAudio.paused) {
-      stopBGM();
-      userStats.bgmTrack = 'none'; 
-      syncToCloud();
-      return;
+      stopBGM(); userStats.bgmTrack = 'none'; syncToCloud(); return;
     }
-
-    userStats.bgmTrack = track;
-    syncToCloud(); 
-    playBGMTrack(track);
+    userStats.bgmTrack = track; syncToCloud(); playBGMTrack(track);
   }
 
   function playBGMTrack(track) {
-    const guitarEl = document.getElementById('itemGuitar');
-    const tvEl = document.getElementById('itemTv');
+    const guitarEl = document.getElementById('itemGuitar'); const tvEl = document.getElementById('itemTv');
     if (track === 'none') return;
-    bgmAudio.src = `./audio/${track}.mp3`;
-    bgmAudio.play().catch(e => console.log("재생 오류:", e));
-
-    if (track === 'guitar') {
-      guitarEl.classList.add('playing-guitar');
-      tvEl.classList.remove('playing-tv');
-    } else if (track === 'tv') {
-      tvEl.classList.add('playing-tv');
-      guitarEl.classList.remove('playing-guitar');
-    }
+    bgmAudio.src = `./audio/${track}.mp3`; bgmAudio.play().catch(e => console.log("재생 오류:", e));
+    if (track === 'guitar') { guitarEl.classList.add('playing-guitar'); tvEl.classList.remove('playing-tv'); } 
+    else if (track === 'tv') { tvEl.classList.add('playing-tv'); guitarEl.classList.remove('playing-guitar'); }
   }
 
   function stopBGM() {
@@ -616,12 +569,7 @@
   }
 
   document.body.addEventListener('click', () => {
-    if (isFirstInteraction) {
-      isFirstInteraction = false;
-      if (userStats.bgmTrack && userStats.bgmTrack !== 'none') {
-        playBGMTrack(userStats.bgmTrack);
-      }
-    }
+    if (isFirstInteraction) { isFirstInteraction = false; if (userStats.bgmTrack && userStats.bgmTrack !== 'none') { playBGMTrack(userStats.bgmTrack); } }
   }, { once: true });
 
   import { initializeApp } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-app.js";
@@ -629,30 +577,13 @@
   import { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-auth.js";
 
   const firebaseConfig = {
-    apiKey: "AIzaSyAbNztAhkuZmhG64M1MxG42Rer4aIg1Z5M",
-    authDomain: "vocawa-f362e.firebaseapp.com",
-    projectId: "vocawa-f362e",
-    storageBucket: "vocawa-f362e.firebasestorage.app",
-    messagingSenderId: "390982379762",
-    appId: "1:390982379762:web:07186d4fbfb1955eb2086b"
+    apiKey: "AIzaSyAbNztAhkuZmhG64M1MxG42Rer4aIg1Z5M", authDomain: "vocawa-f362e.firebaseapp.com", projectId: "vocawa-f362e", storageBucket: "vocawa-f362e.firebasestorage.app", messagingSenderId: "390982379762", appId: "1:390982379762:web:07186d4fbfb1955eb2086b"
   };
 
   let app, db, auth, provider;
-  try {
-    app = initializeApp(firebaseConfig);
-    db = getFirestore(app);
-    auth = getAuth(app);
-    provider = new GoogleAuthProvider();
-  } catch(e) { console.error("Firebase 초기화 에러", e); }
+  try { app = initializeApp(firebaseConfig); db = getFirestore(app); auth = getAuth(app); provider = new GoogleAuthProvider(); } catch(e) { console.error(e); }
   
-  let USER_UID = null;
-  let myHanjaData = [];
-  let todayCards = [];
-  let currentIndex = 0;
-  let completedCount = 0;
-  let sessionTotal = 0; 
-  let dailyNewLimit = 30;
-  let isTTSOn = true;
+  let USER_UID = null; let myHanjaData = []; let todayCards = []; let currentIndex = 0; let completedCount = 0; let sessionTotal = 0; let dailyNewLimit = 30; let isTTSOn = true;
 
   const sfxCorrect = new Audio('https://assets.mixkit.co/active_storage/sfx/2000/2000-preview.mp3');
   const sfxWrong = new Audio('https://assets.mixkit.co/active_storage/sfx/2003/2003-preview.mp3');
@@ -666,10 +597,7 @@
     if (type === 'swipe') { sfxSwipe.currentTime = 0; sfxSwipe.play().catch(()=>{}); }
   }
 
-  const LEVELS = [
-    { name: "백수", maxExp: 100 }, { name: "알바", maxExp: 300 }, { name: "제초자격증 5급", maxExp: 600 },
-    { name: "제초자격증 4급", maxExp: 1000 }, { name: "제초자격증 3급", maxExp: 1500 }, { name: "제초자격증 2급", maxExp: 2100 }, { name: "제초자격증 1급", maxExp: 3000 }
-  ];
+  const LEVELS = [{ name: "백수", maxExp: 100 }, { name: "알바", maxExp: 300 }, { name: "제초자격증 5급", maxExp: 600 }, { name: "제초자격증 4급", maxExp: 1000 }, { name: "제초자격증 3급", maxExp: 1500 }, { name: "제초자격증 2급", maxExp: 2100 }, { name: "제초자격증 1급", maxExp: 3000 }];
 
   const SHOP_DB = {
     char: [
@@ -682,10 +610,10 @@
     ],
     equip: [
       { id: 'e_none', name: '맨몸', price: 0, desc: '기본 상태입니다.' },
-      { id: 'e_pajama', name: '파자마', price: 2000, desc: '포근하고 귀여운 수면 잠옷 (캐릭터 의상 변경)' },
+      { id: 'e_pajama', name: '파자마', price: 2000, desc: '포근하고 귀여운 수면 잠옷' },
       { id: 'e_guitar', name: '기타', price: 1000, desc: '방 한켠에 세워둘 수 있는 어쿠스틱 기타' },
       { id: 'e_tv', name: '티비', price: 1000, desc: '치이카와 세계의 귀여운 뚱뚱이 브라운관 티비' },
-      { id: 'e_beetle', name: '풍뎅이', price: 5000, desc: '항상 캐릭터 곁을 따라다니는 작고 소중한 친구' }
+      { id: 'e_beetle', name: '풍뎅이', price: 5000, desc: '항상 곁을 따라다니는 소중한 친구' }
     ],
     house: [
       { id: 'h_cave', name: '아늑한 동굴', price: 0, desc: '바람을 피할 수 있는 시원한 기본 동굴' },
@@ -693,93 +621,40 @@
     ]
   };
 
-  // 🎯 새로 추가된 급수 저장소
-  let userStats = {
-    levelIdx: 0, exp: 0, money: 0, lastLoginDate: "", dailyStudyDone: false, dailyQuizDone: false,
-    character: 'c_chiikawa', equipment: 'e_none', house: 'h_cave', 
-    ownedItems: ['c_chiikawa', 'e_none', 'h_cave'], 
-    streakDays: 0,
-    courseLevel: '8급' // 기본 학습 급수
-  };
+  let userStats = { levelIdx: 0, exp: 0, money: 0, lastLoginDate: "", dailyStudyDone: false, dailyQuizDone: false, character: 'c_chiikawa', equipment: 'e_none', house: 'h_cave', ownedItems: ['c_chiikawa', 'e_none', 'h_cave'], streakDays: 0, courseLevel: '8급' };
 
-  function getTodayString() {
-    const tzOffset = new Date().getTimezoneOffset() * 60000; 
-    return new Date(Date.now() - tzOffset).toISOString().split('T')[0];
-  }
-  function getDaysDifference(date1, date2) {
-    const d1 = new Date(date1); d1.setHours(0, 0, 0, 0);
-    const d2 = new Date(date2); d2.setHours(0, 0, 0, 0);
-    return Math.round((d2 - d1) / (1000 * 60 * 60 * 24)); 
-  }
+  function getTodayString() { const tzOffset = new Date().getTimezoneOffset() * 60000; return new Date(Date.now() - tzOffset).toISOString().split('T')[0]; }
+  function getDaysDifference(date1, date2) { const d1 = new Date(date1); d1.setHours(0, 0, 0, 0); const d2 = new Date(date2); d2.setHours(0, 0, 0, 0); return Math.round((d2 - d1) / (1000 * 60 * 60 * 24)); }
 
   function switchMainTab(tabId) {
     document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
     document.getElementById(tabId).classList.add('active');
     document.querySelectorAll('.nav-item').forEach(btn => btn.classList.remove('active'));
     
-    if (tabId === 'homeScreen') {
-      document.getElementById('navHome').classList.add('active');
-      updateHomeStatus();
-    } else if (tabId === 'vocabScreen') {
-      document.getElementById('navVocab').classList.add('active');
-      renderVocabList();
-    } else if (tabId === 'shopScreen') {
-      document.getElementById('navShop').classList.add('active');
-      document.getElementById('shopMoneyText').innerText = userStats.money;
-      renderShopList();
-    }
+    if (tabId === 'homeScreen') { document.getElementById('navHome').classList.add('active'); updateHomeStatus(); } 
+    else if (tabId === 'vocabScreen') { document.getElementById('navVocab').classList.add('active'); renderVocabList(); } 
+    else if (tabId === 'shopScreen') { document.getElementById('navShop').classList.add('active'); document.getElementById('shopMoneyText').innerText = userStats.money; renderShopList(); }
     document.getElementById('mainBottomNav').style.display = 'flex';
   }
 
   function goHome() { switchMainTab('homeScreen'); }
 
   onAuthStateChanged(auth, (user) => {
-    if (user) {
-      USER_UID = user.uid;
-      document.getElementById('authScreen').classList.remove('active');
-      switchMainTab('homeScreen');
-      loadData(); 
-    } else {
-      USER_UID = null;
-      document.getElementById('mainBottomNav').style.display = 'none';
-      document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-      document.getElementById('authScreen').classList.add('active');
-    }
+    if (user) { USER_UID = user.uid; document.getElementById('authScreen').classList.remove('active'); switchMainTab('homeScreen'); loadData(); } 
+    else { USER_UID = null; document.getElementById('mainBottomNav').style.display = 'none'; document.querySelectorAll('.screen').forEach(s => s.classList.remove('active')); document.getElementById('authScreen').classList.add('active'); }
   });
 
   async function handleGoogleLogin() { 
-    try {
-      const btn = document.getElementById('googleLoginBtn');
-      btn.innerHTML = `<span class="material-symbols-rounded">hourglass_empty</span> 팝업창에서 로그인 중...`;
-      await signInWithPopup(auth, provider); 
-    } catch (e) {
-      document.getElementById('authErrorMsg').innerText = "팝업이 차단되었거나 로그인이 취소되었습니다.";
-      document.getElementById('googleLoginBtn').innerHTML = `<img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google" style="width: 20px; height: 20px;"> Google 계정으로 로그인`;
-    }
+    try { const btn = document.getElementById('googleLoginBtn'); btn.innerHTML = `<span class="material-symbols-rounded">hourglass_empty</span> 팝업창에서 로그인 중...`; await signInWithPopup(auth, provider); } 
+    catch (e) { document.getElementById('authErrorMsg').innerText = "로그인이 취소되었습니다."; document.getElementById('googleLoginBtn').innerHTML = `<img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" style="width: 20px;"> Google 계정으로 로그인`; }
   }
 
-  async function handleLogout() { 
-    if (confirm("정말 로그아웃 하시겠습니까? 기기의 연동이 해제됩니다.")) {
-      await signOut(auth); 
-    }
-  }
+  async function handleLogout() { if (confirm("정말 로그아웃 하시겠습니까?")) { await signOut(auth); } }
 
   async function syncToCloud() {
     if (!USER_UID) return; 
-    
-    const learnedData = myHanjaData
-      .filter(c => c.interval > 0 || (c.mistakes && c.mistakes > 0))
-      .map(c => ({ id: c.id, interval: c.interval, nextReview: c.nextReview, mistakes: c.mistakes || 0 }));
-      
-    try { 
-      await setDoc(doc(db, "vocawa_progress", USER_UID), { 
-        dailyNewLimit: dailyNewLimit, 
-        progress: learnedData, 
-        stats: userStats 
-      }); 
-    } catch(e) { 
-      console.error("동기화 에러:", e); 
-    }
+    const learnedData = myHanjaData.filter(c => c.interval > 0 || (c.mistakes && c.mistakes > 0)).map(c => ({ id: c.id, interval: c.interval, nextReview: c.nextReview, mistakes: c.mistakes || 0 }));
+    try { await setDoc(doc(db, "vocawa_progress", USER_UID), { dailyNewLimit: dailyNewLimit, progress: learnedData, stats: userStats }); } catch(e) { console.error("동기화 에러:", e); }
   }
 
   async function loadData() {
@@ -788,88 +663,87 @@
       const response = await fetch('./data.json');
       const fetchedData = await response.json();
       
-      let cloudProgress = [];
-      const docSnap = await getDoc(doc(db, "vocawa_progress", USER_UID));
-      
+      let cloudProgress = []; const docSnap = await getDoc(doc(db, "vocawa_progress", USER_UID));
       if (docSnap.exists()) {
-        const data = docSnap.data();
-        cloudProgress = data.progress || [];
-        if (data.dailyNewLimit) dailyNewLimit = data.dailyNewLimit;
-        if (data.stats) {
-          userStats = { ...userStats, ...data.stats };
-          if (!userStats.ownedItems) userStats.ownedItems = ['c_chiikawa', 'e_none', 'h_cave'];
-          if (userStats.streakDays === undefined) userStats.streakDays = 0;
-          if (!userStats.courseLevel) userStats.courseLevel = '8급'; // 기본값 세팅
-        }
+        const data = docSnap.data(); cloudProgress = data.progress || []; if (data.dailyNewLimit) dailyNewLimit = data.dailyNewLimit;
+        if (data.stats) { userStats = { ...userStats, ...data.stats }; if (!userStats.ownedItems) userStats.ownedItems = ['c_chiikawa', 'e_none', 'h_cave']; if (userStats.streakDays === undefined) userStats.streakDays = 0; if (!userStats.courseLevel) userStats.courseLevel = '8급'; }
       }
       
       myHanjaData = fetchedData.map(card => {
         const savedCard = cloudProgress.find(c => c.id === card.id);
-        if (savedCard) {
-          return { ...card, interval: savedCard.interval, nextReview: savedCard.nextReview, mistakes: savedCard.mistakes || 0 };
-        }
+        if (savedCard) { return { ...card, interval: savedCard.interval, nextReview: savedCard.nextReview, mistakes: savedCard.mistakes || 0 }; }
         return { ...card, interval: 0, nextReview: 0, mistakes: 0 };
       });
 
-      checkDailyLogin(); 
-      updateHomeStatus();
-      updateUserStatsUI();
-    } catch (error) { 
-      console.log("데이터 불러오기 에러:", error); 
-    }
+      checkDailyLogin(); updateHomeStatus(); updateUserStatsUI();
+    } catch (error) { console.log("데이터 불러오기 에러:", error); }
   }
 
+  // 🎯 출석 숫자 애니메이션 함수
+  function animateValue(obj, start, end, duration) {
+    let startTimestamp = null;
+    const step = (timestamp) => {
+      if (!startTimestamp) startTimestamp = timestamp;
+      const progress = Math.min((timestamp - startTimestamp) / duration, 1);
+      obj.innerHTML = Math.floor(progress * (end - start) + start);
+      if (progress < 1) window.requestAnimationFrame(step);
+    };
+    window.requestAnimationFrame(step);
+  }
+
+  // 🎯 출석 체크 및 모달 표시
   function checkDailyLogin() {
     const today = getTodayString();
+    let isNewLogin = false; let oldStreak = userStats.streakDays || 0; let newStreak = 1; let isPenalty = false; let penaltyExp = 0;
+
     if (userStats.lastLoginDate !== today) {
+      isNewLogin = true;
       if (userStats.lastLoginDate !== "") {
         const missedDays = getDaysDifference(userStats.lastLoginDate, today) - 1;
         if (missedDays === 0) {
-          userStats.streakDays = (userStats.streakDays || 0) + 1;
+          newStreak = oldStreak + 1;
         } else if (missedDays > 0) {
+          isPenalty = true;
           const currentMaxExp = LEVELS[userStats.levelIdx].maxExp;
-          const penalty = Math.floor(currentMaxExp * 0.1) * missedDays;
-          userStats.exp -= penalty;
-          while (userStats.exp < 0 && userStats.levelIdx > 0) {
-            userStats.levelIdx--;
-            userStats.exp += LEVELS[userStats.levelIdx].maxExp; 
-          }
+          penaltyExp = Math.floor(currentMaxExp * 0.1) * missedDays;
+          userStats.exp -= penaltyExp;
+          while (userStats.exp < 0 && userStats.levelIdx > 0) { userStats.levelIdx--; userStats.exp += LEVELS[userStats.levelIdx].maxExp; }
           if (userStats.exp < 0) userStats.exp = 0; 
-          alert(`${missedDays}일 결석 페널티\n경험치가 ${penalty} 감소했습니다.`);
-          userStats.streakDays = 1;
+          newStreak = 1;
         }
-      } else {
-        userStats.streakDays = 1;
-      }
-      userStats.money += 50;
-      userStats.dailyStudyDone = false;
-      userStats.dailyQuizDone = false;
-      userStats.lastLoginDate = today;
+      } else { newStreak = 1; oldStreak = 0; }
+      
+      userStats.streakDays = newStreak; userStats.money += 50; userStats.dailyStudyDone = false; userStats.dailyQuizDone = false; userStats.lastLoginDate = today;
       syncToCloud();
     }
+
     document.getElementById('streakDaysText').innerText = userStats.streakDays || 1;
+
+    // 모달 띄우기
+    if (isNewLogin) {
+      document.getElementById('attendanceMsg').innerHTML = isPenalty 
+        ? `앗! ${getDaysDifference(userStats.lastLoginDate, today)-1}일 결석하여 경험치가 ${penaltyExp} 하락했어요.<br>다시 힘차게 시작해 봐요! (💰 +50원)`
+        : `오늘도 잊지 않고 찾아오셨군요!<br>단어들을 물리쳐 볼까요? (💰 +50원)`;
+      
+      document.getElementById('attendanceModal').classList.add('show');
+      const numEl = document.getElementById('attendanceStreakNum');
+      animateValue(numEl, oldStreak, newStreak, 1000); // 1초 동안 숫자 올라가는 애니메이션
+    }
   }
+
+  function closeAttendanceModal() { document.getElementById('attendanceModal').classList.remove('show'); }
 
   function addExp(amount) {
-    userStats.exp += amount;
-    let currentLevel = LEVELS[userStats.levelIdx];
+    userStats.exp += amount; let currentLevel = LEVELS[userStats.levelIdx];
     while (userStats.exp >= currentLevel.maxExp && userStats.levelIdx < LEVELS.length - 1) {
-      userStats.exp -= currentLevel.maxExp;
-      userStats.levelIdx++;
-      currentLevel = LEVELS[userStats.levelIdx];
+      userStats.exp -= currentLevel.maxExp; userStats.levelIdx++; currentLevel = LEVELS[userStats.levelIdx];
       alert(`🎉 승급을 축하합니다!\n[${currentLevel.name}] 달성`);
     }
-    if (userStats.levelIdx === LEVELS.length - 1 && userStats.exp >= currentLevel.maxExp) {
-      userStats.exp = currentLevel.maxExp;
-    }
-    updateUserStatsUI();
-    syncToCloud();
+    if (userStats.levelIdx === LEVELS.length - 1 && userStats.exp >= currentLevel.maxExp) { userStats.exp = currentLevel.maxExp; }
+    updateUserStatsUI(); syncToCloud();
   }
 
-  function getImageUrl(id) {
-    const fileName = id.replace('c_', '').replace('e_', '');
-    return `./image/${fileName}.png`;
-  }
+  function getImageUrl(id) { return `./image/${id.replace('c_', '').replace('e_', '')}.png`; }
 
   function updateUserStatsUI() {
     const lvl = LEVELS[userStats.levelIdx];
@@ -879,29 +753,17 @@
     document.getElementById('userMoneyText').innerText = userStats.money;
     
     const expPercent = (userStats.exp / lvl.maxExp) * 100;
-    document.getElementById('userExpBar').style.width = `${expPercent}%`;
-    document.getElementById('userExpText').innerText = `EXP ${userStats.exp} / ${lvl.maxExp}`;
+    document.getElementById('userExpBar').style.width = `${expPercent}%`; document.getElementById('userExpText').innerText = `EXP ${userStats.exp} / ${lvl.maxExp}`;
     
     if (charObj) { 
       let charImgName = userStats.character.replace('c_', '');
-      
-      document.getElementById('itemBeetle').style.display = 'none';
-      document.getElementById('itemGuitar').style.display = 'none';
-      document.getElementById('itemTv').style.display = 'none';
-
-      if (userStats.equipment === 'e_pajama') {
-        charImgName += '_paj'; 
-      } else if (userStats.equipment === 'e_beetle') {
-        document.getElementById('itemBeetle').style.display = 'block'; 
-      } else if (userStats.equipment === 'e_guitar') {
-        document.getElementById('itemGuitar').style.display = 'block'; 
-      } else if (userStats.equipment === 'e_tv') {
-        document.getElementById('itemTv').style.display = 'block'; 
-      }
-      
+      document.getElementById('itemBeetle').style.display = 'none'; document.getElementById('itemGuitar').style.display = 'none'; document.getElementById('itemTv').style.display = 'none';
+      if (userStats.equipment === 'e_pajama') { charImgName += '_paj'; } 
+      else if (userStats.equipment === 'e_beetle') { document.getElementById('itemBeetle').style.display = 'block'; } 
+      else if (userStats.equipment === 'e_guitar') { document.getElementById('itemGuitar').style.display = 'block'; } 
+      else if (userStats.equipment === 'e_tv') { document.getElementById('itemTv').style.display = 'block'; }
       document.getElementById('userAvatarImg').src = `./image/${charImgName}.png`; 
     }
-    
     const bgName = userStats.house ? userStats.house.replace('h_', '') : 'cave';
     document.getElementById('userRoomBg').src = `./image/${bgName}.png`;
   }
@@ -909,14 +771,10 @@
   let currentShopTab = 'char';
   function changeShopTab(tab) {
     currentShopTab = tab;
-    document.getElementById('tabChar').classList.remove('active');
-    document.getElementById('tabEquip').classList.remove('active');
-    document.getElementById('tabHouse').classList.remove('active');
-    
+    document.getElementById('tabChar').classList.remove('active'); document.getElementById('tabEquip').classList.remove('active'); document.getElementById('tabHouse').classList.remove('active');
     if (tab === 'char') document.getElementById('tabChar').classList.add('active');
     else if (tab === 'equip') document.getElementById('tabEquip').classList.add('active');
     else if (tab === 'house') document.getElementById('tabHouse').classList.add('active');
-    
     renderShopList();
   }
   
@@ -927,67 +785,63 @@
       const isOwned = userStats.ownedItems.includes(item.id);
       const isEquipped = userStats.character === item.id || userStats.equipment === item.id || userStats.house === item.id;
       let btnHtml = '';
-      if (isEquipped) {
-        btnHtml = `<button class="shop-buy-btn btn-equipped"><span class="material-symbols-rounded" style="font-size:16px;">check</span> 장착 중</button>`;
-      } else if (isOwned) {
-        btnHtml = `<button class="shop-buy-btn btn-equip" onclick="buyOrEquipItem('${item.id}', '${currentShopTab}')">장착하기</button>`;
-      } else {
-        btnHtml = `<button class="shop-buy-btn btn-buy" onclick="buyOrEquipItem('${item.id}', '${currentShopTab}')">${item.price}원 구매</button>`;
-      }
-      return `
-        <div class="shop-item">
-          <img class="shop-item-img" src="${getImageUrl(item.id)}" alt="item" onerror="this.style.display='none'">
-          <div class="shop-item-content">
-            <div class="shop-item-info">
-              <h4>${item.name}</h4>
-              <p>${item.desc}</p>
-            </div>
-            ${btnHtml}
-          </div>
-        </div>`;
+      if (isEquipped) { btnHtml = `<button class="shop-buy-btn btn-equipped"><span class="material-symbols-rounded" style="font-size:16px;">check</span> 장착 중</button>`; } 
+      else if (isOwned) { btnHtml = `<button class="shop-buy-btn btn-equip" onclick="buyOrEquipItem('${item.id}', '${currentShopTab}')">장착하기</button>`; } 
+      else { btnHtml = `<button class="shop-buy-btn btn-buy" onclick="buyOrEquipItem('${item.id}', '${currentShopTab}')">${item.price}원 구매</button>`; }
+      return `<div class="shop-item"><img class="shop-item-img" src="${getImageUrl(item.id)}" alt="item" onerror="this.style.display='none'"><div class="shop-item-content"><div class="shop-item-info"><h4>${item.name}</h4><p>${item.desc}</p></div>${btnHtml}</div></div>`;
     }).join('');
   }
 
   function buyOrEquipItem(itemId, type) {
-    const itemObj = SHOP_DB[type].find(i => i.id === itemId);
-    if (!itemObj) return;
+    const itemObj = SHOP_DB[type].find(i => i.id === itemId); if (!itemObj) return;
     if (userStats.ownedItems.includes(itemId)) {
-      if (type === 'char') userStats.character = itemId; 
-      else if (type === 'equip') userStats.equipment = itemId;
-      else if (type === 'house') userStats.house = itemId; 
+      if (type === 'char') userStats.character = itemId; else if (type === 'equip') userStats.equipment = itemId; else if (type === 'house') userStats.house = itemId; 
     } else {
       if (userStats.money >= itemObj.price) {
-        userStats.money -= itemObj.price;
-        userStats.ownedItems.push(itemId);
-        if (type === 'char') userStats.character = itemId; 
-        else if (type === 'equip') userStats.equipment = itemId;
-        else if (type === 'house') userStats.house = itemId; 
+        userStats.money -= itemObj.price; userStats.ownedItems.push(itemId);
+        if (type === 'char') userStats.character = itemId; else if (type === 'equip') userStats.equipment = itemId; else if (type === 'house') userStats.house = itemId; 
       } else { alert("재화가 부족합니다."); return; }
     }
-    syncToCloud(); updateUserStatsUI();
-    document.getElementById('shopMoneyText').innerText = userStats.money; renderShopList();
+    syncToCloud(); updateUserStatsUI(); document.getElementById('shopMoneyText').innerText = userStats.money; renderShopList();
   }
 
-  // 🎯 급수 필터링을 적용하여 오늘의 카드 불러오기
+  // 🎯 누적 학습 로직: 8급부터 목표 급수까지 모두 가져오되, 8급부터 순서대로 노출
   function getTodayStudyCards() {
     const now = new Date().getTime();
+    
+    // 복습 카드는 급수 상관없이 우선 노출
     const reviewCards = myHanjaData.filter(card => card.interval > 0 && card.nextReview <= now);
-    const newCardsInLevel = myHanjaData.filter(card => card.interval === 0 && card.level === userStats.courseLevel);
-    const dailyNewCards = newCardsInLevel.slice(0, dailyNewLimit);
+    
+    // 신규 카드 필터링 로직 (목표 급수 인덱스 확인)
+    const targetLvlIdx = HANJA_LEVELS.indexOf(userStats.courseLevel);
+    let newCards = myHanjaData.filter(card => {
+      const cardLvlIdx = HANJA_LEVELS.indexOf(card.level);
+      return card.interval === 0 && cardLvlIdx !== -1 && cardLvlIdx <= targetLvlIdx; // 8급 ~ 목표 급수 이하 포함
+    });
+    
+    // 8급부터 나오도록 정렬
+    newCards.sort((a, b) => HANJA_LEVELS.indexOf(a.level) - HANJA_LEVELS.indexOf(b.level));
+    
+    const dailyNewCards = newCards.slice(0, dailyNewLimit);
     return [...reviewCards, ...dailyNewCards];
   }
 
   function updateHomeStatus() {
     const pendingCards = getTodayStudyCards();
-    const newCardsInLevel = myHanjaData.filter(c => c.interval === 0 && c.level === userStats.courseLevel);
-    const newCount = newCardsInLevel.length > 0 ? Math.min(newCardsInLevel.length, dailyNewLimit) : 0;
+    
+    const targetLvlIdx = HANJA_LEVELS.indexOf(userStats.courseLevel);
+    let newCards = myHanjaData.filter(card => {
+      const cardLvlIdx = HANJA_LEVELS.indexOf(card.level);
+      return card.interval === 0 && cardLvlIdx !== -1 && cardLvlIdx <= targetLvlIdx;
+    });
+    const newCount = newCards.length > 0 ? Math.min(newCards.length, dailyNewLimit) : 0;
     const reviewCount = pendingCards.length - newCount;
     
     const statusText = pendingCards.length > 0 ? `복습: ${reviewCount}개 / 신규: ${newCount}개` : `<span class="material-symbols-rounded" style="font-size:16px; margin-right:4px; vertical-align:middle; color:#4dabf7;">check_circle</span>오늘의 토벌 완료`;
     document.getElementById('courseStatus').innerHTML = statusText;
     
-    // 🎯 동적으로 현재 급수 표시
-    document.getElementById('currentCourseTitle').innerHTML = `<span class="material-symbols-rounded" style="color: #4dabf7; font-size: 24px;">swords</span>한자 ${userStats.courseLevel} 토벌`;
+    let titleStr = userStats.courseLevel === '8급' ? '한자 8급 토벌' : `한자 (8급~${userStats.courseLevel}) 토벌`;
+    document.getElementById('currentCourseTitle').innerHTML = `<span class="material-symbols-rounded" style="color: #4dabf7; font-size: 24px;">swords</span>${titleStr}`;
 
     document.getElementById('quizStatusText').innerHTML = userStats.dailyQuizDone 
       ? `<span class="material-symbols-rounded" style="font-size:16px; margin-right:4px; vertical-align:middle; color:#51cf66;">check_circle</span>오늘의 제초 완료` 
@@ -996,104 +850,54 @@
 
   function toggleTTS() {
     isTTSOn = !isTTSOn;
-    const btn = document.getElementById('ttsToggleBtn');
-    const icon = document.getElementById('ttsIcon');
-    if (isTTSOn) { btn.classList.add('active'); icon.innerText = 'volume_up'; } 
-    else { btn.classList.remove('active'); icon.innerText = 'volume_off'; window.speechSynthesis.cancel(); }
+    const btn = document.getElementById('ttsToggleBtn'); const icon = document.getElementById('ttsIcon');
+    if (isTTSOn) { btn.classList.add('active'); icon.innerText = 'volume_up'; } else { btn.classList.remove('active'); icon.innerText = 'volume_off'; window.speechSynthesis.cancel(); }
   }
   
   let availableVoices = [];
-  window.speechSynthesis.onvoiceschanged = () => {
-    availableVoices = window.speechSynthesis.getVoices();
-  };
+  window.speechSynthesis.onvoiceschanged = () => { availableVoices = window.speechSynthesis.getVoices(); };
 
   function playSpeech(text) {
     if (!isTTSOn || !('speechSynthesis' in window)) return;
     window.speechSynthesis.cancel();
-    const msg = new SpeechSynthesisUtterance(text); 
-    msg.lang = 'ko-KR'; 
-    msg.rate = 1.0; 
-    
+    const msg = new SpeechSynthesisUtterance(text); msg.lang = 'ko-KR'; msg.rate = 1.0; 
     if (availableVoices.length === 0) availableVoices = window.speechSynthesis.getVoices();
-
-    const bestVoice = availableVoices.find(v => 
-      v.name.includes('Google 한국의') || 
-      v.name.includes('Yuna') ||         
-      v.name.includes('Google Korean')
-    ) || availableVoices.find(v => v.lang === 'ko-KR' || v.lang === 'ko_KR'); 
-
-    if (bestVoice) {
-      msg.voice = bestVoice;
-    }
-
+    const bestVoice = availableVoices.find(v => v.name.includes('Google 한국의') || v.name.includes('Yuna') || v.name.includes('Google Korean')) || availableVoices.find(v => v.lang === 'ko-KR' || v.lang === 'ko_KR'); 
+    if (bestVoice) { msg.voice = bestVoice; }
     window.speechSynthesis.speak(msg);
   }
 
   function startLearning() {
-    stopBGM();
-    document.getElementById('mainBottomNav').style.display = 'none'; 
-    document.getElementById('homeScreen').classList.remove('active');
-    document.getElementById('learningScreen').classList.add('active');
-    todayCards = getTodayStudyCards();
-    currentIndex = 0; completedCount = 0; sessionTotal = todayCards.length; 
-    updateProgress();
-    if (todayCards.length > 0) {
-      document.getElementById('emptyState').classList.remove('show');
-      document.getElementById('cardContainer').style.display = 'block';
-      renderCard(currentIndex);
-    } else {
-      document.getElementById('cardContainer').style.display = 'none';
-      document.getElementById('emptyState').classList.add('show');
-    }
+    stopBGM(); document.getElementById('mainBottomNav').style.display = 'none'; document.getElementById('homeScreen').classList.remove('active'); document.getElementById('learningScreen').classList.add('active');
+    todayCards = getTodayStudyCards(); currentIndex = 0; completedCount = 0; sessionTotal = todayCards.length; updateProgress();
+    if (todayCards.length > 0) { document.getElementById('emptyState').classList.remove('show'); document.getElementById('cardContainer').style.display = 'block'; renderCard(currentIndex); } 
+    else { document.getElementById('cardContainer').style.display = 'none'; document.getElementById('emptyState').classList.add('show'); }
     resetCardStyle(); document.getElementById('evalButtons').classList.remove('show');
   }
 
-  // 🎯 데이터가 없을 수 있는 예문이나 부수를 급수로 예쁘게 대체
   function renderCard(index) {
     if (index >= todayCards.length) return;
     const data = todayCards[index];
-    document.getElementById('cardHanja').innerText = data.hanja; 
-    document.getElementById('cardMiniHanja').innerText = data.hanja; 
-    document.getElementById('cardMeaning').innerText = data.meaning; 
-    
-    document.getElementById('cardRadical').innerText = `[${data.level}] 부수: ${data.radical}`;
-    document.getElementById('cardStory').innerText = data.story || ""; 
+    document.getElementById('cardHanja').innerText = data.hanja; document.getElementById('cardMiniHanja').innerText = data.hanja; document.getElementById('cardMeaning').innerText = data.meaning; 
+    document.getElementById('cardRadical').innerText = `[${data.level}] 부수: ${data.radical}`; document.getElementById('cardStory').innerText = data.story || ""; 
   }
 
   function flipCard() {
     const card = document.getElementById('flashcard');
-    if (!card.classList.contains('flipped')) { 
-      card.classList.add('flipped'); document.getElementById('evalButtons').classList.add('show'); 
-      playSpeech(todayCards[currentIndex].meaning); 
-    }
+    if (!card.classList.contains('flipped')) { card.classList.add('flipped'); document.getElementById('evalButtons').classList.add('show'); playSpeech(todayCards[currentIndex].meaning); }
   }
 
-  let isMistakeMode = false;
-  let isHardcoreMode = false;
-
-  window.startMistakeReview = startMistakeReview;
-  window.startHardcoreQuiz = startHardcoreQuiz;
+  let isMistakeMode = false; let isHardcoreMode = false;
+  window.startMistakeReview = startMistakeReview; window.startHardcoreQuiz = startHardcoreQuiz;
 
   function processEvaluation(result) {
-    let currentCard = todayCards[currentIndex];
-    let originalCard = myHanjaData.find(c => c.id === currentCard.id);
-    const ONE_DAY = 24 * 60 * 60 * 1000; const now = new Date().getTime();
-
-    if (result === '모름') { 
-      playSound('swipe'); 
-      originalCard.mistakes = (originalCard.mistakes || 0) + 1; 
-      todayCards.splice(currentIndex + 2, 0, currentCard); 
-    } 
+    let currentCard = todayCards[currentIndex]; let originalCard = myHanjaData.find(c => c.id === currentCard.id); const ONE_DAY = 24 * 60 * 60 * 1000; const now = new Date().getTime();
+    if (result === '모름') { playSound('swipe'); originalCard.mistakes = (originalCard.mistakes || 0) + 1; todayCards.splice(currentIndex + 2, 0, currentCard); } 
     else if (result === '헷갈림') { playSound('swipe'); todayCards.push(currentCard); } 
     else if (result === '완벽함') {
-      playSound('correct');
-      originalCard.interval = originalCard.interval === 0 ? 1 : originalCard.interval * 2;
-      originalCard.nextReview = now + (originalCard.interval * ONE_DAY);
-      
-      if (isMistakeMode) originalCard.mistakes = 0; 
-      completedCount++; 
+      playSound('correct'); originalCard.interval = originalCard.interval === 0 ? 1 : originalCard.interval * 2; originalCard.nextReview = now + (originalCard.interval * ONE_DAY);
+      if (isMistakeMode) originalCard.mistakes = 0; completedCount++; 
     }
-    
     syncToCloud(); updateProgress(); currentIndex++; resetCardStyle(); document.getElementById('evalButtons').classList.remove('show');
     
     if (currentIndex >= todayCards.length) { 
@@ -1102,242 +906,105 @@
         if (!userStats.dailyStudyDone && sessionTotal > 0) {
           userStats.dailyStudyDone = true; userStats.money += 100; addExp(sessionTotal);
           document.getElementById('completionMsg').innerHTML = `훌륭하게 단어 토벌에 성공했습니다!<br><br><span style="font-size:16px; color:#4dabf7; font-weight:800;">EXP +${sessionTotal}  |  💰 +100원</span>`;
-        } else {
-          document.getElementById('completionMsg').innerHTML = `오늘의 토벌을 완벽하게 마쳤습니다.<br>푹 쉬고 내일 다시 만나요!`;
-        }
+        } else { document.getElementById('completionMsg').innerHTML = `오늘의 토벌을 완벽하게 마쳤습니다.<br>푹 쉬고 내일 다시 만나요!`; }
         document.getElementById('completionModal').classList.add('show'); 
       }, 300); 
-    } 
-    else { setTimeout(() => { renderCard(currentIndex); }, 150); }
+    } else { setTimeout(() => { renderCard(currentIndex); }, 150); }
   }
 
-  function resetCardStyle() {
-    const card = document.getElementById('flashcard');
-    card.classList.remove('flipped', 'dragging'); card.style.transform = ''; 
-    document.getElementById('hintBad').style.opacity = '0'; document.getElementById('hintPerfect').style.opacity = '0'; document.getElementById('hintSoso').style.opacity = '0';
-  }
+  function resetCardStyle() { const card = document.getElementById('flashcard'); card.classList.remove('flipped', 'dragging'); card.style.transform = ''; document.getElementById('hintBad').style.opacity = '0'; document.getElementById('hintPerfect').style.opacity = '0'; document.getElementById('hintSoso').style.opacity = '0'; }
 
-  const cardElement = document.getElementById('flashcard');
-  let startX = 0, startY = 0, currentX = 0, currentY = 0, isDragging = false;
-  cardElement.addEventListener('touchstart', (e) => {
-    if (!cardElement.classList.contains('flipped')) return;
-    startX = e.touches[0].clientX; startY = e.touches[0].clientY;
-    isDragging = true; cardElement.classList.add('dragging'); 
-  });
+  const cardElement = document.getElementById('flashcard'); let startX = 0, startY = 0, currentX = 0, currentY = 0, isDragging = false;
+  cardElement.addEventListener('touchstart', (e) => { if (!cardElement.classList.contains('flipped')) return; startX = e.touches[0].clientX; startY = e.touches[0].clientY; isDragging = true; cardElement.classList.add('dragging'); });
   cardElement.addEventListener('touchmove', (e) => {
-    if (!isDragging) return;
-    currentX = e.touches[0].clientX - startX; currentY = e.touches[0].clientY - startY;
-    const rotateZ = currentX * 0.05; 
-    cardElement.style.transform = `rotateY(180deg) translate(${-currentX}px, ${currentY}px) rotateZ(${-rotateZ}deg)`;
-    document.getElementById('hintPerfect').style.opacity = currentX > 50 ? '1' : '0';
-    document.getElementById('hintBad').style.opacity = currentX < -50 ? '1' : '0';
-    document.getElementById('hintSoso').style.opacity = currentY < -80 && Math.abs(currentX) < 50 ? '1' : '0';
+    if (!isDragging) return; currentX = e.touches[0].clientX - startX; currentY = e.touches[0].clientY - startY; const rotateZ = currentX * 0.05; cardElement.style.transform = `rotateY(180deg) translate(${-currentX}px, ${currentY}px) rotateZ(${-rotateZ}deg)`;
+    document.getElementById('hintPerfect').style.opacity = currentX > 50 ? '1' : '0'; document.getElementById('hintBad').style.opacity = currentX < -50 ? '1' : '0'; document.getElementById('hintSoso').style.opacity = currentY < -80 && Math.abs(currentX) < 50 ? '1' : '0';
   });
   cardElement.addEventListener('touchend', (e) => {
-    if (!isDragging) return;
-    isDragging = false; cardElement.classList.remove('dragging');
-    const threshold = 100;
-    if (currentX > threshold) { processEvaluation('완벽함'); } 
-    else if (currentX < -threshold) { processEvaluation('모름'); } 
-    else if (currentY < -threshold && Math.abs(currentX) < 80) { processEvaluation('헷갈림'); } 
-    else {
-      cardElement.style.transform = 'rotateY(180deg)';
-      document.getElementById('hintBad').style.opacity = '0'; document.getElementById('hintPerfect').style.opacity = '0'; document.getElementById('hintSoso').style.opacity = '0';
-    }
+    if (!isDragging) return; isDragging = false; cardElement.classList.remove('dragging'); const threshold = 100;
+    if (currentX > threshold) { processEvaluation('완벽함'); } else if (currentX < -threshold) { processEvaluation('모름'); } else if (currentY < -threshold && Math.abs(currentX) < 80) { processEvaluation('헷갈림'); } 
+    else { cardElement.style.transform = 'rotateY(180deg)'; document.getElementById('hintBad').style.opacity = '0'; document.getElementById('hintPerfect').style.opacity = '0'; document.getElementById('hintSoso').style.opacity = '0'; }
     currentX = 0; currentY = 0;
   });
 
   function resetAndGoHome() { document.getElementById('completionModal').classList.remove('show'); setTimeout(() => { goHome(); }, 300); }
-  function updateProgress() {
-    if (sessionTotal === 0) return;
-    const progressPercent = (completedCount / sessionTotal) * 100;
-    document.getElementById('progressBar').style.width = progressPercent + '%';
-  }
+  function updateProgress() { if (sessionTotal === 0) return; const progressPercent = (completedCount / sessionTotal) * 100; document.getElementById('progressBar').style.width = progressPercent + '%'; }
   
   function openSettings() { document.getElementById('limitInput').value = dailyNewLimit; document.getElementById('settingsModal').classList.add('show'); }
   function closeSettings() { document.getElementById('settingsModal').classList.remove('show'); }
   function saveSettings() { const newVal = parseInt(document.getElementById('limitInput').value); if (newVal >= 0) { dailyNewLimit = newVal; syncToCloud(); updateHomeStatus(); closeSettings(); } else { alert("0 이상의 숫자를 입력해 주세요."); } }
   
-  // 🎯 8급부터 1급까지 급수를 동적으로 그려주고 관리하는 모달 기능들
-  let tempSelectedLevel = '8급';
-  const HANJA_LEVELS = ['8급', '7급', '6급', '5급', '4급', '3급', '2급', '1급'];
-
-  function openCourseModal() {
-    tempSelectedLevel = userStats.courseLevel || '8급';
-    renderLevelGrid();
-    document.getElementById('courseModal').classList.add('show');
-  }
-
-  function renderLevelGrid() {
-    const grid = document.getElementById('courseLevelGrid');
-    grid.innerHTML = HANJA_LEVELS.map(lvl => `
-      <div class="level-btn ${tempSelectedLevel === lvl ? 'active' : ''}" onclick="tempSelectLevel('${lvl}')">
-        ${lvl}
-      </div>
-    `).join('');
-  }
-
-  function tempSelectLevel(lvl) {
-    tempSelectedLevel = lvl;
-    renderLevelGrid();
-  }
-
-  function applyCourseChange() {
-    userStats.courseLevel = tempSelectedLevel;
-    syncToCloud();
-    updateHomeStatus();
-    closeCourseModal();
-  }
-
-  function closeCourseModal() {
-    document.getElementById('courseModal').classList.remove('show');
-  }
-
-  function alertLocked(courseName) {
-    alert(`[${courseName}] 과정은 현재 열심히 준비 중입니다!\n업데이트를 기대해 주세요.`);
-  }
+  // 🎯 모달: 셀렉트 박스에서 값 읽어와 적용
+  function openCourseModal() { document.getElementById('courseLevelSelect').value = userStats.courseLevel || '8급'; document.getElementById('courseModal').classList.add('show'); }
+  function closeCourseModal() { document.getElementById('courseModal').classList.remove('show'); }
+  function applyCourseChange() { userStats.courseLevel = document.getElementById('courseLevelSelect').value; syncToCloud(); updateHomeStatus(); closeCourseModal(); }
+  function alertLocked(courseName) { alert(`[${courseName}] 과정은 현재 열심히 준비 중입니다!\n업데이트를 기대해 주세요.`); }
   
-  // 🎯 단어장 렌더링 시에도 깔끔하게 급수 위주로 보이게 정리
   function renderVocabList() {
     const learnedCards = myHanjaData.filter(card => card.interval > 0);
     document.getElementById('vocabStatsCount').innerText = `${learnedCards.length} / ${myHanjaData.length}`;
     const listContainer = document.getElementById('vocabListContainer');
-    
-    if (learnedCards.length === 0) { 
-      listContainer.innerHTML = `<div class="empty-state show"><div class="empty-icon material-symbols-rounded">menu_book</div><div class="empty-desc">학습을 시작해 단어를 누적해 보세요.</div></div>`; 
-      return; 
-    }
-    
+    if (learnedCards.length === 0) { listContainer.innerHTML = `<div class="empty-state show"><div class="empty-icon material-symbols-rounded">menu_book</div><div class="empty-desc">학습을 시작해 단어를 누적해 보세요.</div></div>`; return; }
     listContainer.innerHTML = learnedCards.reverse().map(card => {
       let badgeClass = ''; let badgeText = '초급';
-      if (card.interval >= 7) { badgeClass = 'level-high'; badgeText = '장기기억'; } 
-      else if (card.interval >= 3) { badgeClass = 'level-mid'; badgeText = '숙련'; }
-      
-      // 🎯 복구: vocab-story 영역에 급수와 부수를 함께 표시
-      return `
-        <div class="vocab-item">
-          <div class="vocab-hanja">${card.hanja}</div>
-          <div class="vocab-details">
-            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 4px;">
-              <div class="vocab-meaning">${card.meaning}</div>
-              <div class="level-badge ${badgeClass}">${badgeText}</div>
-            </div>
-            <div class="vocab-story" style="color:#adb5bd; font-size:12px; font-weight:700;">
-              [${card.level}] 부수: ${card.radical}
-            </div>
-          </div>
-        </div>`;
+      if (card.interval >= 7) { badgeClass = 'level-high'; badgeText = '장기기억'; } else if (card.interval >= 3) { badgeClass = 'level-mid'; badgeText = '숙련'; }
+      return `<div class="vocab-item"><div class="vocab-hanja">${card.hanja}</div><div class="vocab-details"><div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 4px;"><div class="vocab-meaning">${card.meaning}</div><div class="level-badge ${badgeClass}">${badgeText}</div></div><div class="vocab-story" style="color:#adb5bd; font-size:12px; font-weight:700;">[${card.level}] 부수: ${card.radical}</div></div></div>`;
     }).join('');
   }
 
   let quizQuestions = []; let currentQuizIdx = 0; let quizScore = 0; let isAnswering = false;
 
   function startMistakeReview() {
-    stopBGM();
-    const mistakeCards = myHanjaData.filter(c => c.mistakes > 0);
-    if (mistakeCards.length === 0) { alert("완벽합니다! 현재 복습할 오답이 없습니다."); return; }
-    
-    isMistakeMode = true;
-    document.getElementById('mainBottomNav').style.display = 'none'; 
-    document.getElementById('homeScreen').classList.remove('active');
-    document.getElementById('learningScreen').classList.add('active');
-    
-    todayCards = [...mistakeCards];
-    currentIndex = 0; completedCount = 0; sessionTotal = todayCards.length; 
-    updateProgress();
-    document.getElementById('emptyState').classList.remove('show');
-    document.getElementById('cardContainer').style.display = 'block';
-    renderCard(currentIndex);
-    resetCardStyle(); document.getElementById('evalButtons').classList.remove('show');
+    stopBGM(); const mistakeCards = myHanjaData.filter(c => c.mistakes > 0); if (mistakeCards.length === 0) { alert("완벽합니다! 현재 복습할 오답이 없습니다."); return; }
+    isMistakeMode = true; document.getElementById('mainBottomNav').style.display = 'none'; document.getElementById('homeScreen').classList.remove('active'); document.getElementById('learningScreen').classList.add('active');
+    todayCards = [...mistakeCards]; currentIndex = 0; completedCount = 0; sessionTotal = todayCards.length; updateProgress();
+    document.getElementById('emptyState').classList.remove('show'); document.getElementById('cardContainer').style.display = 'block'; renderCard(currentIndex); resetCardStyle(); document.getElementById('evalButtons').classList.remove('show');
   }
 
-  function startHardcoreQuiz() {
-    isHardcoreMode = true;
-    startQuiz(true); 
-  }
+  function startHardcoreQuiz() { isHardcoreMode = true; startQuiz(true); }
 
   function startQuiz(skipCheck = false) {
-    stopBGM();
-    if(!skipCheck) isHardcoreMode = false; 
-    
+    stopBGM(); if(!skipCheck) isHardcoreMode = false; 
     const learnedCards = myHanjaData.filter(card => card.interval > 0);
     if (learnedCards.length < 4) { alert("학습을 완료한 단어가 최소 4개 이상이어야 합니다."); return; }
-    
-    document.getElementById('mainBottomNav').style.display = 'none'; 
-    const shuffledLearned = [...learnedCards].sort(() => 0.5 - Math.random());
-    quizQuestions = shuffledLearned.slice(0, Math.min(10, learnedCards.length));
-    currentQuizIdx = 0; quizScore = 0; isAnswering = false;
-    document.getElementById('homeScreen').classList.remove('active');
-    document.getElementById('quizScreen').classList.add('active');
-    renderQuizQuestion();
+    document.getElementById('mainBottomNav').style.display = 'none'; const shuffledLearned = [...learnedCards].sort(() => 0.5 - Math.random()); quizQuestions = shuffledLearned.slice(0, Math.min(10, learnedCards.length));
+    currentQuizIdx = 0; quizScore = 0; isAnswering = false; document.getElementById('homeScreen').classList.remove('active'); document.getElementById('quizScreen').classList.add('active'); renderQuizQuestion();
   }
 
   function renderQuizQuestion() {
     if (currentQuizIdx >= quizQuestions.length) { finishQuiz(); return; }
-    isAnswering = false; const currentQ = quizQuestions[currentQuizIdx];
-    document.getElementById('quizProgressText').innerText = `문제 ${currentQuizIdx + 1}/${quizQuestions.length}`;
-    
+    isAnswering = false; const currentQ = quizQuestions[currentQuizIdx]; document.getElementById('quizProgressText').innerText = `문제 ${currentQuizIdx + 1}/${quizQuestions.length}`;
     const targetEl = document.getElementById('quizHanjaTarget');
-    if (isHardcoreMode) {
-      targetEl.innerText = currentQ.meaning;
-      targetEl.style.fontSize = '36px'; 
-    } else {
-      targetEl.innerText = currentQ.hanja;
-      targetEl.style.fontSize = '80px';
-    }
-
-    let options = [currentQ];
-    let distractorPool = myHanjaData.filter(card => card.id !== currentQ.id).sort(() => 0.5 - Math.random()).slice(0, 3);
-    options = options.concat(distractorPool).sort(() => 0.5 - Math.random());
+    if (isHardcoreMode) { targetEl.innerText = currentQ.meaning; targetEl.style.fontSize = '36px'; } else { targetEl.innerText = currentQ.hanja; targetEl.style.fontSize = '80px'; }
+    let options = [currentQ]; let distractorPool = myHanjaData.filter(card => card.id !== currentQ.id).sort(() => 0.5 - Math.random()).slice(0, 3); options = options.concat(distractorPool).sort(() => 0.5 - Math.random());
     const container = document.getElementById('quizOptionsContainer'); container.innerHTML = '';
-    
     options.forEach(opt => {
-      const btn = document.createElement('button'); btn.className = 'quiz-opt-btn'; 
-      btn.innerText = isHardcoreMode ? opt.hanja : opt.meaning; 
-      btn.onclick = () => checkQuizAnswer(btn, opt.id === currentQ.id, isHardcoreMode ? currentQ.hanja : currentQ.meaning, currentQ);
-      container.appendChild(btn);
+      const btn = document.createElement('button'); btn.className = 'quiz-opt-btn'; btn.innerText = isHardcoreMode ? opt.hanja : opt.meaning; 
+      btn.onclick = () => checkQuizAnswer(btn, opt.id === currentQ.id, isHardcoreMode ? currentQ.hanja : currentQ.meaning, currentQ); container.appendChild(btn);
     });
   }
 
   function checkQuizAnswer(btn, isCorrect, correctText, currentQ) {
-    if (isAnswering) return; isAnswering = true;
-    const allBtns = document.querySelectorAll('.quiz-opt-btn');
-    if (isCorrect) { 
-      playSound('correct'); btn.classList.add('correct'); quizScore++; 
-    } else { 
-      playSound('wrong'); btn.classList.add('wrong'); 
-      allBtns.forEach(b => { if (b.innerText === correctText) b.classList.add('correct'); }); 
-      
-      const originalCard = myHanjaData.find(c => c.id === currentQ.id);
-      originalCard.mistakes = (originalCard.mistakes || 0) + 1;
-      syncToCloud();
-    }
+    if (isAnswering) return; isAnswering = true; const allBtns = document.querySelectorAll('.quiz-opt-btn');
+    if (isCorrect) { playSound('correct'); btn.classList.add('correct'); quizScore++; } 
+    else { playSound('wrong'); btn.classList.add('wrong'); allBtns.forEach(b => { if (b.innerText === correctText) b.classList.add('correct'); }); 
+      const originalCard = myHanjaData.find(c => c.id === currentQ.id); originalCard.mistakes = (originalCard.mistakes || 0) + 1; syncToCloud(); }
     setTimeout(() => { currentQuizIdx++; renderQuizQuestion(); }, 1200);
   }
 
   function finishQuiz() {
     document.getElementById('finalQuizScore').innerText = `${quizScore} / ${quizQuestions.length}`;
     let msg = ''; const ratio = quizScore / quizQuestions.length;
-    if (ratio === 1) msg = "완벽하게 제초를 완료했습니다!"; 
-    else if (ratio >= 0.7) msg = "훌륭합니다. 제초에 성공했습니다!"; 
-    else msg = "아슬아슬했네요. 단어장을 복습해 보세요.";
-    
-    if (!userStats.dailyQuizDone) {
-      userStats.dailyQuizDone = true; userStats.money += 50; addExp(20);
-      msg += `<br><br><span style="font-size:16px; color:#51cf66; font-weight:800;">EXP +20  |  💰 +50원</span>`;
-    }
+    if (ratio === 1) msg = "완벽하게 제초를 완료했습니다!"; else if (ratio >= 0.7) msg = "훌륭합니다. 제초에 성공했습니다!"; else msg = "아슬아슬했네요. 단어장을 복습해 보세요.";
+    if (!userStats.dailyQuizDone) { userStats.dailyQuizDone = true; userStats.money += 50; addExp(20); msg += `<br><br><span style="font-size:16px; color:#51cf66; font-weight:800;">EXP +20  |  💰 +50원</span>`; }
     document.getElementById('quizResultMsg').innerHTML = msg; document.getElementById('quizResultModal').classList.add('show');
   }
 
   function closeQuizResult() { document.getElementById('quizResultModal').classList.remove('show'); goHome(); }
 
-  const shopScreenEl = document.getElementById('shopScreen');
-  let shopStartX = 0; let shopStartY = 0;
-
-  shopScreenEl.addEventListener('touchstart', (e) => {
-    shopStartX = e.touches[0].clientX; shopStartY = e.touches[0].clientY;
-  });
-
+  // 🎯 상점 스와이프 애니메이션 로직
+  const shopScreenEl = document.getElementById('shopScreen'); let shopStartX = 0; let shopStartY = 0;
+  shopScreenEl.addEventListener('touchstart', (e) => { shopStartX = e.touches[0].clientX; shopStartY = e.touches[0].clientY; });
   shopScreenEl.addEventListener('touchend', (e) => {
     if (!shopScreenEl.classList.contains('active')) return;
     const shopEndX = e.changedTouches[0].clientX; const shopEndY = e.changedTouches[0].clientY;
@@ -1346,10 +1013,20 @@
     if (Math.abs(diffX) > Math.abs(diffY) && Math.abs(diffX) > 50) {
       const tabs = ['char', 'equip', 'house'];
       const currentIndex = tabs.indexOf(currentShopTab);
+      const listContainer = document.getElementById('shopListContainer');
+      
+      // 애니메이션 클래스 초기화
+      listContainer.classList.remove('slide-in-right', 'slide-in-left');
       
       if (diffX > 0 && currentIndex < tabs.length - 1) {
+        // 오른쪽에서 밀려들어오기 (우로 스와이프)
+        void listContainer.offsetWidth; // 리플로우 강제 트리거 (애니메이션 재시작 위함)
+        listContainer.classList.add('slide-in-right');
         changeShopTab(tabs[currentIndex + 1]);
       } else if (diffX < 0 && currentIndex > 0) {
+        // 왼쪽에서 밀려들어오기 (좌로 스와이프)
+        void listContainer.offsetWidth;
+        listContainer.classList.add('slide-in-left');
         changeShopTab(tabs[currentIndex - 1]);
       }
     }
