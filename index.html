@@ -462,15 +462,15 @@
         <span>한자</span>
       </div>
       <div class="course-btn" id="btnLang_english" onclick="selectTempLang('english')">
-        <span class="material-symbols-rounded">sort_by_alpha</span>
+        <span style="font-size: 24px; line-height: 1;">🇺🇸</span>
         <span>영어</span>
       </div>
       <div class="course-btn" id="btnLang_chinese" onclick="selectTempLang('chinese')">
-        <span class="material-symbols-rounded">language</span>
+        <span style="font-size: 24px; line-height: 1;">🇨🇳</span>
         <span>중국어</span>
       </div>
       <div class="course-btn" id="btnLang_japanese" onclick="selectTempLang('japanese')">
-        <span class="material-symbols-rounded">ramen_dining</span>
+        <span style="font-size: 24px; line-height: 1;">🇯🇵</span>
         <span>일본어</span>
       </div>
     </div>
@@ -643,7 +643,14 @@
   async function syncToCloud() {
     if (!USER_UID) return; 
     const learnedData = myHanjaData.filter(c => c.interval > 0 || (c.mistakes && c.mistakes > 0)).map(c => ({ id: c.id, interval: c.interval, nextReview: c.nextReview, mistakes: c.mistakes || 0 }));
-    try { await setDoc(doc(db, "vocawa_progress", USER_UID), { dailyNewLimit: dailyNewLimit, progress: learnedData, stats: userStats }); } catch(e) { console.error("동기화 에러:", e); }
+    try { 
+      // 💡 핵심: 'progress_언어이름' 형태로 저장하고, { merge: true }를 넣어 다른 언어 데이터가 날아가지 않게 보호!
+      await setDoc(doc(db, "vocawa_progress", USER_UID), { 
+        dailyNewLimit: dailyNewLimit, 
+        ['progress_' + userStats.courseLanguage]: learnedData, 
+        stats: userStats 
+      }, { merge: true }); 
+    } catch(e) { console.error("동기화 에러:", e); }
   }
 
   // 🎯 4. 언어별 데이터 파일 분리 로드 함수
@@ -665,9 +672,9 @@
       const docSnap = await getDoc(doc(db, "vocawa_progress", USER_UID));
       let cloudProgress = [];
       if (docSnap.exists()) {
-        const data = docSnap.data(); cloudProgress = data.progress || []; if (data.dailyNewLimit) dailyNewLimit = data.dailyNewLimit;
+        const data = docSnap.data(); 
         if (data.stats) { 
-          userStats = { ...userStats, ...data.stats }; 
+          userStats = { ...userStats, ...data.stats };
           if (!userStats.ownedItems) userStats.ownedItems = ['c_chiikawa', 'e_none', 'h_cave']; 
           if (userStats.streakDays === undefined) userStats.streakDays = 0; 
           if (!userStats.courseLanguage) userStats.courseLanguage = 'hanja'; 
@@ -678,6 +685,10 @@
              userStats.equipment = 'e_none';
           }
         }
+
+        // 💡 핵심: 현재 유저가 선택한 언어의 progress만 쏙 골라서 불러오기
+        cloudProgress = data['progress_' + userStats.courseLanguage] || []; 
+        if (data.dailyNewLimit) dailyNewLimit = data.dailyNewLimit;
       }
       
       const fetchedData = await fetchWordData(userStats.courseLanguage);
@@ -1051,7 +1062,8 @@
       
       const fetchedData = await fetchWordData(newLang);
       const docSnap = await getDoc(doc(db, "vocawa_progress", USER_UID));
-      let cloudProgress = docSnap.exists() ? (docSnap.data().progress || []) : [];
+      // 💡 핵심: 새로 바뀐 언어에 맞는 progress만 불러오기
+      let cloudProgress = docSnap.exists() ? (docSnap.data()['progress_' + newLang] || []) : [];
       
       myHanjaData = fetchedData.map(card => {
         const savedCard = cloudProgress.find(c => c.id === card.id);
