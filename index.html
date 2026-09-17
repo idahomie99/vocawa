@@ -61,7 +61,6 @@
   .room-character { position: absolute; bottom: 25px; left: 50%; transform: translateX(-50%); z-index: 2; width: 90px; height: auto; object-fit: contain; filter: drop-shadow(0 8px 12px rgba(0,0,0,0.3)); }
   .room-item { position: absolute; z-index: 2; filter: drop-shadow(0 6px 8px rgba(0,0,0,0.25)); }
   
-  /* 🎯 가구 아이템 사이즈 키움 */
   .room-beetle { bottom: 20px; left: 65%; width: 35px; height: auto; object-fit: contain; } 
   .room-guitar { bottom: 35px; left: 15%; width: 65px; height: auto; object-fit: contain; transform: rotate(-10deg); } 
   .room-tv { bottom: 30px; right: 15%; width: 85px; height: auto; object-fit: contain; } 
@@ -111,13 +110,14 @@
   .shop-item-img { width: 64px; height: 64px; background: #f8f9fa; border-radius: 16px; display: flex; align-items: center; justify-content: center; color: #adb5bd; font-size: 12px; font-weight: 600; flex-shrink: 0; object-fit: cover; }
   .shop-item-content { display: flex; flex: 1; justify-content: space-between; align-items: center; gap: 8px; }
   .shop-item-info { flex: 1; }
-  /* 🎯 아이템 이름과 음표 아이콘 나란히 정렬 */
   .shop-item-info h4 { margin: 0 0 4px 0; font-size: 15px; font-weight: 700; color: #343a40; line-height: 1.2; letter-spacing: -0.3px; display: flex; align-items: center; }
   .shop-item-info p { margin: 0; font-size: 12px; color: #868e96; line-height: 1.4; word-break: keep-all; font-weight: 500; }
   .shop-buy-btn { padding: 10px 14px; font-size: 13px; font-weight: 700; border-radius: 10px; border: none; cursor: pointer; transition: 0.2s; display: flex; align-items: center; justify-content: center; gap: 4px; flex-shrink: 0; }
   .btn-buy { background: #e7f5ff; color: #4dabf7; }
   .btn-equip { background: #f1f3f5; color: #495057; }
   .btn-equipped { background: #51cf66; color: white; }
+  /* 🎯 장착 해제 버튼 스타일 */
+  .btn-unequip { background: #ffec99; color: #e67700; }
 
   /* 🎯 단어장 UI */
   .vocab-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
@@ -623,7 +623,8 @@
     ]
   };
 
-  let userStats = { levelIdx: 0, exp: 0, money: 0, lastLoginDate: "", dailyStudyDone: false, dailyQuizDone: false, character: 'c_chiikawa', equipment: 'e_none', house: 'h_cave', ownedItems: ['c_chiikawa', 'e_none', 'h_cave'], streakDays: 0, courseLevel: '8급' };
+  // 🎯 accessories 배열 추가
+  let userStats = { levelIdx: 0, exp: 0, money: 0, lastLoginDate: "", dailyStudyDone: false, dailyQuizDone: false, character: 'c_chiikawa', equipment: 'e_none', accessories: [], house: 'h_cave', ownedItems: ['c_chiikawa', 'e_none', 'h_cave'], streakDays: 0, courseLevel: '8급' };
 
   function getTodayString() { const tzOffset = new Date().getTimezoneOffset() * 60000; return new Date(Date.now() - tzOffset).toISOString().split('T')[0]; }
   function getDaysDifference(date1, date2) { const d1 = new Date(date1); d1.setHours(0, 0, 0, 0); const d2 = new Date(date2); d2.setHours(0, 0, 0, 0); return Math.round((d2 - d1) / (1000 * 60 * 60 * 24)); }
@@ -689,7 +690,19 @@
       let cloudProgress = []; const docSnap = await getDoc(doc(db, "vocawa_progress", USER_UID));
       if (docSnap.exists()) {
         const data = docSnap.data(); cloudProgress = data.progress || []; if (data.dailyNewLimit) dailyNewLimit = data.dailyNewLimit;
-        if (data.stats) { userStats = { ...userStats, ...data.stats }; if (!userStats.ownedItems) userStats.ownedItems = ['c_chiikawa', 'e_none', 'h_cave']; if (userStats.streakDays === undefined) userStats.streakDays = 0; if (!userStats.courseLevel) userStats.courseLevel = '8급'; }
+        if (data.stats) { 
+          userStats = { ...userStats, ...data.stats }; 
+          if (!userStats.ownedItems) userStats.ownedItems = ['c_chiikawa', 'e_none', 'h_cave']; 
+          if (userStats.streakDays === undefined) userStats.streakDays = 0; 
+          if (!userStats.courseLevel) userStats.courseLevel = '8급'; 
+          if (!userStats.accessories) userStats.accessories = []; // 악세서리 배열 보장
+          
+          // 기존 유저가 equipment에 기타,티비,풍뎅이를 들고 있었다면 accessories로 이사
+          if (['e_guitar', 'e_tv', 'e_beetle'].includes(userStats.equipment)) {
+             if(!userStats.accessories.includes(userStats.equipment)) { userStats.accessories.push(userStats.equipment); }
+             userStats.equipment = 'e_none';
+          }
+        }
       }
       
       myHanjaData = fetchedData.map(card => {
@@ -778,10 +791,16 @@
     if (charObj) { 
       let charImgName = userStats.character.replace('c_', '');
       document.getElementById('itemBeetle').style.display = 'none'; document.getElementById('itemGuitar').style.display = 'none'; document.getElementById('itemTv').style.display = 'none';
+      
+      // 🎯 의상(맨몸,파자마)
       if (userStats.equipment === 'e_pajama') { charImgName += '_paj'; } 
-      else if (userStats.equipment === 'e_beetle') { document.getElementById('itemBeetle').style.display = 'block'; } 
-      else if (userStats.equipment === 'e_guitar') { document.getElementById('itemGuitar').style.display = 'block'; } 
-      else if (userStats.equipment === 'e_tv') { document.getElementById('itemTv').style.display = 'block'; }
+      
+      // 🎯 다중 악세서리
+      if (!userStats.accessories) userStats.accessories = [];
+      if (userStats.accessories.includes('e_beetle')) { document.getElementById('itemBeetle').style.display = 'block'; } 
+      if (userStats.accessories.includes('e_guitar')) { document.getElementById('itemGuitar').style.display = 'block'; } 
+      if (userStats.accessories.includes('e_tv')) { document.getElementById('itemTv').style.display = 'block'; }
+      
       document.getElementById('userAvatarImg').src = `./image/${charImgName}.png`; 
     }
     const bgName = userStats.house ? userStats.house.replace('h_', '') : 'cave';
@@ -801,15 +820,32 @@
   function renderShopList() {
     const listData = SHOP_DB[currentShopTab];
     const container = document.getElementById('shopListContainer');
+    if(!userStats.accessories) userStats.accessories = [];
+
     container.innerHTML = listData.map(item => {
       const isOwned = userStats.ownedItems.includes(item.id);
-      const isEquipped = userStats.character === item.id || userStats.equipment === item.id || userStats.house === item.id;
+      
+      // 🎯 카테고리에 맞는 장착 여부 확인
+      let isEquipped = false;
+      if (currentShopTab === 'char') isEquipped = userStats.character === item.id;
+      else if (currentShopTab === 'house') isEquipped = userStats.house === item.id;
+      else if (currentShopTab === 'equip') {
+         if (item.id === 'e_none' || item.id === 'e_pajama') isEquipped = userStats.equipment === item.id;
+         else isEquipped = userStats.accessories.includes(item.id);
+      }
+
       let btnHtml = '';
-      if (isEquipped) { btnHtml = `<button class="shop-buy-btn btn-equipped"><span class="material-symbols-rounded" style="font-size:16px;">check</span> 장착 중</button>`; } 
+      if (isEquipped) { 
+        // 🎯 장비 탭이면서 맨몸(e_none)이 아닌 경우엔 [장착 해제] 기능 제공
+        if (currentShopTab === 'equip' && item.id !== 'e_none') {
+           btnHtml = `<button class="shop-buy-btn btn-unequip" onclick="buyOrEquipItem('${item.id}', '${currentShopTab}')"><span class="material-symbols-rounded" style="font-size:16px;">close</span> 장착 해제</button>`;
+        } else {
+           btnHtml = `<button class="shop-buy-btn btn-equipped"><span class="material-symbols-rounded" style="font-size:16px;">check</span> 장착 중</button>`;
+        }
+      } 
       else if (isOwned) { btnHtml = `<button class="shop-buy-btn btn-equip" onclick="buyOrEquipItem('${item.id}', '${currentShopTab}')">장착하기</button>`; } 
       else { btnHtml = `<button class="shop-buy-btn btn-buy" onclick="buyOrEquipItem('${item.id}', '${currentShopTab}')">${item.price}원 구매</button>`; }
       
-      // 🎵 BGM 가구(기타, 티비) 아이콘 표시 로직
       const bgmIcon = (item.id === 'e_guitar' || item.id === 'e_tv') ? `<span class="material-symbols-rounded" style="font-size: 16px; color: #4dabf7; margin-left: 4px;">music_note</span>` : '';
       
       return `<div class="shop-item"><img class="shop-item-img" src="${getImageUrl(item.id)}" alt="item" onerror="this.style.display='none'"><div class="shop-item-content"><div class="shop-item-info"><h4>${item.name}${bgmIcon}</h4><p>${item.desc}</p></div>${btnHtml}</div></div>`;
@@ -818,14 +854,41 @@
 
   function buyOrEquipItem(itemId, type) {
     const itemObj = SHOP_DB[type].find(i => i.id === itemId); if (!itemObj) return;
-    if (userStats.ownedItems.includes(itemId)) {
-      if (type === 'char') userStats.character = itemId; else if (type === 'equip') userStats.equipment = itemId; else if (type === 'house') userStats.house = itemId; 
-    } else {
+    const isOwned = userStats.ownedItems.includes(itemId);
+    
+    // 구매 로직
+    if (!isOwned) {
       if (userStats.money >= itemObj.price) {
         userStats.money -= itemObj.price; userStats.ownedItems.push(itemId);
-        if (type === 'char') userStats.character = itemId; else if (type === 'equip') userStats.equipment = itemId; else if (type === 'house') userStats.house = itemId; 
       } else { alert("재화가 부족합니다."); return; }
     }
+
+    // 장착 / 해제 로직
+    if (type === 'char') { 
+      userStats.character = itemId; 
+    } else if (type === 'house') { 
+      userStats.house = itemId; 
+    } else if (type === 'equip') {
+      if (itemId === 'e_none' || itemId === 'e_pajama') {
+         if (userStats.equipment === itemId) {
+           if (itemId === 'e_pajama') userStats.equipment = 'e_none'; // 파자마 해제 시 맨몸으로
+         } else {
+           userStats.equipment = itemId;
+         }
+      } else {
+         if (!userStats.accessories) userStats.accessories = [];
+         if (userStats.accessories.includes(itemId)) {
+           // 장착 해제
+           userStats.accessories = userStats.accessories.filter(id => id !== itemId);
+           if ((itemId === 'e_guitar' || itemId === 'e_tv') && userStats.bgmTrack === itemId) {
+              stopBGM(); userStats.bgmTrack = 'none'; // 음악 끄기
+           }
+         } else {
+           userStats.accessories.push(itemId); // 다중 장착 추가
+         }
+      }
+    }
+    
     syncToCloud(); updateUserStatsUI(); document.getElementById('shopMoneyText').innerText = userStats.money; renderShopList();
   }
 
@@ -855,7 +918,6 @@
     const statusText = pendingCards.length > 0 ? `복습: ${reviewCount}개 / 신규: ${newCount}개` : `<span class="material-symbols-rounded" style="font-size:16px; margin-right:4px; vertical-align:middle; color:#4dabf7;">check_circle</span>오늘의 토벌 완료`;
     document.getElementById('courseStatus').innerHTML = statusText;
     
-    // 🎯 심플해진 타이틀 표시
     document.getElementById('currentCourseTitle').innerHTML = `<span class="material-symbols-rounded" style="color: #4dabf7; font-size: 24px;">swords</span>한자 토벌 : ${userStats.courseLevel}`;
 
     document.getElementById('quizStatusText').innerHTML = userStats.dailyQuizDone 
