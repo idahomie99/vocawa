@@ -55,16 +55,16 @@
   .exp-text { font-size: 11px; font-weight: 700; color: #adb5bd; text-align: right; }
 
   /* 🎯 마이룸(상태창) */
-  .user-room-card { 
-    display: flex; flex-direction: column; margin-bottom: 32px; background-color: white; border-radius: 28px; box-shadow: 0 12px 36px rgba(180, 160, 140, 0.12); padding: 6px; box-sizing: border-box;
-  }
+  .user-room-card { display: flex; flex-direction: column; margin-bottom: 32px; background-color: white; border-radius: 28px; box-shadow: 0 12px 36px rgba(180, 160, 140, 0.12); padding: 6px; box-sizing: border-box; }
   .room-view { width: 100%; height: 240px; position: relative; overflow: hidden; border-radius: 22px; background-color: #f1f3f5; }
   .room-bg-img { width: 100%; height: 100%; object-fit: cover; position: absolute; top: 0; left: 0; z-index: 1; }
   .room-character { position: absolute; bottom: 25px; left: 50%; transform: translateX(-50%); z-index: 2; width: 90px; height: auto; object-fit: contain; filter: drop-shadow(0 8px 12px rgba(0,0,0,0.3)); }
   .room-item { position: absolute; z-index: 2; filter: drop-shadow(0 6px 8px rgba(0,0,0,0.25)); }
+  
+  /* 🎯 가구 아이템 사이즈 키움 */
   .room-beetle { bottom: 20px; left: 65%; width: 35px; height: auto; object-fit: contain; } 
-  .room-guitar { bottom: 35px; left: 15%; width: 45px; height: auto; object-fit: contain; transform: rotate(-10deg); } 
-  .room-tv { bottom: 30px; right: 15%; width: 60px; height: auto; object-fit: contain; } 
+  .room-guitar { bottom: 35px; left: 15%; width: 65px; height: auto; object-fit: contain; transform: rotate(-10deg); } 
+  .room-tv { bottom: 30px; right: 15%; width: 85px; height: auto; object-fit: contain; } 
 
   .room-info-top-bar { position: absolute; top: 10px; left: 10px; right: 10px; z-index: 3; display: flex; align-items: center; justify-content: space-between; background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(6px); padding: 8px 12px; border-radius: 16px; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08); }
   .room-info-top-bar .stat-level { font-size: 14px; gap: 4px; }
@@ -84,14 +84,12 @@
   .course-title .material-symbols-rounded { font-size: 24px; }
   .course-desc { display: flex; align-items: center; gap: 4px; font-size: 13px; color: #868e96; font-weight: 500; margin-left: 2px;}
 
-  /* 🎯 플로팅 하단 탭 바 & 페이드(그라데이션) 효과 */
+  /* 🎯 플로팅 하단 탭 바 & 페이드 효과 */
   .bottom-nav-bar { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%); width: 90%; max-width: 440px; height: 72px; background-color: white; border-radius: 36px; display: flex; justify-content: space-around; align-items: center; z-index: 100; box-shadow: 0 16px 40px rgba(180, 160, 140, 0.25); }
   .nav-item { display: flex; flex-direction: column; align-items: center; gap: 4px; color: #adb5bd; font-size: 11px; font-weight: 700; cursor: pointer; transition: 0.2s; width: 33%; }
   .nav-item .material-symbols-rounded { font-size: 26px; }
   .nav-item.active { color: #495057; }
   .nav-item.active .material-symbols-rounded { color: #4dabf7; font-variation-settings: 'FILL' 1; }
-
-  /* 스크롤되는 콘텐츠가 알약 탭 뒤에서 부드럽게 사라지게 만드는 그라데이션 레이어 */
   .fade-bottom { position: fixed; bottom: 0; left: 0; width: 100%; height: 100px; background: linear-gradient(to bottom, rgba(252,246,239,0) 0%, rgba(252,246,239,1) 80%); z-index: 90; pointer-events: none; }
 
   /* 🎯 상점 UI */
@@ -100,14 +98,12 @@
   .shop-tab { flex: 1; text-align: center; padding: 10px 0; font-size: 14px; font-weight: 700; color: #868e96; cursor: pointer; border-radius: 10px; transition: 0.2s; }
   .shop-tab.active { background: white; color: #343a40; box-shadow: 0 4px 12px rgba(160, 140, 120, 0.1); }
   
-  /* 🎯 상점 스크롤 영역 수정 */
   .shop-list-wrapper { width: 100%; position: relative; flex: 1; display: flex; flex-direction: column; overflow: hidden; }
   .shop-list { flex: 1; display: flex; flex-direction: column; gap: 12px; width: 100%; overflow-y: auto; padding-bottom: 120px; }
   .shop-list::-webkit-scrollbar { display: none; }
   
   .slide-in-right { animation: slideInRight 0.3s cubic-bezier(0.25, 0.8, 0.25, 1) forwards; }
   .slide-in-left { animation: slideInLeft 0.3s cubic-bezier(0.25, 0.8, 0.25, 1) forwards; }
-  
   @keyframes slideInRight { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
   @keyframes slideInLeft { from { transform: translateX(-100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
   
@@ -115,7 +111,8 @@
   .shop-item-img { width: 64px; height: 64px; background: #f8f9fa; border-radius: 16px; display: flex; align-items: center; justify-content: center; color: #adb5bd; font-size: 12px; font-weight: 600; flex-shrink: 0; object-fit: cover; }
   .shop-item-content { display: flex; flex: 1; justify-content: space-between; align-items: center; gap: 8px; }
   .shop-item-info { flex: 1; }
-  .shop-item-info h4 { margin: 0 0 4px 0; font-size: 15px; font-weight: 700; color: #343a40; line-height: 1.2; letter-spacing: -0.3px; }
+  /* 🎯 아이템 이름과 음표 아이콘 나란히 정렬 */
+  .shop-item-info h4 { margin: 0 0 4px 0; font-size: 15px; font-weight: 700; color: #343a40; line-height: 1.2; letter-spacing: -0.3px; display: flex; align-items: center; }
   .shop-item-info p { margin: 0; font-size: 12px; color: #868e96; line-height: 1.4; word-break: keep-all; font-weight: 500; }
   .shop-buy-btn { padding: 10px 14px; font-size: 13px; font-weight: 700; border-radius: 10px; border: none; cursor: pointer; transition: 0.2s; display: flex; align-items: center; justify-content: center; gap: 4px; flex-shrink: 0; }
   .btn-buy { background: #e7f5ff; color: #4dabf7; }
@@ -199,7 +196,7 @@
   .btn-primary { flex: 1; padding: 16px; background-color: #4dabf7; color: white; font-size: 15px; font-weight: 700; border: none; border-radius: 16px; cursor: pointer; transition: 0.2s; box-shadow: 0 8px 24px rgba(77, 171, 247, 0.25);}
   .btn-secondary { flex: 1; padding: 16px; background-color: #f1f3f5; color: #495057; font-size: 15px; font-weight: 700; border: none; border-radius: 16px; cursor: pointer; transition: 0.2s; }
 
-  /* 🎯 과정 변경 - 예쁜 드롭다운 스타일 */
+  /* 과정 변경 - 드롭다운 스타일 */
   .course-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px;}
   .course-btn { padding: 16px 10px; border-radius: 18px; font-size: 15px; font-weight: 700; display: flex; flex-direction: column; align-items: center; gap: 6px; cursor: pointer; transition: 0.2s; border: 2px solid transparent; box-sizing: border-box; }
   .course-btn.active { background: #e7f5ff; color: #4dabf7; border-color: #4dabf7; box-shadow: 0 4px 12px rgba(77, 171, 247, 0.15); }
@@ -210,7 +207,7 @@
   .custom-select:focus { border-color: #4dabf7; background: #fff; box-shadow: 0 4px 12px rgba(77, 171, 247, 0.1); }
   .custom-select-arrow { position: absolute; right: 16px; top: 50%; transform: translateY(-50%); pointer-events: none; color: #adb5bd; font-size: 24px; }
 
-  /* 🎯 불꽃 애니메이션 (출석체크) */
+  /* 불꽃 애니메이션 (출석체크) */
   .fire-icon-large { font-size: 64px; color: #ff922b; margin-bottom: 12px; filter: drop-shadow(0 4px 12px rgba(255, 146, 43, 0.4)); animation: pulseFire 1.5s infinite; }
   @keyframes pulseFire { 0% { transform: scale(1); opacity: 0.9; } 50% { transform: scale(1.1); opacity: 1; } 100% { transform: scale(1); opacity: 0.9; } }
   .streak-number { font-size: 48px; font-weight: 900; color: #ff922b; display: inline-block; }
@@ -223,7 +220,7 @@
 </head>
 <body>
 
-<!-- 🎯 하단 그라데이션 페이드 효과 (카드 잘림 방지용 마스크) -->
+<!-- 하단 그라데이션 페이드 효과 -->
 <div class="fade-bottom" id="fadeBottom" style="display: none;"></div>
 
 <!-- 🔐 로그인 화면 -->
@@ -294,7 +291,6 @@
       </button>
     </div>
     
-    <!-- 🎯 토벌 급수 텍스트 표시 수정 -->
     <div class="course-card" onclick="startLearning()">
       <div class="course-title" id="currentCourseTitle">
         <span class="material-symbols-rounded" style="color: #4dabf7; font-size: 24px;">swords</span>
@@ -431,7 +427,7 @@
   </div>
 </div>
 
-<!-- 🎯 출석 체크(불꽃) 모달 -->
+<!-- 출석 체크(불꽃) 모달 -->
 <div class="modal-overlay" id="attendanceModal">
   <div class="modal-content" style="padding: 50px 24px;">
     <div class="material-symbols-rounded fire-icon-large">local_fire_department</div>
@@ -456,7 +452,7 @@
   </div>
 </div>
 
-<!-- 🎯 학습 과정(급수) 선택 모달 -->
+<!-- 학습 과정(급수) 선택 모달 -->
 <div class="modal-overlay" id="courseModal">
   <div class="modal-content" style="width: 320px; padding: 32px 20px;">
     <div class="modal-icon material-symbols-rounded" style="color: #4dabf7; font-size: 32px; margin-bottom: 8px;">explore</div>
@@ -812,7 +808,11 @@
       if (isEquipped) { btnHtml = `<button class="shop-buy-btn btn-equipped"><span class="material-symbols-rounded" style="font-size:16px;">check</span> 장착 중</button>`; } 
       else if (isOwned) { btnHtml = `<button class="shop-buy-btn btn-equip" onclick="buyOrEquipItem('${item.id}', '${currentShopTab}')">장착하기</button>`; } 
       else { btnHtml = `<button class="shop-buy-btn btn-buy" onclick="buyOrEquipItem('${item.id}', '${currentShopTab}')">${item.price}원 구매</button>`; }
-      return `<div class="shop-item"><img class="shop-item-img" src="${getImageUrl(item.id)}" alt="item" onerror="this.style.display='none'"><div class="shop-item-content"><div class="shop-item-info"><h4>${item.name}</h4><p>${item.desc}</p></div>${btnHtml}</div></div>`;
+      
+      // 🎵 BGM 가구(기타, 티비) 아이콘 표시 로직
+      const bgmIcon = (item.id === 'e_guitar' || item.id === 'e_tv') ? `<span class="material-symbols-rounded" style="font-size: 16px; color: #4dabf7; margin-left: 4px;">music_note</span>` : '';
+      
+      return `<div class="shop-item"><img class="shop-item-img" src="${getImageUrl(item.id)}" alt="item" onerror="this.style.display='none'"><div class="shop-item-content"><div class="shop-item-info"><h4>${item.name}${bgmIcon}</h4><p>${item.desc}</p></div>${btnHtml}</div></div>`;
     }).join('');
   }
 
@@ -829,31 +829,21 @@
     syncToCloud(); updateUserStatsUI(); document.getElementById('shopMoneyText').innerText = userStats.money; renderShopList();
   }
 
-  // 🎯 목표 급수 기준으로 (8급 ~ 목표 급수)까지 모든 단어를 가져와 순차 학습
   function getTodayStudyCards() {
     const now = new Date().getTime();
-    
-    // 복습 단어 추출 (모든 배운 단어 중 복습 주기 도달)
     const reviewCards = myHanjaData.filter(card => card.interval > 0 && card.nextReview <= now);
-    
-    // 신규 단어 추출
     const targetLvlIdx = HANJA_LEVELS.indexOf(userStats.courseLevel);
     let newCards = myHanjaData.filter(card => {
       const cardLvlIdx = HANJA_LEVELS.indexOf(card.level);
-      // 아직 안 배운 카드이면서, 8급부터 목표 급수 이하인 데이터 추출
       return card.interval === 0 && cardLvlIdx !== -1 && cardLvlIdx <= targetLvlIdx;
     });
-    
-    // 8급부터(index=0) 순차적으로 진행되도록 정렬
     newCards.sort((a, b) => HANJA_LEVELS.indexOf(a.level) - HANJA_LEVELS.indexOf(b.level));
-    
     const dailyNewCards = newCards.slice(0, dailyNewLimit);
     return [...reviewCards, ...dailyNewCards];
   }
 
   function updateHomeStatus() {
     const pendingCards = getTodayStudyCards();
-    
     const targetLvlIdx = HANJA_LEVELS.indexOf(userStats.courseLevel);
     let newCards = myHanjaData.filter(card => {
       const cardLvlIdx = HANJA_LEVELS.indexOf(card.level);
@@ -865,7 +855,7 @@
     const statusText = pendingCards.length > 0 ? `복습: ${reviewCount}개 / 신규: ${newCount}개` : `<span class="material-symbols-rounded" style="font-size:16px; margin-right:4px; vertical-align:middle; color:#4dabf7;">check_circle</span>오늘의 토벌 완료`;
     document.getElementById('courseStatus').innerHTML = statusText;
     
-    // 🎯 심플해진 타이틀
+    // 🎯 심플해진 타이틀 표시
     document.getElementById('currentCourseTitle').innerHTML = `<span class="material-symbols-rounded" style="color: #4dabf7; font-size: 24px;">swords</span>한자 토벌 : ${userStats.courseLevel}`;
 
     document.getElementById('quizStatusText').innerHTML = userStats.dailyQuizDone 
@@ -960,7 +950,6 @@
   function closeSettings() { document.getElementById('settingsModal').classList.remove('show'); }
   function saveSettings() { const newVal = parseInt(document.getElementById('limitInput').value); if (newVal >= 0) { dailyNewLimit = newVal; syncToCloud(); updateHomeStatus(); closeSettings(); } else { alert("0 이상의 숫자를 입력해 주세요."); } }
   
-  // 🎯 모달: 셀렉트 박스에서 값 읽어와 적용
   function openCourseModal() { document.getElementById('courseLevelSelect').value = userStats.courseLevel || '8급'; document.getElementById('courseModal').classList.add('show'); }
   function closeCourseModal() { document.getElementById('courseModal').classList.remove('show'); }
   function applyCourseChange() { userStats.courseLevel = document.getElementById('courseLevelSelect').value; syncToCloud(); updateHomeStatus(); closeCourseModal(); }
@@ -1028,7 +1017,6 @@
 
   function closeQuizResult() { document.getElementById('quizResultModal').classList.remove('show'); goHome(); }
 
-  // 🎯 상점 스와이프 애니메이션 로직
   const shopScreenEl = document.getElementById('shopScreen'); let shopStartX = 0; let shopStartY = 0;
   shopScreenEl.addEventListener('touchstart', (e) => { shopStartX = e.touches[0].clientX; shopStartY = e.touches[0].clientY; });
   shopScreenEl.addEventListener('touchend', (e) => {
