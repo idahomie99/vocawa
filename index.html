@@ -143,10 +143,10 @@
   .card.flipped { transform: rotateY(180deg); }
   .card.dragging { transition: none; }
   .card-face { position: absolute; width: 100%; height: 100%; backface-visibility: hidden; border-radius: 32px; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 32px; box-sizing: border-box; text-align: center; }
-  .card-front { font-size: 80px; font-weight: 600; color: #343a40; word-break: keep-all; }
+  .card-front { font-size: 80px; font-weight: 600; color: #343a40; word-break: break-word; padding: 0 20px; }
   .card-back { transform: rotateY(180deg); }
   .mini-hanja { font-size: 24px; font-weight: 600; color: #adb5bd; margin: 0 0 12px 0; }
-  .meaning { font-size: 28px; font-weight: 700; color: #4dabf7; margin: 0 0 20px 0; letter-spacing: -0.5px; }
+  .meaning { font-size: 24px; font-weight: 700; color: #4dabf7; margin: 0 0 20px 0; letter-spacing: -0.5px; line-height: 1.4; }
   .radical { font-size: 14px; color: #495057; margin: 0 0 20px 0; background-color: #f8f9fa; padding: 8px 14px; border-radius: 10px; font-weight: 700; }
   .story { font-size: 15px; color: #495057; line-height: 1.6; word-break: keep-all; font-weight: 500;}
   
@@ -944,9 +944,22 @@
     const wordText = getWordField(data);
     const langConfig = LANG_CONFIG[userStats.courseLanguage];
 
-    document.getElementById('cardHanja').innerText = wordText; 
+    // 💡 1. 단어 길이에 따른 폰트 크기 자동 조절 (반응형)
+    const frontEl = document.getElementById('cardHanja');
+    frontEl.innerText = wordText;
+    if (wordText.length >= 12) {
+      frontEl.style.fontSize = '36px';
+    } else if (wordText.length >= 8) {
+      frontEl.style.fontSize = '50px';
+    } else {
+      frontEl.style.fontSize = '80px';
+    }
+
     document.getElementById('cardMiniHanja').innerText = wordText; 
-    document.getElementById('cardMeaning').innerText = data.meaning; 
+    
+    // 💡 2. 뜻(Meaning)에 ' / ' 가 있으면 HTML 줄바꿈(<br>) 기호로 변환하여 깔끔하게 표시
+    const formattedMeaning = data.meaning.split(' / ').join('<br>');
+    document.getElementById('cardMeaning').innerHTML = formattedMeaning; 
     
     const radEl = document.getElementById('cardRadical');
     if (langConfig.hasRadical && data.radical) {
@@ -1091,7 +1104,10 @@
       let subText = `[${card.level}]`;
       if (langConfig.hasRadical && card.radical) subText += ` 부수: ${card.radical}`;
 
-      return `<div class="vocab-item"><div class="vocab-hanja" style="${wordText.length > 2 ? 'font-size:20px;' : ''}">${wordText}</div><div class="vocab-details"><div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 4px;"><div class="vocab-meaning">${card.meaning}</div><div class="level-badge ${badgeClass}">${badgeText}</div></div><div class="vocab-story" style="color:#adb5bd; font-size:12px; font-weight:700;">${subText}</div></div></div>`;
+      // 💡 단어장 목록에서도 ' / ' 를 줄바꿈으로 처리
+      const formattedListMeaning = card.meaning.split(' / ').join('<br>');
+
+      return `<div class="vocab-item"><div class="vocab-hanja" style="${wordText.length > 2 ? 'font-size:20px;' : ''}">${wordText}</div><div class="vocab-details"><div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom: 4px;"><div class="vocab-meaning" style="line-height:1.4;">${formattedListMeaning}</div><div class="level-badge ${badgeClass}" style="flex-shrink:0; margin-left:8px;">${badgeText}</div></div><div class="vocab-story" style="color:#adb5bd; font-size:12px; font-weight:700;">${subText}</div></div></div>`;
     }).join('');
   }
 
@@ -1163,7 +1179,8 @@
       instructionEl.innerText = `다음 ${langName}의 알맞은 뜻을 고르시오.`;
       const wordText = getWordField(currentQ);
       targetEl.innerText = wordText;
-      targetEl.style.fontSize = wordText.length > 3 ? '40px' : '80px';
+      // 💡 모의고사 문제 글자 크기 동적 조절
+      targetEl.style.fontSize = wordText.length >= 10 ? '36px' : (wordText.length > 5 ? '50px' : '80px');
       correctText = currentQ.meaning;
       optionsText = [correctText, ...distractorPool.slice(0, 3).map(c => c.meaning)];
       
