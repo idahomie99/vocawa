@@ -116,7 +116,6 @@
   .btn-buy { background: #e7f5ff; color: #4dabf7; }
   .btn-equip { background: #f1f3f5; color: #495057; }
   .btn-equipped { background: #51cf66; color: white; }
-  /* 🎯 장착 해제 버튼 스타일 */
   .btn-unequip { background: #ffec99; color: #e67700; }
 
   /* 🎯 단어장 UI */
@@ -164,8 +163,11 @@
   .btn-soso { background-color: white; color: #ff922b; }
   .btn-perfect { background-color: white; color: #51cf66; }
 
-  .quiz-q-container { border-radius: 32px; padding: 50px 0; text-align: center; margin-bottom: 24px; width: 100%;}
-  .quiz-hanja { font-size: 80px; font-weight: 600; color: #343a40; line-height: 1; }
+  /* 🎯 퀴즈(제초) 화면 UI */
+  .quiz-q-container { border-radius: 32px; padding: 40px 0; text-align: center; margin-bottom: 24px; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative;}
+  .quiz-instruction { font-size: 14px; font-weight: 700; color: #adb5bd; margin-bottom: 12px; }
+  .quiz-hanja { font-size: 80px; font-weight: 600; color: #343a40; line-height: 1.1; }
+  
   .quiz-options { display: flex; flex-direction: column; gap: 12px; width: 100%;}
   .quiz-opt-btn { padding: 18px; border-radius: 18px; border: none; background: white; font-size: 16px; font-weight: 700; color: #495057; cursor: pointer; transition: all 0.2s; word-break: keep-all; box-shadow: 0 8px 24px rgba(180, 160, 140, 0.08);}
   .quiz-opt-btn.correct { background-color: #e7f5ff; color: #4dabf7; font-weight: 800; box-shadow: 0 8px 24px rgba(77, 171, 247, 0.2);}
@@ -315,13 +317,7 @@
       <div class="course-desc" id="mistakeStatusText">틀렸던 단어만 집중 토벌</div>
     </div>
     
-    <div class="course-card" onclick="startHardcoreQuiz()">
-      <div class="course-title">
-        <span class="material-symbols-rounded" style="color: #ff8787; font-size: 24px;">local_fire_department</span>
-        훈음 하드코어
-      </div>
-      <div class="course-desc" id="hardcoreStatusText">뜻과 음을 보고 한자 맞추기</div>
-    </div>
+    <!-- 하드코어 모드 삭제됨 -->
   </div>
 </div>
 
@@ -369,7 +365,7 @@
   </div>
 </div>
 
-<!-- 모의고사 화면 -->
+<!-- 🎯 모의고사 화면 -->
 <div id="quizScreen" class="screen">
   <div class="responsive-width top-nav">
     <button class="back-btn" onclick="goHome()">
@@ -378,7 +374,12 @@
     <div class="quiz-header-text" id="quizProgressText" style="font-weight: 700; color: #868e96;">문제 1/10</div>
     <div style="width: 24px;"></div> 
   </div>
-  <div class="responsive-width quiz-q-container"><div class="quiz-hanja" id="quizHanjaTarget"></div></div>
+  
+  <div class="responsive-width quiz-q-container">
+    <div id="quizInstruction" class="quiz-instruction">다음 한자의 알맞은 훈음을 고르시오.</div>
+    <div class="quiz-hanja" id="quizHanjaTarget"></div>
+  </div>
+  
   <div class="responsive-width quiz-options" id="quizOptionsContainer"></div>
 </div>
 
@@ -623,7 +624,6 @@
     ]
   };
 
-  // 🎯 accessories 배열 추가
   let userStats = { levelIdx: 0, exp: 0, money: 0, lastLoginDate: "", dailyStudyDone: false, dailyQuizDone: false, character: 'c_chiikawa', equipment: 'e_none', accessories: [], house: 'h_cave', ownedItems: ['c_chiikawa', 'e_none', 'h_cave'], streakDays: 0, courseLevel: '8급' };
 
   function getTodayString() { const tzOffset = new Date().getTimezoneOffset() * 60000; return new Date(Date.now() - tzOffset).toISOString().split('T')[0]; }
@@ -695,9 +695,8 @@
           if (!userStats.ownedItems) userStats.ownedItems = ['c_chiikawa', 'e_none', 'h_cave']; 
           if (userStats.streakDays === undefined) userStats.streakDays = 0; 
           if (!userStats.courseLevel) userStats.courseLevel = '8급'; 
-          if (!userStats.accessories) userStats.accessories = []; // 악세서리 배열 보장
+          if (!userStats.accessories) userStats.accessories = [];
           
-          // 기존 유저가 equipment에 기타,티비,풍뎅이를 들고 있었다면 accessories로 이사
           if (['e_guitar', 'e_tv', 'e_beetle'].includes(userStats.equipment)) {
              if(!userStats.accessories.includes(userStats.equipment)) { userStats.accessories.push(userStats.equipment); }
              userStats.equipment = 'e_none';
@@ -792,10 +791,8 @@
       let charImgName = userStats.character.replace('c_', '');
       document.getElementById('itemBeetle').style.display = 'none'; document.getElementById('itemGuitar').style.display = 'none'; document.getElementById('itemTv').style.display = 'none';
       
-      // 🎯 의상(맨몸,파자마)
       if (userStats.equipment === 'e_pajama') { charImgName += '_paj'; } 
       
-      // 🎯 다중 악세서리
       if (!userStats.accessories) userStats.accessories = [];
       if (userStats.accessories.includes('e_beetle')) { document.getElementById('itemBeetle').style.display = 'block'; } 
       if (userStats.accessories.includes('e_guitar')) { document.getElementById('itemGuitar').style.display = 'block'; } 
@@ -825,7 +822,6 @@
     container.innerHTML = listData.map(item => {
       const isOwned = userStats.ownedItems.includes(item.id);
       
-      // 🎯 카테고리에 맞는 장착 여부 확인
       let isEquipped = false;
       if (currentShopTab === 'char') isEquipped = userStats.character === item.id;
       else if (currentShopTab === 'house') isEquipped = userStats.house === item.id;
@@ -836,7 +832,6 @@
 
       let btnHtml = '';
       if (isEquipped) { 
-        // 🎯 장비 탭이면서 맨몸(e_none)이 아닌 경우엔 [장착 해제] 기능 제공
         if (currentShopTab === 'equip' && item.id !== 'e_none') {
            btnHtml = `<button class="shop-buy-btn btn-unequip" onclick="buyOrEquipItem('${item.id}', '${currentShopTab}')"><span class="material-symbols-rounded" style="font-size:16px;">close</span> 장착 해제</button>`;
         } else {
@@ -856,14 +851,12 @@
     const itemObj = SHOP_DB[type].find(i => i.id === itemId); if (!itemObj) return;
     const isOwned = userStats.ownedItems.includes(itemId);
     
-    // 구매 로직
     if (!isOwned) {
       if (userStats.money >= itemObj.price) {
         userStats.money -= itemObj.price; userStats.ownedItems.push(itemId);
       } else { alert("재화가 부족합니다."); return; }
     }
 
-    // 장착 / 해제 로직
     if (type === 'char') { 
       userStats.character = itemId; 
     } else if (type === 'house') { 
@@ -871,20 +864,19 @@
     } else if (type === 'equip') {
       if (itemId === 'e_none' || itemId === 'e_pajama') {
          if (userStats.equipment === itemId) {
-           if (itemId === 'e_pajama') userStats.equipment = 'e_none'; // 파자마 해제 시 맨몸으로
+           if (itemId === 'e_pajama') userStats.equipment = 'e_none'; 
          } else {
            userStats.equipment = itemId;
          }
       } else {
          if (!userStats.accessories) userStats.accessories = [];
          if (userStats.accessories.includes(itemId)) {
-           // 장착 해제
            userStats.accessories = userStats.accessories.filter(id => id !== itemId);
            if ((itemId === 'e_guitar' || itemId === 'e_tv') && userStats.bgmTrack === itemId) {
-              stopBGM(); userStats.bgmTrack = 'none'; // 음악 끄기
+              stopBGM(); userStats.bgmTrack = 'none'; 
            }
          } else {
-           userStats.accessories.push(itemId); // 다중 장착 추가
+           userStats.accessories.push(itemId); 
          }
       }
     }
@@ -894,19 +886,24 @@
 
   function getTodayStudyCards() {
     const now = new Date().getTime();
+    
     const reviewCards = myHanjaData.filter(card => card.interval > 0 && card.nextReview <= now);
+    
     const targetLvlIdx = HANJA_LEVELS.indexOf(userStats.courseLevel);
     let newCards = myHanjaData.filter(card => {
       const cardLvlIdx = HANJA_LEVELS.indexOf(card.level);
       return card.interval === 0 && cardLvlIdx !== -1 && cardLvlIdx <= targetLvlIdx;
     });
+    
     newCards.sort((a, b) => HANJA_LEVELS.indexOf(a.level) - HANJA_LEVELS.indexOf(b.level));
+    
     const dailyNewCards = newCards.slice(0, dailyNewLimit);
     return [...reviewCards, ...dailyNewCards];
   }
 
   function updateHomeStatus() {
     const pendingCards = getTodayStudyCards();
+    
     const targetLvlIdx = HANJA_LEVELS.indexOf(userStats.courseLevel);
     let newCards = myHanjaData.filter(card => {
       const cardLvlIdx = HANJA_LEVELS.indexOf(card.level);
@@ -1029,6 +1026,7 @@
     }).join('');
   }
 
+  // 🎯 퀴즈 관련 변수
   let quizQuestions = []; let currentQuizIdx = 0; let quizScore = 0; let isAnswering = false;
 
   function startMistakeReview() {
@@ -1038,34 +1036,112 @@
     document.getElementById('emptyState').classList.remove('show'); document.getElementById('cardContainer').style.display = 'block'; renderCard(currentIndex); resetCardStyle(); document.getElementById('evalButtons').classList.remove('show');
   }
 
-  function startHardcoreQuiz() { isHardcoreMode = true; startQuiz(true); }
-
-  function startQuiz(skipCheck = false) {
-    stopBGM(); if(!skipCheck) isHardcoreMode = false; 
+  // 🎯 퀴즈 시작 (랜덤 출제)
+  function startQuiz() {
+    stopBGM(); 
     const learnedCards = myHanjaData.filter(card => card.interval > 0);
     if (learnedCards.length < 4) { alert("학습을 완료한 단어가 최소 4개 이상이어야 합니다."); return; }
-    document.getElementById('mainBottomNav').style.display = 'none'; document.getElementById('fadeBottom').style.display = 'none'; const shuffledLearned = [...learnedCards].sort(() => 0.5 - Math.random()); quizQuestions = shuffledLearned.slice(0, Math.min(10, learnedCards.length));
-    currentQuizIdx = 0; quizScore = 0; isAnswering = false; document.getElementById('homeScreen').classList.remove('active'); document.getElementById('quizScreen').classList.add('active'); renderQuizQuestion();
+    
+    document.getElementById('mainBottomNav').style.display = 'none'; 
+    document.getElementById('fadeBottom').style.display = 'none'; 
+    
+    const shuffledLearned = [...learnedCards].sort(() => 0.5 - Math.random());
+    const selectedCards = shuffledLearned.slice(0, Math.min(10, learnedCards.length));
+    
+    // 각 문제마다 랜덤하게 유형 할당 (훈음 40%, 한자 40%, 부수 20%)
+    quizQuestions = selectedCards.map(card => {
+      const rand = Math.random();
+      let type = 'meaning';
+      if (rand > 0.4 && rand <= 0.8) type = 'hanja';
+      else if (rand > 0.8) type = 'radical';
+      return { card, type };
+    });
+
+    currentQuizIdx = 0; quizScore = 0; isAnswering = false; 
+    document.getElementById('homeScreen').classList.remove('active'); 
+    document.getElementById('quizScreen').classList.add('active'); 
+    renderQuizQuestion();
   }
 
+  // 🎯 퀴즈 화면 렌더링 (유형별 분기 처리)
   function renderQuizQuestion() {
     if (currentQuizIdx >= quizQuestions.length) { finishQuiz(); return; }
-    isAnswering = false; const currentQ = quizQuestions[currentQuizIdx]; document.getElementById('quizProgressText').innerText = `문제 ${currentQuizIdx + 1}/${quizQuestions.length}`;
+    isAnswering = false; 
+    
+    const qObj = quizQuestions[currentQuizIdx]; 
+    const currentQ = qObj.card;
+    const qType = qObj.type;
+    
+    document.getElementById('quizProgressText').innerText = `문제 ${currentQuizIdx + 1}/${quizQuestions.length}`;
+    
+    const instructionEl = document.getElementById('quizInstruction');
     const targetEl = document.getElementById('quizHanjaTarget');
-    if (isHardcoreMode) { targetEl.innerText = currentQ.meaning; targetEl.style.fontSize = '36px'; } else { targetEl.innerText = currentQ.hanja; targetEl.style.fontSize = '80px'; }
-    let options = [currentQ]; let distractorPool = myHanjaData.filter(card => card.id !== currentQ.id).sort(() => 0.5 - Math.random()).slice(0, 3); options = options.concat(distractorPool).sort(() => 0.5 - Math.random());
-    const container = document.getElementById('quizOptionsContainer'); container.innerHTML = '';
-    options.forEach(opt => {
-      const btn = document.createElement('button'); btn.className = 'quiz-opt-btn'; btn.innerText = isHardcoreMode ? opt.hanja : opt.meaning; 
-      btn.onclick = () => checkQuizAnswer(btn, opt.id === currentQ.id, isHardcoreMode ? currentQ.hanja : currentQ.meaning, currentQ); container.appendChild(btn);
+    
+    let correctText = '';
+    let optionsText = [];
+    
+    // 오답용 단어 추출 (현재 문제 제외)
+    let distractorPool = myHanjaData.filter(c => c.id !== currentQ.id).sort(() => 0.5 - Math.random());
+
+    if (qType === 'meaning') {
+      instructionEl.innerText = "다음 한자의 알맞은 훈음을 고르시오.";
+      targetEl.innerText = currentQ.hanja;
+      targetEl.style.fontSize = '80px';
+      correctText = currentQ.meaning;
+      optionsText = [correctText, ...distractorPool.slice(0, 3).map(c => c.meaning)];
+      
+    } else if (qType === 'hanja') {
+      instructionEl.innerText = "다음 훈음에 알맞은 한자를 고르시오.";
+      targetEl.innerText = currentQ.meaning;
+      targetEl.style.fontSize = '36px';
+      correctText = currentQ.hanja;
+      optionsText = [correctText, ...distractorPool.slice(0, 3).map(c => c.hanja)];
+      
+    } else if (qType === 'radical') {
+      instructionEl.innerText = "다음 한자의 부수를 고르시오.";
+      targetEl.innerText = currentQ.hanja;
+      targetEl.style.fontSize = '80px';
+      correctText = currentQ.radical;
+      
+      // 오답 부수 중복 방지 로직
+      let uniqueRadicals = [];
+      for (let c of distractorPool) {
+         if (c.radical && c.radical !== correctText && !uniqueRadicals.includes(c.radical)) {
+            uniqueRadicals.push(c.radical);
+         }
+         if (uniqueRadicals.length === 3) break;
+      }
+      while (uniqueRadicals.length < 3) { uniqueRadicals.push("부수없음" + Math.random()); } // 안전 장치
+      optionsText = [correctText, ...uniqueRadicals];
+    }
+    
+    // 보기 섞기
+    optionsText.sort(() => 0.5 - Math.random());
+
+    const container = document.getElementById('quizOptionsContainer'); 
+    container.innerHTML = '';
+    
+    optionsText.forEach(optText => {
+      const btn = document.createElement('button'); 
+      btn.className = 'quiz-opt-btn'; 
+      btn.innerText = optText; 
+      btn.onclick = () => checkQuizAnswer(btn, optText === correctText, correctText, currentQ); 
+      container.appendChild(btn);
     });
   }
 
   function checkQuizAnswer(btn, isCorrect, correctText, currentQ) {
     if (isAnswering) return; isAnswering = true; const allBtns = document.querySelectorAll('.quiz-opt-btn');
-    if (isCorrect) { playSound('correct'); btn.classList.add('correct'); quizScore++; } 
-    else { playSound('wrong'); btn.classList.add('wrong'); allBtns.forEach(b => { if (b.innerText === correctText) b.classList.add('correct'); }); 
-      const originalCard = myHanjaData.find(c => c.id === currentQ.id); originalCard.mistakes = (originalCard.mistakes || 0) + 1; syncToCloud(); }
+    if (isCorrect) { 
+      playSound('correct'); btn.classList.add('correct'); quizScore++; 
+    } 
+    else { 
+      playSound('wrong'); btn.classList.add('wrong'); 
+      allBtns.forEach(b => { if (b.innerText === correctText) b.classList.add('correct'); }); 
+      const originalCard = myHanjaData.find(c => c.id === currentQ.id); 
+      originalCard.mistakes = (originalCard.mistakes || 0) + 1; 
+      syncToCloud(); 
+    }
     setTimeout(() => { currentQuizIdx++; renderQuizQuestion(); }, 1200);
   }
 
