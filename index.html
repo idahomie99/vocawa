@@ -439,9 +439,9 @@
 <!-- 토벌 완료 모달창 -->
 <div class="modal-overlay" id="completionModal">
   <div class="modal-content">
-    <div class="reward-img-placeholder">
-      토벌 성공<br>이미지 뷰
-    </div>
+    <!-- 기존 placeholder 삭제 후 아래 img 태그 추가 -->
+    <img src="./image/reward_study.png" alt="토벌 성공" style="width: 130px; height: 130px; object-fit: contain; margin: 0 auto 20px auto; display: block; filter: drop-shadow(0 12px 24px rgba(0,0,0,0.15));">
+    
     <h2 class="modal-title">토벌 완료!</h2>
     <p class="modal-desc" id="completionMsg"></p>
     <button class="btn-primary" onclick="resetAndGoHome()">보상 받기</button>
@@ -509,9 +509,9 @@
 
 <div class="modal-overlay" id="quizResultModal">
   <div class="modal-content">
-    <div class="reward-img-placeholder">
-      제초 성공<br>이미지 뷰
-    </div>
+    <!-- 기존 placeholder 삭제 후 아래 img 태그 추가 -->
+    <img src="./image/reward_quiz.png" alt="제초 성공" style="width: 130px; height: 130px; object-fit: contain; margin: 0 auto 10px auto; display: block; filter: drop-shadow(0 12px 24px rgba(0,0,0,0.15));">
+    
     <h2 class="modal-title">제초 완료!</h2>
     <div class="quiz-score-text" id="finalQuizScore">8 / 10</div>
     <p class="modal-desc" id="quizResultMsg"></p>
