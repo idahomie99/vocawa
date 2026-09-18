@@ -61,7 +61,7 @@
   .room-character { position: absolute; bottom: 25px; left: 50%; transform: translateX(-50%); z-index: 2; width: 90px; height: auto; object-fit: contain; filter: drop-shadow(0 8px 12px rgba(0,0,0,0.3)); }
   .room-item { position: absolute; z-index: 2; filter: drop-shadow(0 6px 8px rgba(0,0,0,0.25)); }
   
-  .room-beetle { bottom: 20px; left: 65%; width: 35px; height: auto; object-fit: contain; } 
+  .room-beetle { bottom: 20px; left: 65%; width: 70px; height: auto; object-fit: contain; transform: scale(2.5); transform-origin: bottom center; }
   .room-guitar { bottom: 35px; left: 15%; width: 65px; height: auto; object-fit: contain; transform: rotate(-10deg); } 
   .room-tv { bottom: 30px; right: 15%; width: 85px; height: auto; object-fit: contain; } 
 
@@ -217,6 +217,25 @@
   .playing-guitar { animation: playShakeGuitar 0.5s infinite ease-in-out; }
   @keyframes playShakeTv { 0%, 100% { transform: rotate(0deg); } 25% { transform: rotate(-3deg) scale(1.02); } 75% { transform: rotate(3deg) scale(1.02); } }
   .playing-tv { animation: playShakeTv 0.5s infinite ease-in-out; }
+
+  /* 🎯 피드백 반영: 카드 뱃지 및 레벨 진행도 UI */
+  .card-badge { position: absolute; top: -16px; right: -16px; padding: 8px 16px; border-radius: 16px; font-size: 14px; font-weight: 800; color: white; z-index: 10; box-shadow: 0 4px 12px rgba(0,0,0,0.15); transform: rotate(5deg); }
+  .badge-new { background: #ff922b; }
+  .badge-review { background: #4dabf7; }
+  
+  .level-progress-wrap { width: 100%; margin-top: 14px; display: flex; align-items: center; gap: 10px; background: #f8f9fa; padding: 10px 14px; border-radius: 12px; box-sizing: border-box;}
+  .level-progress-bar-bg { flex: 1; height: 8px; background: #e9ecef; border-radius: 4px; overflow: hidden; }
+  .level-progress-bar-fill { height: 100%; background: #51cf66; border-radius: 4px; transition: width 0.4s ease; }
+  .level-progress-text { font-size: 13px; font-weight: 800; color: #495057; }
+
+  /* 💡 수정: 뱃지가 자연스럽게 사라지도록 transition 추가 */
+  .card-badge { 
+    position: absolute; top: -16px; right: -16px; padding: 8px 16px; 
+    border-radius: 16px; font-size: 14px; font-weight: 800; color: white; 
+    z-index: 10; box-shadow: 0 4px 12px rgba(0,0,0,0.15); transform: rotate(5deg);
+    transition: opacity 0.3s ease; /* 페이드 효과 */
+  }
+  .badge-mistake { background: #fa5252; } /* 오답 노트 전용 빨간 뱃지 */
 </style>
 </head>
 <body>
@@ -298,6 +317,13 @@
         한자 토벌 : 8급
       </div>
       <div class="course-desc" id="courseStatus">데이터 불러오는 중...</div>
+      <!-- 💡 피드백 5 반영: 해당 레벨 진행도 바 -->
+      <div class="level-progress-wrap" id="courseProgressWrap" style="display:none;">
+         <div class="level-progress-bar-bg">
+            <div class="level-progress-bar-fill" id="courseProgressBar"></div>
+         </div>
+         <div class="level-progress-text" id="courseProgressText">0 / 0</div>
+      </div>
     </div>
     
     <div class="course-card" onclick="startQuiz()">
@@ -397,6 +423,7 @@
   </div>
   
   <div class="responsive-width card-container" id="cardContainer">
+    <div class="card-badge" id="cardBadge" style="display:none;">NEW</div>
     <div class="card" id="flashcard" onclick="flipCard()">
       <div class="card-face card-front" id="cardHanja"></div>
       <div class="card-face card-back">
@@ -425,14 +452,14 @@
 
 <!-- 출석 체크 모달 -->
 <div class="modal-overlay" id="attendanceModal">
-  <div class="modal-content" style="padding: 50px 24px;">
-    <div class="material-symbols-rounded fire-icon-large">local_fire_department</div>
-    <h2 class="modal-title" style="margin-bottom: 20px;">출석 완료!</h2>
-    <div style="font-size: 20px; font-weight: 700; color: #495057; margin-bottom: 24px;">
-      연속 <span class="streak-number" id="attendanceStreakNum">0</span>일째 토벌 중!
+  <div class="modal-content" style="width: 300px; padding: 36px 20px;">
+    <div class="material-symbols-rounded fire-icon-large" style="margin-bottom: 8px;">local_fire_department</div>
+    <h2 class="modal-title" style="margin-bottom: 12px;">출석 완료!</h2>
+    <div style="font-size: 18px; font-weight: 700; color: #495057; margin-bottom: 16px;">
+      연속 <span class="streak-number" id="attendanceStreakNum" style="font-size: 40px; margin: 0 4px;">0</span>일째 토벌 중!
     </div>
-    <p class="modal-desc" id="attendanceMsg" style="margin-bottom: 30px;">오늘도 단어들을 물리쳐 볼까요?<br>(💰 +50원 지급 완료)</p>
-    <button class="btn-primary" onclick="closeAttendanceModal()">확인</button>
+    <p class="modal-desc" id="attendanceMsg" style="margin-bottom: 24px; font-size: 14px;"></p>
+    <button class="btn-primary" style="width: 100%;" onclick="closeAttendanceModal()">확인</button>
   </div>
 </div>
 
@@ -576,14 +603,13 @@
   
   let USER_UID = null; let myHanjaData = []; let todayCards = []; let currentIndex = 0; let completedCount = 0; let sessionTotal = 0; let dailyNewLimit = 30; let isTTSOn = true;
 
-  const sfxCorrect = new Audio('https://assets.mixkit.co/active_storage/sfx/2000/2000-preview.mp3'); const sfxWrong = new Audio('https://assets.mixkit.co/active_storage/sfx/2003/2003-preview.mp3'); const sfxSwipe = new Audio('https://assets.mixkit.co/active_storage/sfx/2042/2042-preview.mp3');
-  sfxCorrect.volume = 0.4; sfxWrong.volume = 0.4; sfxSwipe.volume = 0.2;
+  const sfxCardSwipe = new Audio('https://assets.mixkit.co/active_storage/sfx/2042/2042-preview.mp3');
+  sfxCardSwipe.volume = 0.4;
 
   function playSound(type) {
     if (!isTTSOn) return;
-    if (type === 'correct') { sfxCorrect.currentTime = 0; sfxCorrect.play().catch(()=>{}); }
-    if (type === 'wrong') { sfxWrong.currentTime = 0; sfxWrong.play().catch(()=>{}); }
-    if (type === 'swipe') { sfxSwipe.currentTime = 0; sfxSwipe.play().catch(()=>{}); }
+    sfxCardSwipe.currentTime = 0; 
+    sfxCardSwipe.play().catch(()=>{});
   }
 
   const LEVELS = [{ name: "백수", maxExp: 100 }, { name: "알바", maxExp: 300 }, { name: "제초자격증 5급", maxExp: 600 }, { name: "제초자격증 4급", maxExp: 1000 }, { name: "제초자격증 3급", maxExp: 1500 }, { name: "제초자격증 2급", maxExp: 2100 }, { name: "제초자격증 1급", maxExp: 3000 }];
@@ -738,9 +764,10 @@
     document.getElementById('streakDaysText').innerText = userStats.streakDays || 1;
 
     if (isNewLogin) {
+      const coinIcon = `<span class="material-symbols-rounded" style="font-size:15px; vertical-align:middle; color:#ff922b;">monetization_on</span>`;
       document.getElementById('attendanceMsg').innerHTML = isPenalty 
-        ? `앗! ${getDaysDifference(userStats.lastLoginDate, today)-1}일 결석하여 경험치가 ${penaltyExp} 하락했어요.<br>다시 힘차게 시작해 봐요! (💰 +50원)`
-        : `오늘도 잊지 않고 찾아오셨군요!<br>단어들을 물리쳐 볼까요? (💰 +50원)`;
+        ? `앗! ${getDaysDifference(userStats.lastLoginDate, today)-1}일 결석하여 경험치가 ${penaltyExp} 하락했어요.<br>다시 힘차게 시작해 봐요! (${coinIcon} +50)`
+        : `오늘도 잊지 않고 찾아오셨군요!<br>단어들을 물리쳐 볼까요? (${coinIcon} +50)`;
       
       document.getElementById('attendanceModal').classList.add('show');
       animateValue(document.getElementById('attendanceStreakNum'), oldStreak, newStreak, 1000); 
@@ -876,7 +903,8 @@
   function updateHomeStatus() {
     const pendingCards = getTodayStudyCards();
     const currLangConfig = LANG_CONFIG[userStats.courseLanguage];
-    const targetLvlIdx = currLangConfig.levels.indexOf(userStats.courseLevel);
+    const targetLevel = userStats.courseLevel;
+    const targetLvlIdx = currLangConfig.levels.indexOf(targetLevel);
     
     let newCards = myHanjaData.filter(card => {
       const cardLvlIdx = currLangConfig.levels.indexOf(card.level);
@@ -889,9 +917,23 @@
     const statusText = pendingCards.length > 0 ? `복습: ${reviewCount}개 / 신규: ${newCount}개` : `<span class="material-symbols-rounded" style="font-size:16px; margin-right:4px; vertical-align:middle; color:#4dabf7;">check_circle</span>오늘의 토벌 완료`;
     document.getElementById('courseStatus').innerHTML = statusText;
     
-    // 언어 이름 동적 노출
     const langName = currLangConfig.name;
-    document.getElementById('currentCourseTitle').innerHTML = `<span class="material-symbols-rounded" style="color: #4dabf7; font-size: 24px;">swords</span>${langName} 토벌 : ${userStats.courseLevel}`;
+    document.getElementById('currentCourseTitle').innerHTML = `<span class="material-symbols-rounded" style="color: #4dabf7; font-size: 24px;">swords</span>${langName} 토벌 : ${targetLevel}`;
+
+    // 💡 피드백 5 반영: 해당 레벨의 전체 단어 수 및 완료 수 계산
+    const levelCards = myHanjaData.filter(card => card.level === targetLevel);
+    const levelLearned = levelCards.filter(card => card.interval > 0).length;
+    const levelTotal = levelCards.length;
+    
+    const progressWrap = document.getElementById('courseProgressWrap');
+    if (levelTotal > 0) {
+        progressWrap.style.display = 'flex';
+        const pct = (levelLearned / levelTotal) * 100;
+        document.getElementById('courseProgressBar').style.width = pct + '%';
+        document.getElementById('courseProgressText').innerText = `${levelLearned} / ${levelTotal}`;
+    } else {
+        progressWrap.style.display = 'none';
+    }
 
     document.getElementById('quizStatusText').innerHTML = userStats.dailyQuizDone 
       ? `<span class="material-symbols-rounded" style="font-size:16px; margin-right:4px; vertical-align:middle; color:#51cf66;">check_circle</span>오늘의 제초 완료` 
@@ -943,21 +985,35 @@
     const data = todayCards[index];
     const wordText = getWordField(data);
     const langConfig = LANG_CONFIG[userStats.courseLanguage];
+    const lang = userStats.courseLanguage;
 
-    // 💡 1. 단어 길이에 따른 폰트 크기 자동 조절 (반응형)
-    const frontEl = document.getElementById('cardHanja');
-    frontEl.innerText = wordText;
-    if (wordText.length >= 12) {
-      frontEl.style.fontSize = '36px';
-    } else if (wordText.length >= 8) {
-      frontEl.style.fontSize = '50px';
+    // 💡 피드백 4 반영: 언어별 NEW / 이전 학습일 표기
+    const badgeEl = document.getElementById('cardBadge');
+    badgeEl.style.display = 'block';
+    
+    if (isMistakeMode) {
+        badgeEl.className = 'card-badge badge-mistake';
+        badgeEl.innerText = lang === 'english' ? 'Retry' : '다시 도전';
     } else {
-      frontEl.style.fontSize = '80px';
+        if (data.interval === 0) {
+            badgeEl.className = 'card-badge badge-new';
+            badgeEl.innerText = lang === 'english' ? 'NEW' : '新';
+        } else {
+            badgeEl.className = 'card-badge badge-review';
+            const days = data.interval;
+            if (lang === 'english') badgeEl.innerText = days + ' days ago';
+            else if (lang === 'hanja' || lang === 'chinese' || lang === 'japanese') badgeEl.innerText = days + '日前';
+            else badgeEl.innerText = days + '일 전';
+        }
     }
 
+    const frontEl = document.getElementById('cardHanja');
+    frontEl.innerText = wordText;
+    if (wordText.length >= 12) { frontEl.style.fontSize = '36px'; } 
+    else if (wordText.length >= 8) { frontEl.style.fontSize = '50px'; } 
+    else { frontEl.style.fontSize = '80px'; }
+
     document.getElementById('cardMiniHanja').innerText = wordText; 
-    
-    // 💡 2. 뜻(Meaning)에 ' / ' 가 있으면 HTML 줄바꿈(<br>) 기호로 변환하여 깔끔하게 표시
     const formattedMeaning = data.meaning.split(' / ').join('<br>');
     document.getElementById('cardMeaning').innerHTML = formattedMeaning; 
     
@@ -974,8 +1030,12 @@
   function flipCard() {
     const card = document.getElementById('flashcard');
     if (!card.classList.contains('flipped')) { 
-      card.classList.add('flipped'); document.getElementById('evalButtons').classList.add('show'); 
-      // 한자는 뜻음을 읽어주는게 좋고, 외국어는 해당 단어를 읽어주는게 좋음.
+      card.classList.add('flipped'); 
+      document.getElementById('evalButtons').classList.add('show'); 
+      
+      // 💡 뱃지 숨기기
+      document.getElementById('cardBadge').style.opacity = '0';
+      
       const langConfig = LANG_CONFIG[userStats.courseLanguage];
       const textToRead = langConfig.name === '한자' ? todayCards[currentIndex].meaning : getWordField(todayCards[currentIndex]);
       playSpeech(textToRead); 
@@ -986,13 +1046,33 @@
   window.startMistakeReview = startMistakeReview;
 
   function processEvaluation(result) {
-    let currentCard = todayCards[currentIndex]; let originalCard = myHanjaData.find(c => c.id === currentCard.id); const ONE_DAY = 24 * 60 * 60 * 1000; const now = new Date().getTime();
-    if (result === '모름') { playSound('swipe'); originalCard.mistakes = (originalCard.mistakes || 0) + 1; todayCards.splice(currentIndex + 2, 0, currentCard); } 
-    else if (result === '헷갈림') { playSound('swipe'); todayCards.push(currentCard); } 
-    else if (result === '완벽함') {
-      playSound('correct'); originalCard.interval = originalCard.interval === 0 ? 1 : originalCard.interval * 2; originalCard.nextReview = now + (originalCard.interval * ONE_DAY);
-      if (isMistakeMode) originalCard.mistakes = 0; completedCount++; 
+    let currentCard = todayCards[currentIndex]; 
+    let originalCard = myHanjaData.find(c => c.id === currentCard.id); 
+    const ONE_DAY = 24 * 60 * 60 * 1000; 
+    const now = new Date().getTime();
+
+    playSound('swipe');
+
+    if (result === '모름') { 
+      if (navigator.vibrate) navigator.vibrate([30, 50, 30]); 
+      originalCard.mistakes = (originalCard.mistakes || 0) + 1; 
+      todayCards.push(currentCard); 
+    } else if (result === '헷갈림') { 
+      if (navigator.vibrate) navigator.vibrate(30);
+      todayCards.push(currentCard); 
+    } else if (result === '완벽함') {
+      if (navigator.vibrate) navigator.vibrate([20, 30, 20]);
+      let nextInt = 1;
+      if (originalCard.interval === 1) nextInt = 7;
+      else if (originalCard.interval === 7) nextInt = 14;
+      else if (originalCard.interval >= 14) nextInt = 30; 
+      
+      originalCard.interval = nextInt;
+      originalCard.nextReview = now + (nextInt * ONE_DAY);
+      if (isMistakeMode) originalCard.mistakes = 0; 
+      completedCount++; 
     }
+
     syncToCloud(); updateProgress(); currentIndex++; resetCardStyle(); document.getElementById('evalButtons').classList.remove('show');
     
     if (currentIndex >= todayCards.length) { 
@@ -1000,14 +1080,25 @@
         isMistakeMode = false; 
         if (!userStats.dailyStudyDone && sessionTotal > 0) {
           userStats.dailyStudyDone = true; userStats.money += 100; addExp(sessionTotal);
-          document.getElementById('completionMsg').innerHTML = `훌륭하게 단어 토벌에 성공했습니다!<br><br><span style="font-size:16px; color:#4dabf7; font-weight:800;">EXP +${sessionTotal}  |  💰 +100원</span>`;
+          const coinIcon = `<span class="material-symbols-rounded" style="font-size:18px; vertical-align:middle; color:#ff922b;">monetization_on</span>`;
+          document.getElementById('completionMsg').innerHTML = `훌륭하게 단어 토벌에 성공했습니다!<br><br><span style="font-size:16px; color:#4dabf7; font-weight:800;">EXP +${sessionTotal} &nbsp;|&nbsp; ${coinIcon} +100</span>`;
         } else { document.getElementById('completionMsg').innerHTML = `오늘의 토벌을 완벽하게 마쳤습니다.<br>푹 쉬고 내일 다시 만나요!`; }
         document.getElementById('completionModal').classList.add('show'); 
       }, 300); 
     } else { setTimeout(() => { renderCard(currentIndex); }, 150); }
   }
 
-  function resetCardStyle() { const card = document.getElementById('flashcard'); card.classList.remove('flipped', 'dragging'); card.style.transform = ''; document.getElementById('hintBad').style.opacity = '0'; document.getElementById('hintPerfect').style.opacity = '0'; document.getElementById('hintSoso').style.opacity = '0'; }
+  function resetCardStyle() { 
+    const card = document.getElementById('flashcard'); 
+    card.classList.remove('flipped', 'dragging'); 
+    card.style.transform = ''; 
+    document.getElementById('hintBad').style.opacity = '0'; 
+    document.getElementById('hintPerfect').style.opacity = '0'; 
+    document.getElementById('hintSoso').style.opacity = '0'; 
+    
+    // 💡 뱃지 다시 보이게 복구
+    document.getElementById('cardBadge').style.opacity = '1';
+  }
 
   const cardElement = document.getElementById('flashcard'); let startX = 0, startY = 0, currentX = 0, currentY = 0, isDragging = false;
   cardElement.addEventListener('touchstart', (e) => { if (!cardElement.classList.contains('flipped')) return; startX = e.touches[0].clientX; startY = e.touches[0].clientY; isDragging = true; cardElement.classList.add('dragging'); });
@@ -1231,7 +1322,12 @@
     document.getElementById('finalQuizScore').innerText = `${quizScore} / ${quizQuestions.length}`;
     let msg = ''; const ratio = quizScore / quizQuestions.length;
     if (ratio === 1) msg = "완벽하게 제초를 완료했습니다!"; else if (ratio >= 0.7) msg = "훌륭합니다. 제초에 성공했습니다!"; else msg = "아슬아슬했네요. 단어장을 복습해 보세요.";
-    if (!userStats.dailyQuizDone) { userStats.dailyQuizDone = true; userStats.money += 50; addExp(20); msg += `<br><br><span style="font-size:16px; color:#51cf66; font-weight:800;">EXP +20  |  💰 +50원</span>`; }
+    
+    if (!userStats.dailyQuizDone) { 
+      userStats.dailyQuizDone = true; userStats.money += 50; addExp(20); 
+      const coinIcon = `<span class="material-symbols-rounded" style="font-size:18px; vertical-align:middle; color:#ff922b;">monetization_on</span>`;
+      msg += `<br><br><span style="font-size:16px; color:#51cf66; font-weight:800;">EXP +20 &nbsp;|&nbsp; ${coinIcon} +50</span>`; 
+    }
     document.getElementById('quizResultMsg').innerHTML = msg; document.getElementById('quizResultModal').classList.add('show');
   }
 
