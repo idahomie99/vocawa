@@ -1136,7 +1136,14 @@
     document.getElementById('courseModal').classList.add('show'); 
   }
 
-  // 💡 드롭다운 렌더링 시 JSON 데이터를 읽어와 누적 수량 표시
+  // 💡 언어 탭을 바꿀 때도 async로 수량 계산 (누락되었던 함수 복구!)
+  async function selectTempLang(lang) {
+    tempSelectedLang = lang;
+    renderLangButtons();
+    await renderLevelDropdown(lang);
+  }
+
+  // 💡 드롭다운 렌더링 시 JSON 데이터를 읽어와 누적 수량 표시 (중복 삭제 후 하나로 통합)
   async function renderLevelDropdown(lang) {
     const selectEl = document.getElementById('courseLevelSelect');
     selectEl.innerHTML = '<option>수량 계산 중...</option>';
@@ -1144,7 +1151,6 @@
     const levels = LANG_CONFIG[lang].levels;
     let targetData = myHanjaData;
     
-    // 현재 학습 중인 언어가 아니라면 백그라운드에서 해당 언어 데이터를 가져옴
     if (lang !== userStats.courseLanguage) {
        targetData = await fetchWordData(lang);
     }
@@ -1152,13 +1158,11 @@
     let html = '';
     let cumulativeCount = 0;
     
-    // 각 레벨별로 누적 단어 수를 계산하여 option 태그 생성
     for (let lvl of levels) {
        const count = targetData.filter(c => c.level === lvl).length;
        cumulativeCount += count;
        html += `<option value="${lvl}">${lvl} (총 ${cumulativeCount}개)</option>`;
     }
-    
     selectEl.innerHTML = html;
   }
 
@@ -1168,12 +1172,6 @@
       if (l === tempSelectedLang) btn.classList.add('active');
       else btn.classList.remove('active');
     });
-  }
-
-  function renderLevelDropdown(lang) {
-    const selectEl = document.getElementById('courseLevelSelect');
-    const levels = LANG_CONFIG[lang].levels;
-    selectEl.innerHTML = levels.map(lvl => `<option value="${lvl}">${lvl}</option>`).join('');
   }
 
   function closeCourseModal() { document.getElementById('courseModal').classList.remove('show'); }
