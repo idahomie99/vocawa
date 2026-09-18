@@ -920,8 +920,11 @@
     const langName = currLangConfig.name;
     document.getElementById('currentCourseTitle').innerHTML = `<span class="material-symbols-rounded" style="color: #4dabf7; font-size: 24px;">swords</span>${langName} 토벌 : ${targetLevel}`;
 
-    // 💡 피드백 5 반영: 해당 레벨의 전체 단어 수 및 완료 수 계산
-    const levelCards = myHanjaData.filter(card => card.level === targetLevel);
+    // 💡 누적 진행도 계산 (목표 레벨 이하의 모든 급수 단어 합산)
+    const levelCards = myHanjaData.filter(card => {
+        const cardLvlIdx = currLangConfig.levels.indexOf(card.level);
+        return cardLvlIdx !== -1 && cardLvlIdx <= targetLvlIdx;
+    });
     const levelLearned = levelCards.filter(card => card.interval > 0).length;
     const levelTotal = levelCards.length;
     
@@ -935,9 +938,10 @@
         progressWrap.style.display = 'none';
     }
 
+    const coinIcon = `<span class="material-symbols-rounded" style="font-size:15px; vertical-align:middle; color:#ff922b;">monetization_on</span>`;
     document.getElementById('quizStatusText').innerHTML = userStats.dailyQuizDone 
       ? `<span class="material-symbols-rounded" style="font-size:16px; margin-right:4px; vertical-align:middle; color:#51cf66;">check_circle</span>오늘의 제초 완료` 
-      : `일일 1회 보상 대기 중 (EXP 20 / 50원)`;
+      : `일일 1회 보상 대기 중 (EXP 20 / ${coinIcon} 50)`;
   }
 
   // 🎯 1. TTS 언어 동적 스위칭
@@ -1123,18 +1127,39 @@
   // 🎯 2 & 3. 과정 변경 (언어 및 급수 연동)
   let tempSelectedLang = 'hanja';
 
-  function openCourseModal() { 
+  // 💡 모달창을 열 때 async로 전환하여 수량 계산
+  async function openCourseModal() { 
     tempSelectedLang = userStats.courseLanguage || 'hanja';
     renderLangButtons();
-    renderLevelDropdown(tempSelectedLang);
+    await renderLevelDropdown(tempSelectedLang);
     document.getElementById('courseLevelSelect').value = userStats.courseLevel || LANG_CONFIG[tempSelectedLang].levels[0]; 
     document.getElementById('courseModal').classList.add('show'); 
   }
 
-  function selectTempLang(lang) {
-    tempSelectedLang = lang;
-    renderLangButtons();
-    renderLevelDropdown(lang);
+  // 💡 드롭다운 렌더링 시 JSON 데이터를 읽어와 누적 수량 표시
+  async function renderLevelDropdown(lang) {
+    const selectEl = document.getElementById('courseLevelSelect');
+    selectEl.innerHTML = '<option>수량 계산 중...</option>';
+    
+    const levels = LANG_CONFIG[lang].levels;
+    let targetData = myHanjaData;
+    
+    // 현재 학습 중인 언어가 아니라면 백그라운드에서 해당 언어 데이터를 가져옴
+    if (lang !== userStats.courseLanguage) {
+       targetData = await fetchWordData(lang);
+    }
+    
+    let html = '';
+    let cumulativeCount = 0;
+    
+    // 각 레벨별로 누적 단어 수를 계산하여 option 태그 생성
+    for (let lvl of levels) {
+       const count = targetData.filter(c => c.level === lvl).length;
+       cumulativeCount += count;
+       html += `<option value="${lvl}">${lvl} (총 ${cumulativeCount}개)</option>`;
+    }
+    
+    selectEl.innerHTML = html;
   }
 
   function renderLangButtons() {
