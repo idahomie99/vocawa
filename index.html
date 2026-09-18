@@ -61,7 +61,16 @@
   .room-character { position: absolute; bottom: 25px; left: 50%; transform: translateX(-50%); z-index: 2; width: 90px; height: auto; object-fit: contain; filter: drop-shadow(0 8px 12px rgba(0,0,0,0.3)); }
   .room-item { position: absolute; z-index: 2; filter: drop-shadow(0 6px 8px rgba(0,0,0,0.25)); }
   
-  .room-beetle { bottom: 20px; left: 60%; width: 70px; height: auto; object-fit: contain; transform: scale(1.4); transform-origin: bottom center; }
+  .room-beetle { 
+    bottom: 15px; /* 캐릭터(25px)보다 살짝 낮게 배치해 원근감(앞에 있는 느낌) 부여 */
+    left: 32%;    /* TV가 있는 오른쪽을 피해 왼쪽 기타와 캐릭터 사이로 이동 */
+    width: 70px; 
+    height: auto; 
+    object-fit: contain; 
+    transform: scale(1.4); 
+    transform-origin: bottom center; 
+    z-index: 3;   /* 가구들에 가려지지 않고 항상 제일 앞에 보이도록 설정 */
+  }
   .room-guitar { bottom: 35px; left: 15%; width: 65px; height: auto; object-fit: contain; transform: rotate(-10deg); } 
   .room-tv { bottom: 30px; right: 15%; width: 85px; height: auto; object-fit: contain; } 
 
